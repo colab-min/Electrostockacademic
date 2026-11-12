@@ -1,0 +1,48 @@
+<fieldset>
+  <legend>Vehículo</legend>
+  <div class="formulario-2col">
+    <app-campo etiqueta="Tipo de vehículo" para="vh-tipo" [error]="error('type')">
+      <select id="vh-tipo" name="vh_type" required [(ngModel)]="datos().type" [attr.aria-invalid]="!!error('type')">
+        <option value="" disabled>Elegir tipo</option>
+        @for (t of tipos; track t[0]) { <option [value]="t[0]">{{ t[1] }}</option> }
+      </select>
+    </app-campo>
+    <app-campo etiqueta="Número de serie" para="vh-serie" ayuda="5 a 30 letras, números o guiones." [error]="error('serial_number')">
+      <input id="vh-serie" name="vh_serial" required maxlength="30" autocomplete="off" [(ngModel)]="datos().serial_number"
+        [attr.aria-invalid]="!!error('serial_number')" />
+    </app-campo>
+    <app-campo etiqueta="Placa (opcional)" para="vh-placa" ayuda="ABC12D o ABC123." [error]="error('plate')">
+      <input id="vh-placa" name="vh_plate" maxlength="6" autocomplete="off" class="mayusculas" [(ngModel)]="datos().plate"
+        [attr.aria-invalid]="!!error('plate')" />
+    </app-campo>
+    <app-campo etiqueta="Marca" para="vh-marca" [error]="error('brand')">
+      <input id="vh-marca" name="vh_brand" required maxlength="60" [(ngModel)]="datos().brand" [attr.aria-invalid]="!!error('brand')" />
+    </app-campo>
+    <app-campo etiqueta="Modelo" para="vh-modelo" [error]="error('model')">
+      <input id="vh-modelo" name="vh_model" required maxlength="60" [(ngModel)]="datos().model" [attr.aria-invalid]="!!error('model')" />
+    </app-campo>
+    <app-campo etiqueta="Año" para="vh-anio" [error]="error('year')">
+      <input id="vh-anio" name="vh_year" type="number" inputmode="numeric" required [(ngModel)]="datos().year"
+        [attr.aria-invalid]="!!error('year')" />
+    </app-campo>
+    <app-campo etiqueta="Voltaje nominal (V)" para="vh-voltaje" [error]="error('nominal_voltage_v')">
+      <input id="vh-voltaje" name="vh_voltage" type="number" inputmode="numeric" required [(ngModel)]="datos().nominal_voltage_v"
+        [attr.aria-invalid]="!!error('nominal_voltage_v')" />
+    </app-campo>
+    <app-campo etiqueta="Capacidad de batería (Ah)" para="vh-capacidad" [error]="error('battery_capacity_ah')">
+      <input id="vh-capacidad" name="vh_capacity" type="number" step="0.1" inputmode="decimal" required
+        [(ngModel)]="datos().battery_capacity_ah" [attr.aria-invalid]="!!error('battery_capacity_ah')" />
+    </app-campo>
+    <app-campo etiqueta="Celda (opcional)" para="vh-celda" [error]="error('battery_cell')">
+      <input id="vh-celda" name="vh_cell" maxlength="60" [(ngModel)]="datos().battery_cell" [attr.aria-invalid]="!!error('battery_cell')" />
+    </app-campo>
+    <app-campo etiqueta="Potencia (W, opcional)" para="vh-potencia" [error]="error('power_w')">
+      <input id="vh-potencia" name="vh_power" type="number" inputmode="numeric" [(ngModel)]="datos().power_w"
+        [attr.aria-invalid]="!!error('power_w')" />
+    </app-campo>
+    <app-campo etiqueta="Controlador (opcional)" para="vh-controlador" [error]="error('controller')">
+      <input id="vh-controlador" name="vh_controller" maxlength="80" [(ngModel)]="datos().controller"
+        [attr.aria-invalid]="!!error('controller')" />
+    </app-campo>
+  </div>
+</fieldset>

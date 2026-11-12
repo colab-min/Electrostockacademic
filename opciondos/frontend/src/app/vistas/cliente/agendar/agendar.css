@@ -1,0 +1,17 @@
+:host { display: block; }
+p { margin: 0; }
+.pasos { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--espacio-2); }
+.pasos li { display: flex; align-items: center; gap: var(--espacio-2); padding: var(--espacio-1) var(--espacio-3); border-radius: 999px; background: var(--color-campo); color: var(--color-etiqueta); font-size: 13px; }
+.pasos li.activo { background: var(--color-accion); color: var(--color-fondo); font-weight: 700; }
+.numero { font-weight: 700; }
+.repuestos p { margin: 0; }
+.franjas { display: grid; gap: var(--espacio-2); grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.contador { margin: 0; font-size: 16px; }
+.contador strong { font-family: var(--fuente-codigo); color: var(--color-accion); font-size: 20px; }
+.resumen { display: grid; grid-template-columns: max-content 1fr; gap: var(--espacio-2) var(--espacio-4); margin: 0; }
+.resumen dt { color: var(--color-etiqueta); }
+.resumen dd { margin: 0; }
+.bloque { display: block; }
+.codigo-grande { font-family: var(--fuente-codigo); font-size: 24px; font-weight: 700; color: var(--color-accion); margin: 0; }
+.accion { display: inline-flex; align-items: center; justify-self: start; min-height: 44px; padding: var(--espacio-2) var(--espacio-4); border-radius: var(--radio); background: var(--color-accion); color: var(--color-fondo); font-weight: 600; text-decoration: none; }
+@media (max-width: 480px) { .resumen { grid-template-columns: 1fr; } }

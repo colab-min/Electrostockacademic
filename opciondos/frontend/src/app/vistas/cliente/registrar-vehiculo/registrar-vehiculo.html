@@ -1,0 +1,14 @@
+<section class="pagina">
+  <h1>Registrar vehículo</h1>
+  <app-tarjeta>
+    <form class="formulario" (ngSubmit)="registrar()">
+      <app-formulario-vehiculo [datos]="vehiculo()" [errores]="errores()" />
+      <app-espacio-fotos />
+      @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
+      <div class="fila">
+        <app-boton tipo="submit" [procesando]="procesando()">Registrar vehículo</app-boton>
+        <a routerLink="/cliente/citas">Volver a mis citas</a>
+      </div>
+    </form>
+  </app-tarjeta>
+</section>

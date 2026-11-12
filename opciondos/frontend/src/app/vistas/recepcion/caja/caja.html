@@ -1,0 +1,72 @@
+<section class="pagina">
+  <h1>Liquidar, cobrar y entregar</h1>
+  @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
+
+  @if (entregada(); as e) {
+    <app-aviso tipo="exito">Orden {{ e.number }} entregada.
+      @if (e.survey_url) { Enlace de la encuesta para el cliente: <a [routerLink]="e.survey_url">{{ e.survey_url }}</a> }
+    </app-aviso>
+  }
+
+  @if (ticket(); as t) {
+    <app-tarjeta titulo="Ticket (sin código de seguimiento)">
+      <app-ticket-orden [datos]="t" />
+    </app-tarjeta>
+  }
+
+  @if (ordenes(); as lista) {
+    @if (lista.length === 0) {
+      <app-estado-vacio titulo="No hay órdenes por cobrar."
+        mensaje="Aquí aparecen las órdenes Finalizadas, Pendientes de pago y Pagadas." />
+    } @else {
+      <div class="rejilla">
+        @for (o of lista; track o.id) {
+          <app-tarjeta [titulo]="o.number">
+            <app-insignia-estado [estado]="o.status" />
+            <p class="vehiculo">{{ o.vehicle.type_label }} · {{ o.vehicle.brand }} {{ o.vehicle.model }}</p>
+            <dl class="montos">
+              <dt>Mano de obra</dt><dd>{{ pesos(o.labor) }}</dd>
+              <dt>Repuestos instalados</dt><dd>{{ pesos(o.parts) }}</dd>
+              <dt>Subtotal</dt><dd>{{ pesos(o.subtotal) }}</dd>
+              <dt>IVA 19 %</dt><dd>{{ pesos(o.vat) }}</dd>
+              <dt class="total">Total</dt><dd class="total">{{ pesos(o.total) }}</dd>
+            </dl>
+            @if (o.receipt_number) { <p class="texto-suave">Comprobante {{ o.receipt_number }}</p> }
+            @if (errores()[o.id]) { <app-aviso tipo="error">{{ errores()[o.id] }}</app-aviso> }
+
+            @switch (o.status) {
+              @case ('FINISHED') {
+                <app-boton [procesando]="procesando() === o.id" (click)="liquidar(o)">Liquidar</app-boton>
+              }
+              @case ('PENDING_PAYMENT') {
+                <form class="pago" (ngSubmit)="pagar(o)">
+                  <app-campo etiqueta="Monto recibido (exacto)" [para]="'monto-' + o.id">
+                    <input [id]="'monto-' + o.id" [name]="'monto-' + o.id" type="number" min="0" inputmode="numeric"
+                      [(ngModel)]="montos[o.id]" />
+                  </app-campo>
+                  <app-campo etiqueta="Medio de pago" [para]="'medio-' + o.id">
+                    <select [id]="'medio-' + o.id" [name]="'medio-' + o.id" [ngModel]="metodos[o.id] ?? 'CASH'"
+                      (ngModelChange)="metodos[o.id] = $event">
+                      <option value="CASH">Efectivo</option>
+                      <option value="CARD">Tarjeta</option>
+                      <option value="TRANSFER">Transferencia</option>
+                    </select>
+                  </app-campo>
+                  <app-boton tipo="submit" [procesando]="procesando() === o.id" [deshabilitado]="!montos[o.id]">
+                    Registrar pago
+                  </app-boton>
+                </form>
+              }
+              @case ('PAID') {
+                <app-boton [procesando]="procesando() === o.id" (click)="entregar(o)">Entregar vehículo</app-boton>
+              }
+            }
+            <app-boton variante="neutro" (click)="verTicket(o)">Ver ticket</app-boton>
+          </app-tarjeta>
+        }
+      </div>
+    }
+  } @else if (!error()) {
+    <div class="esqueleto" aria-busy="true"></div>
+  }
+</section>

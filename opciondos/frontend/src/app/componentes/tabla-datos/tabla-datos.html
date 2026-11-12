@@ -1,0 +1,27 @@
+<div class="contenedor">
+  <table>
+    <caption class="solo-lector">{{ titulo() }}</caption>
+    <thead>
+      <tr>
+        @for (c of columnas(); track c.clave) { <th scope="col">{{ c.titulo }}</th> }
+        @if (acciones()) { <th scope="col"><span class="solo-lector">Acciones</span></th> }
+      </tr>
+    </thead>
+    <tbody>
+      @for (fila of filas(); track $index) {
+        <tr>
+          @for (c of columnas(); track c.clave) {
+            <td [attr.data-titulo]="c.titulo">
+              @if (celda(); as plantilla) {
+                <ng-container *ngTemplateOutlet="plantilla; context: { $implicit: fila, columna: c }" />
+              } @else { {{ fila[c.clave] }} }
+            </td>
+          }
+          @if (acciones(); as plantilla) {
+            <td class="acciones"><ng-container *ngTemplateOutlet="plantilla; context: { $implicit: fila }" /></td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

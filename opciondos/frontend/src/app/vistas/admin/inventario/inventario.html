@@ -1,0 +1,127 @@
+<section class="pagina">
+  <div class="fila encabezado">
+    <h1>Inventario</h1>
+    <app-boton (click)="nuevo()">Nuevo repuesto</app-boton>
+  </div>
+
+  @if (exito()) { <app-aviso tipo="exito">{{ exito() }}</app-aviso> }
+  @if (error()) {
+    <app-aviso tipo="error">{{ error() }} <button type="button" class="enlace" (click)="cargar()">Reintentar</button></app-aviso>
+  }
+
+  @if (editando(); as e) {
+    <app-tarjeta [titulo]="e === 'nuevo' ? 'Nuevo repuesto' : 'Editar ' + form.sku" [destacada]="true">
+      @if (errorForm()) { <app-aviso tipo="error">{{ errorForm() }}</app-aviso> }
+      <form class="formulario-2col" (ngSubmit)="guardar()">
+        <app-campo etiqueta="SKU" para="sku" [ayuda]="e === 'nuevo' ? null : 'El SKU no se modifica.'">
+          <input id="sku" name="sku" required [(ngModel)]="form.sku" [disabled]="e !== 'nuevo'" [attr.aria-invalid]="camposError().includes('sku')" />
+        </app-campo>
+        <app-campo etiqueta="Nombre" para="nombre">
+          <input id="nombre" name="name" required [(ngModel)]="form.name" [attr.aria-invalid]="camposError().includes('name')" />
+        </app-campo>
+        <app-campo etiqueta="Categoría" para="categoria">
+          <select id="categoria" name="category" [(ngModel)]="form.category">
+            @for (c of categorias; track c[0]) { <option [value]="c[0]">{{ c[1] }}</option> }
+          </select>
+        </app-campo>
+        <app-campo etiqueta="Voltaje compatible (V)" para="voltaje" ayuda="Vacío si no aplica.">
+          <input id="voltaje" name="voltaje" type="number" min="1" [(ngModel)]="form.compatible_voltage_v" />
+        </app-campo>
+        <app-campo etiqueta="Precio de compra (COP)" para="compra">
+          <input id="compra" name="purchase_price" type="number" min="1" required [(ngModel)]="form.purchase_price" [attr.aria-invalid]="camposError().includes('purchase_price')" />
+        </app-campo>
+        <app-campo etiqueta="Precio de venta (COP)" para="venta">
+          <input id="venta" name="sale_price" type="number" min="1" required [(ngModel)]="form.sale_price" [attr.aria-invalid]="camposError().includes('sale_price')" />
+        </app-campo>
+        @if (e === 'nuevo') {
+          <app-campo etiqueta="Stock inicial" para="stock" ayuda="Después, el stock cambia solo con movimientos.">
+            <input id="stock" name="physical_stock" type="number" min="0" [(ngModel)]="form.physical_stock" />
+          </app-campo>
+        }
+        <app-campo etiqueta="Umbral mínimo" para="umbral">
+          <input id="umbral" name="min_threshold" type="number" min="0" [(ngModel)]="form.min_threshold" [attr.aria-invalid]="camposError().includes('min_threshold')" />
+        </app-campo>
+        @if (e !== 'nuevo') {
+          <label class="casilla"><input type="checkbox" name="active" [(ngModel)]="form.active" /> Activo</label>
+        }
+        <div class="fila">
+          <app-boton tipo="submit" [procesando]="guardando()">Guardar</app-boton>
+          <app-boton variante="secundario" (click)="editando.set(null)">Cancelar</app-boton>
+        </div>
+      </form>
+    </app-tarjeta>
+  }
+
+  <app-tarjeta titulo="Repuestos">
+    <div class="fila filtros">
+      <app-campo etiqueta="Categoría" para="filtro-categoria">
+        <select id="filtro-categoria" [ngModel]="categoria()" (ngModelChange)="categoria.set($event)">
+          <option value="">Todas</option>
+          @for (c of categorias; track c[0]) { <option [value]="c[0]">{{ c[1] }}</option> }
+        </select>
+      </app-campo>
+      <label class="casilla"><input type="checkbox" [ngModel]="soloAlertas()" (ngModelChange)="soloAlertas.set($event)" /> Solo alertas</label>
+    </div>
+    @if (repuestos()) {
+      @if (filas().length) {
+        <app-tabla-datos titulo="Repuestos del inventario" [columnas]="columnas" [filas]="filas()" [celda]="celda" [acciones]="acciones" />
+      } @else {
+        <app-estado-vacio titulo="No hay repuestos con ese filtro." />
+      }
+    } @else if (!error()) {
+      <p class="texto-suave" aria-busy="true">Cargando…</p>
+    }
+  </app-tarjeta>
+
+  <app-tarjeta titulo="Registrar movimiento">
+    @if (errorMov()) { <app-aviso tipo="error">{{ errorMov() }}</app-aviso> }
+    <form class="formulario-2col" (ngSubmit)="registrarMovimiento()">
+      <app-campo etiqueta="Repuesto" para="mov-repuesto">
+        <select id="mov-repuesto" name="part_id" required [(ngModel)]="mov.part_id">
+          <option [ngValue]="null" disabled>Seleccione el repuesto</option>
+          @for (r of repuestos() ?? []; track r.id) { <option [ngValue]="r.id">{{ r.sku }} · {{ r.name }}</option> }
+        </select>
+      </app-campo>
+      <app-campo etiqueta="Tipo" para="mov-tipo">
+        <select id="mov-tipo" name="type" [(ngModel)]="mov.type">
+          <option value="IN">Entrada (suma al físico)</option>
+          <option value="WRITE_OFF">Baja (resta del físico)</option>
+          <option value="ADJUSTMENT">Ajuste por conteo (diferencia con signo)</option>
+        </select>
+      </app-campo>
+      <app-campo etiqueta="Cantidad" para="mov-cantidad">
+        <input id="mov-cantidad" name="quantity" type="number" required [(ngModel)]="mov.quantity" />
+      </app-campo>
+      <app-campo etiqueta="Motivo" para="mov-motivo" [ayuda]="mov.type === 'IN' ? 'Opcional en entradas.' : 'Obligatorio: daño, pérdida, garantía, conteo u otro.'">
+        <input id="mov-motivo" name="reason" maxlength="200" [(ngModel)]="mov.reason" />
+      </app-campo>
+      <div><app-boton tipo="submit" [procesando]="moviendo()" [deshabilitado]="!mov.part_id">Registrar movimiento</app-boton></div>
+    </form>
+  </app-tarjeta>
+
+  <app-tarjeta titulo="Últimos movimientos">
+    <ul class="movimientos">
+      @for (m of movimientos(); track m.id) {
+        <li>{{ fechaHora(m.created_at) }} · {{ tipos[m.type] }} · {{ m.sku }} {{ m.name }} · {{ m.quantity > 0 ? '+' : '' }}{{ m.quantity }}
+          @if (m.reason) { <span class="texto-suave">· {{ m.reason }}</span> }</li>
+      } @empty {
+        <li class="texto-suave">Aún no hay movimientos registrados.</li>
+      }
+    </ul>
+  </app-tarjeta>
+</section>
+
+<ng-template #celda let-fila let-columna="columna">
+  @switch (columna.clave) {
+    @case ('category') { {{ nombreCategoria(comoRepuesto(fila).category) }} }
+    @case ('estado') {
+      @if (!comoRepuesto(fila).active) { <app-insignia-estado estado="INACTIVE" /> }
+      @else if (comoRepuesto(fila).alerta) { <app-insignia-estado estado="ALERT" texto="Bajo umbral" /> }
+      @else { <app-insignia-estado estado="ACTIVE" texto="Normal" /> }
+    }
+    @default { {{ fila[columna.clave] }} }
+  }
+</ng-template>
+<ng-template #acciones let-fila>
+  <app-boton variante="secundario" (click)="editar(comoRepuesto(fila))">Editar</app-boton>
+</ng-template>

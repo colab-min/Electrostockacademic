@@ -1,0 +1,17 @@
+:host { display: block; }
+.encabezado { justify-content: space-between; }
+.encabezado h1 { margin: 0; }
+.columnas { display: grid; gap: var(--espacio-4); }
+@media (min-width: 960px) { .columnas { grid-template-columns: auto 1fr; align-items: start; } }
+.leyenda { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--espacio-1); font-size: 13px; }
+.leyenda li { padding-left: var(--espacio-3); border-left-width: 6px; border-left-style: solid; }
+.franja { display: grid; gap: var(--espacio-2); padding: var(--espacio-3); border-radius: var(--radio); background: var(--color-campo); border-left: 6px solid; }
+.franja p { margin: 0; }
+.verde { border-left-color: var(--color-etiqueta); }
+.amarillo { border-left-color: var(--color-accion); }
+.rojo { border-left-color: var(--color-registro); }
+.hora { font-size: 18px; }
+.etiqueta { font-weight: 600; }
+.espacio { flex: 1; }
+.citas, .recordatorios { margin: 0; padding-left: var(--espacio-4); display: grid; gap: var(--espacio-1); font-size: 14px; }
+.enlace { background: none; border: none; color: var(--color-etiqueta); text-decoration: underline; font: inherit; cursor: pointer; padding: 0; }

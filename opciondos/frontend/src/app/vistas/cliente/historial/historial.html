@@ -1,0 +1,44 @@
+<section class="pagina">
+  <h1>Historial del vehículo</h1>
+  <a routerLink="/cliente/citas">Volver a mis citas</a>
+
+  @if (error()) {
+    <app-aviso tipo="error">
+      {{ error() }}
+      <button type="button" class="enlace" (click)="cargar(id(), (datos()?.page ?? 0) + 1)">Reintentar</button>
+    </app-aviso>
+  }
+
+  @if (noEncontrado()) {
+    <app-estado-vacio titulo="Vehículo no encontrado" mensaje="Revisa que el vehículo esté registrado en tu cuenta." />
+  } @else if (datos(); as d) {
+    <app-tarjeta [titulo]="d.vehicle.brand + ' ' + d.vehicle.model" [destacada]="true">
+      <p class="texto-suave">
+        {{ tipos[d.vehicle.type] }} · Serie <span class="codigo">{{ d.vehicle.serial_number }}</span>
+        @if (d.vehicle.plate) { · Placa {{ d.vehicle.plate }} }
+      </p>
+      <app-espacio-fotos />
+    </app-tarjeta>
+
+    @for (o of ordenes(); track o.id) {
+      <app-tarjeta>
+        <div class="cabecera">
+          <h2>{{ fecha(o.delivered_at ?? o.created_at) }}</h2>
+          <span class="codigo">{{ o.number }}</span>
+        </div>
+        <p><span class="texto-suave">Servicios:</span> {{ o.services.join(', ') || 'Sin servicios' }}</p>
+        <p><span class="texto-suave">Repuestos instalados:</span>
+          @for (p of o.parts; track p.sku) { {{ p.quantity }} × {{ p.name }}{{ $last ? '' : ', ' }} } @empty { Ninguno }
+        </p>
+        <p class="total">Total pagado: <strong>{{ o.total_paid !== null ? pesos(o.total_paid) : 'Sin registro' }}</strong></p>
+      </app-tarjeta>
+    } @empty {
+      <app-estado-vacio titulo="Este vehículo aún no cuenta con mantenimientos o servicios registrados en el taller" />
+    }
+    @if (d.has_more) {
+      <app-boton variante="secundario" [procesando]="cargando()" (click)="masAntiguas()">Ver servicios anteriores</app-boton>
+    }
+  } @else if (cargando()) {
+    <div class="esqueleto" aria-busy="true"><span class="solo-lector">Procesando…</span></div>
+  }
+</section>

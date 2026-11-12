@@ -1,0 +1,45 @@
+<section class="pagina">
+  <h1>Bitácora de auditoría</h1>
+  <app-aviso tipo="informacion">
+    Solo lectura: los registros no se pueden modificar ni borrar (la base de datos rechaza cualquier cambio).
+  </app-aviso>
+
+  <form class="filtros" (ngSubmit)="filtrar()">
+    <app-campo etiqueta="Entidad" para="filtro-entidad">
+      <select id="filtro-entidad" name="entidad" [(ngModel)]="filtro.entidad">
+        <option value="">Todas</option>
+        @for (e of opciones().entidades; track e) { <option [value]="e">{{ e }}</option> }
+      </select>
+    </app-campo>
+    <app-campo etiqueta="Acción" para="filtro-accion">
+      <select id="filtro-accion" name="accion" [(ngModel)]="filtro.accion">
+        <option value="">Todas</option>
+        @for (a of opciones().acciones; track a) { <option [value]="a">{{ a }}</option> }
+      </select>
+    </app-campo>
+    <app-boton tipo="submit" [procesando]="procesando()">Filtrar</app-boton>
+  </form>
+
+  @if (error()) {
+    <app-aviso tipo="error">{{ error() }} <button type="button" class="enlace" (click)="filtrar()">Reintentar</button></app-aviso>
+  }
+
+  @if (registros(); as lista) {
+    <app-tarjeta [titulo]="'Registros (' + lista.length + ', los más recientes primero)'">
+      @if (lista.length) {
+        <app-tabla-datos titulo="Registros de la bitácora" [columnas]="columnas" [filas]="$any(lista)" [celda]="celda" />
+        <ng-template #celda let-f let-columna="columna">
+          @switch (columna.clave) {
+            @case ('created_at') { <time [attr.datetime]="f.created_at">{{ fecha(f.created_at) }}</time> }
+            @case ('entity') { {{ f.entity }}@if (f.entity_id) { #{{ f.entity_id }} } }
+            @case ('action') { <span class="codigo">{{ f.action }}</span> }
+            @case ('user_name') { {{ f.user_name ?? 'Sistema' }} }
+            @case ('detail') { <span class="codigo detalle">{{ detalle(f.detail) }}</span> }
+          }
+        </ng-template>
+      } @else {
+        <app-estado-vacio titulo="No hay registros con estos filtros." />
+      }
+    </app-tarjeta>
+  }
+</section>

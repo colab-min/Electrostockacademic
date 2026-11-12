@@ -1,0 +1,8 @@
+:host { display: block; }
+.pagina { max-width: 860px; }
+p { margin: 0; }
+.cabecera { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--espacio-2); }
+.cabecera h2 { margin: 0; }
+.total { font-size: 17px; }
+.enlace { background: none; border: none; padding: 0; margin-left: var(--espacio-2); color: inherit; text-decoration: underline; font: inherit; cursor: pointer; }
+.esqueleto { min-height: 200px; border-radius: var(--radio); background: var(--color-superficie); opacity: 0.6; }

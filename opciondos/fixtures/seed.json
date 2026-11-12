@@ -1,0 +1,1796 @@
+{
+ "_meta": {
+  "descripcion": "Datos semilla de la demo (basados en IS-5 sección 3). Fechas relativas: {day: desplazamiento desde hoy, time: HH:MM} en America/Bogota; un domingo pasa al lunes. time 'next' = próxima franja libre de hoy.",
+  "advertencia": "Solo para demostración: contraseñas de prueba."
+ },
+ "settings": {
+  "capacity": 3,
+  "generate_days": 30,
+  "blocked": [
+   {
+    "day": 1,
+    "time": "12:00",
+    "reason": "Capacitación del equipo técnico"
+   }
+  ]
+ },
+ "users": [
+  {
+   "id": "U1",
+   "full_name": "Laura Méndez",
+   "email": "admin@electrostock.test",
+   "password": "Admin2026!",
+   "role": "ADMIN",
+   "active": true,
+   "must_change_password": false
+  },
+  {
+   "id": "U2",
+   "full_name": "Ana Ruiz",
+   "email": "recepcion@electrostock.test",
+   "password": "Recep2026!",
+   "role": "RECEPTIONIST",
+   "active": true,
+   "must_change_password": false
+  },
+  {
+   "id": "U3",
+   "full_name": "Andrés Rojas",
+   "email": "mecanico1@electrostock.test",
+   "password": "Meca2026!a",
+   "role": "MECHANIC",
+   "active": true,
+   "must_change_password": false
+  },
+  {
+   "id": "U4",
+   "full_name": "Camila Vargas",
+   "email": "mecanico2@electrostock.test",
+   "password": "Meca2026!b",
+   "role": "MECHANIC",
+   "active": true,
+   "must_change_password": false
+  },
+  {
+   "id": "U5",
+   "full_name": "Pedro Salas",
+   "email": "mecanico3@electrostock.test",
+   "password": "Meca2026!c",
+   "role": "MECHANIC",
+   "active": false,
+   "must_change_password": false
+  },
+  {
+   "id": "U6",
+   "full_name": "María Gómez",
+   "email": "cliente1@electrostock.test",
+   "password": "Cliente2026!",
+   "role": "CUSTOMER",
+   "active": true,
+   "must_change_password": false
+  },
+  {
+   "id": "U7",
+   "full_name": "Julián Pardo",
+   "email": "cliente2@electrostock.test",
+   "password": "Cliente2026!",
+   "role": "CUSTOMER",
+   "active": true,
+   "must_change_password": false
+  },
+  {
+   "id": "U8",
+   "full_name": "Diego Torres",
+   "email": "cliente3@electrostock.test",
+   "password": "Cliente2026!",
+   "role": "CUSTOMER",
+   "active": true,
+   "must_change_password": false
+  },
+  {
+   "id": "U9",
+   "full_name": "Rosa Díaz",
+   "email": "recepcion2@electrostock.test",
+   "password": "Temporal2026!",
+   "role": "RECEPTIONIST",
+   "active": true,
+   "must_change_password": true
+  }
+ ],
+ "customers": [
+  {
+   "id": "C1",
+   "user": "U6",
+   "document_type": "CC",
+   "document_number": "1012345678",
+   "full_name": "María Gómez",
+   "phone": "3001234567",
+   "email": "cliente1@electrostock.test",
+   "data_consent_version": "v1"
+  },
+  {
+   "id": "C2",
+   "user": "U7",
+   "document_type": "CC",
+   "document_number": "1023456789",
+   "full_name": "Julián Pardo",
+   "phone": "3012345678",
+   "email": "cliente2@electrostock.test",
+   "data_consent_version": "v1"
+  },
+  {
+   "id": "C3",
+   "user": null,
+   "document_type": "CC",
+   "document_number": "1034567890",
+   "full_name": "Sofía Ramírez",
+   "phone": "3023456789",
+   "email": "sofia.ramirez@electrostock.test",
+   "data_consent_version": "v1"
+  },
+  {
+   "id": "C4",
+   "user": "U8",
+   "document_type": "CE",
+   "document_number": "987654",
+   "full_name": "Diego Torres",
+   "phone": "3034567890",
+   "email": "cliente3@electrostock.test",
+   "data_consent_version": "v1"
+  },
+  {
+   "id": "C5",
+   "user": null,
+   "document_type": "CC",
+   "document_number": "1045678901",
+   "full_name": "Andrea López",
+   "phone": "3041234567",
+   "email": "andrea.lopez@electrostock.test",
+   "data_consent_version": "v1"
+  },
+  {
+   "id": "C6",
+   "user": null,
+   "document_type": "CC",
+   "document_number": "1056789012",
+   "full_name": "Camilo Herrera",
+   "phone": "3052345678",
+   "email": "camilo.herrera@electrostock.test",
+   "data_consent_version": "v1"
+  },
+  {
+   "id": "C7",
+   "user": null,
+   "document_type": "CC",
+   "document_number": "1067890123",
+   "full_name": "Paula Rincón",
+   "phone": "3063456789",
+   "email": null,
+   "data_consent_version": "v1"
+  },
+  {
+   "id": "C8",
+   "user": null,
+   "document_type": "CE",
+   "document_number": "AB12345",
+   "full_name": "Mateo Silva",
+   "phone": "3074567890",
+   "email": "mateo.silva@electrostock.test",
+   "data_consent_version": "v1"
+  },
+  {
+   "id": "C9",
+   "user": null,
+   "document_type": "CC",
+   "document_number": "1078901234",
+   "full_name": "Natalia Cruz",
+   "phone": "3085678901",
+   "email": "natalia.cruz@electrostock.test",
+   "data_consent_version": "v1"
+  },
+  {
+   "id": "C10",
+   "user": null,
+   "document_type": "PA",
+   "document_number": "PX998877",
+   "full_name": "Felipe Moreno",
+   "phone": "3096789012",
+   "email": "felipe.moreno@electrostock.test",
+   "data_consent_version": "v1"
+  }
+ ],
+ "vehicles": [
+  {
+   "id": "V1",
+   "customer": "C1",
+   "type": "SCOOTER",
+   "serial_number": "SC-48-0001",
+   "plate": null,
+   "brand": "Xiaomi",
+   "model": "4 Pro",
+   "year": 2024,
+   "nominal_voltage_v": 48,
+   "battery_capacity_ah": 15,
+   "battery_cell": "18650 13S4P",
+   "power_w": null,
+   "controller": null
+  },
+  {
+   "id": "V2",
+   "customer": "C1",
+   "type": "KICK_SCOOTER",
+   "serial_number": "PT-36-0002",
+   "plate": null,
+   "brand": "Segway",
+   "model": "E22",
+   "year": 2023,
+   "nominal_voltage_v": 36,
+   "battery_capacity_ah": 7.5,
+   "battery_cell": null,
+   "power_w": null,
+   "controller": null
+  },
+  {
+   "id": "V3",
+   "customer": "C3",
+   "type": "E_BIKE",
+   "serial_number": "BI-48-0003",
+   "plate": null,
+   "brand": "Specialized",
+   "model": "Turbo Vado",
+   "year": 2022,
+   "nominal_voltage_v": 48,
+   "battery_capacity_ah": 14,
+   "battery_cell": null,
+   "power_w": null,
+   "controller": null
+  },
+  {
+   "id": "V4",
+   "customer": "C4",
+   "type": "MOTORCYCLE",
+   "serial_number": "MO-72-0004",
+   "plate": "ABC12D",
+   "brand": "Super Soco",
+   "model": "TC Max",
+   "year": 2024,
+   "nominal_voltage_v": 72,
+   "battery_capacity_ah": 45,
+   "battery_cell": null,
+   "power_w": null,
+   "controller": null
+  },
+  {
+   "id": "V5",
+   "customer": "C3",
+   "type": "UNICYCLE",
+   "serial_number": "MR-84-0005",
+   "plate": null,
+   "brand": "Begode",
+   "model": "Master",
+   "year": 2023,
+   "nominal_voltage_v": 84,
+   "battery_capacity_ah": 30,
+   "battery_cell": null,
+   "power_w": null,
+   "controller": null
+  },
+  {
+   "id": "V6",
+   "customer": "C2",
+   "type": "MICROCAR",
+   "serial_number": "MC-48-0006",
+   "plate": "XYZ987",
+   "brand": "Renault",
+   "model": "Twizy",
+   "year": 2021,
+   "nominal_voltage_v": 48,
+   "battery_capacity_ah": 120,
+   "battery_cell": null,
+   "power_w": null,
+   "controller": null
+  },
+  {
+   "id": "V7",
+   "customer": "C2",
+   "type": "QUADRICYCLE",
+   "serial_number": "CU-60-0007",
+   "plate": "QWE45F",
+   "brand": "Kandi",
+   "model": "K23",
+   "year": 2022,
+   "nominal_voltage_v": 60,
+   "battery_capacity_ah": 100,
+   "battery_cell": "LiFePO4",
+   "power_w": null,
+   "controller": null
+  },
+  {
+   "id": "V8",
+   "customer": "C4",
+   "type": "MOTORCYCLE",
+   "serial_number": "MO-60-0008",
+   "plate": "FGH34J",
+   "brand": "NIU",
+   "model": "NQi GTS",
+   "year": 2023,
+   "nominal_voltage_v": 60,
+   "battery_capacity_ah": 35,
+   "battery_cell": null,
+   "power_w": null,
+   "controller": null
+  },
+  {
+   "id": "V9",
+   "customer": "C1",
+   "type": "SCOOTER",
+   "serial_number": "SC-48-0009",
+   "plate": null,
+   "brand": "Segway Ninebot",
+   "model": "Max G2",
+   "year": 2024,
+   "nominal_voltage_v": 48,
+   "battery_capacity_ah": 15,
+   "battery_cell": null,
+   "power_w": null,
+   "controller": null
+  },
+  {
+   "id": "V10",
+   "customer": "C2",
+   "type": "E_BIKE",
+   "serial_number": "BI-48-0010",
+   "plate": null,
+   "brand": "Trek",
+   "model": "Allant+",
+   "year": 2023,
+   "nominal_voltage_v": 48,
+   "battery_capacity_ah": 13,
+   "battery_cell": null,
+   "power_w": null,
+   "controller": null
+  },
+  {
+   "id": "V11",
+   "customer": "C5",
+   "type": "SCOOTER",
+   "serial_number": "SC-36-0011",
+   "plate": null,
+   "brand": "Xiaomi",
+   "model": "Essential",
+   "year": 2023,
+   "nominal_voltage_v": 36,
+   "battery_capacity_ah": 7.8,
+   "battery_cell": null,
+   "power_w": null,
+   "controller": null
+  },
+  {
+   "id": "V12",
+   "customer": "C6",
+   "type": "E_BIKE",
+   "serial_number": "BI-36-0012",
+   "plate": null,
+   "brand": "Giant",
+   "model": "Explore E+",
+   "year": 2022,
+   "nominal_voltage_v": 36,
+   "battery_capacity_ah": 13.4,
+   "battery_cell": null,
+   "power_w": null,
+   "controller": null
+  },
+  {
+   "id": "V13",
+   "customer": "C7",
+   "type": "MOTORCYCLE",
+   "serial_number": "MO-72-0013",
+   "plate": "JKL56M",
+   "brand": "Super Soco",
+   "model": "CPx",
+   "year": 2023,
+   "nominal_voltage_v": 72,
+   "battery_capacity_ah": 45,
+   "battery_cell": null,
+   "power_w": null,
+   "controller": null
+  },
+  {
+   "id": "V14",
+   "customer": "C8",
+   "type": "KICK_SCOOTER",
+   "serial_number": "PT-48-0014",
+   "plate": null,
+   "brand": "Segway",
+   "model": "GT2",
+   "year": 2024,
+   "nominal_voltage_v": 48,
+   "battery_capacity_ah": 25,
+   "battery_cell": null,
+   "power_w": null,
+   "controller": null
+  },
+  {
+   "id": "V15",
+   "customer": "C9",
+   "type": "MICROCAR",
+   "serial_number": "MC-48-0015",
+   "plate": "RTY321",
+   "brand": "Citroën",
+   "model": "Ami",
+   "year": 2023,
+   "nominal_voltage_v": 48,
+   "battery_capacity_ah": 100,
+   "battery_cell": null,
+   "power_w": null,
+   "controller": null
+  },
+  {
+   "id": "V16",
+   "customer": "C10",
+   "type": "UNICYCLE",
+   "serial_number": "MR-84-0016",
+   "plate": null,
+   "brand": "InMotion",
+   "model": "V11",
+   "year": 2022,
+   "nominal_voltage_v": 84,
+   "battery_capacity_ah": 20,
+   "battery_cell": null,
+   "power_w": null,
+   "controller": null
+  }
+ ],
+ "parts": [
+  {
+   "id": "R01",
+   "sku": "BAT-48-15",
+   "name": "Batería litio 48V 15Ah",
+   "category": "BATTERY",
+   "purchase_price": 900000,
+   "sale_price": 1250000,
+   "physical_stock": 3,
+   "reserved_stock": 1,
+   "min_threshold": 1,
+   "compatible_voltage_v": 48,
+   "active": true
+  },
+  {
+   "id": "R02",
+   "sku": "BAT-60-20",
+   "name": "Batería litio 60V 20Ah",
+   "category": "BATTERY",
+   "purchase_price": 1400000,
+   "sale_price": 1850000,
+   "physical_stock": 1,
+   "reserved_stock": 1,
+   "min_threshold": 1,
+   "compatible_voltage_v": 60,
+   "active": true
+  },
+  {
+   "id": "R03",
+   "sku": "CTR-48-1000",
+   "name": "Controlador 48V 1000W",
+   "category": "CONTROLLER",
+   "purchase_price": 250000,
+   "sale_price": 380000,
+   "physical_stock": 4,
+   "reserved_stock": 0,
+   "min_threshold": 2,
+   "compatible_voltage_v": 48,
+   "active": true
+  },
+  {
+   "id": "R04",
+   "sku": "CTR-72-3000",
+   "name": "Controlador 72V 3000W",
+   "category": "CONTROLLER",
+   "purchase_price": 520000,
+   "sale_price": 750000,
+   "physical_stock": 2,
+   "reserved_stock": 1,
+   "min_threshold": 1,
+   "compatible_voltage_v": 72,
+   "active": true
+  },
+  {
+   "id": "R05",
+   "sku": "MOT-HUB-500",
+   "name": "Motor hub 500W",
+   "category": "MOTOR",
+   "purchase_price": 450000,
+   "sale_price": 650000,
+   "physical_stock": 2,
+   "reserved_stock": 0,
+   "min_threshold": 1,
+   "compatible_voltage_v": 48,
+   "active": true
+  },
+  {
+   "id": "R06",
+   "sku": "PAS-FRE-01",
+   "name": "Pastillas de freno de disco (par)",
+   "category": "BRAKES",
+   "purchase_price": 18000,
+   "sale_price": 35000,
+   "physical_stock": 20,
+   "reserved_stock": 3,
+   "min_threshold": 6,
+   "compatible_voltage_v": null,
+   "active": true
+  },
+  {
+   "id": "R07",
+   "sku": "NEU-10",
+   "name": "Neumático 10 pulgadas",
+   "category": "WHEELS",
+   "purchase_price": 45000,
+   "sale_price": 80000,
+   "physical_stock": 8,
+   "reserved_stock": 1,
+   "min_threshold": 4,
+   "compatible_voltage_v": null,
+   "active": true
+  },
+  {
+   "id": "R08",
+   "sku": "BMS-13S",
+   "name": "Tarjeta BMS 13S 48V",
+   "category": "BATTERY",
+   "purchase_price": 60000,
+   "sale_price": 110000,
+   "physical_stock": 5,
+   "reserved_stock": 0,
+   "min_threshold": 2,
+   "compatible_voltage_v": 48,
+   "active": true
+  },
+  {
+   "id": "R09",
+   "sku": "CAR-48-2A",
+   "name": "Cargador 48V 2A",
+   "category": "CHARGER",
+   "purchase_price": 70000,
+   "sale_price": 120000,
+   "physical_stock": 0,
+   "reserved_stock": 0,
+   "min_threshold": 2,
+   "compatible_voltage_v": 48,
+   "active": true
+  },
+  {
+   "id": "R10",
+   "sku": "ACE-PULGAR",
+   "name": "Acelerador de pulgar",
+   "category": "CONTROLS",
+   "purchase_price": 25000,
+   "sale_price": 45000,
+   "physical_stock": 6,
+   "reserved_stock": 0,
+   "min_threshold": 2,
+   "compatible_voltage_v": null,
+   "active": true
+  }
+ ],
+ "services": [
+  {
+   "id": "S01",
+   "code": "DIAG",
+   "name": "Diagnóstico general",
+   "labor_price": 50000,
+   "duration_min": 60,
+   "active": true
+  },
+  {
+   "id": "S02",
+   "code": "CAMB-BAT-48",
+   "name": "Cambio de batería 48V",
+   "labor_price": 40000,
+   "duration_min": 60,
+   "active": true
+  },
+  {
+   "id": "S03",
+   "code": "CAMB-BAT-60",
+   "name": "Cambio de batería 60V",
+   "labor_price": 45000,
+   "duration_min": 60,
+   "active": true
+  },
+  {
+   "id": "S04",
+   "code": "CAMB-CTR-72",
+   "name": "Cambio de controlador 72V",
+   "labor_price": 60000,
+   "duration_min": 120,
+   "active": true
+  },
+  {
+   "id": "S05",
+   "code": "MANT-PREV",
+   "name": "Mantenimiento preventivo",
+   "labor_price": 45000,
+   "duration_min": 60,
+   "active": true
+  },
+  {
+   "id": "S06",
+   "code": "REP-MOT",
+   "name": "Reparación de motor",
+   "labor_price": 90000,
+   "duration_min": 180,
+   "active": true
+  },
+  {
+   "id": "S07",
+   "code": "AJ-FRENO",
+   "name": "Ajuste rápido de frenos",
+   "labor_price": 20000,
+   "duration_min": 15,
+   "active": true
+  },
+  {
+   "id": "S08",
+   "code": "CAMB-NEU",
+   "name": "Cambio de neumático",
+   "labor_price": 25000,
+   "duration_min": 60,
+   "active": true
+  },
+  {
+   "id": "S09",
+   "code": "REP-ACEL",
+   "name": "Reemplazo de acelerador",
+   "labor_price": 30000,
+   "duration_min": 60,
+   "active": true
+  },
+  {
+   "id": "S10",
+   "code": "REV-BMS",
+   "name": "Revisión de BMS",
+   "labor_price": 55000,
+   "duration_min": 120,
+   "active": true
+  }
+ ],
+ "service_parts": [
+  {
+   "service": "S02",
+   "part": "R01",
+   "quantity": 1
+  },
+  {
+   "service": "S03",
+   "part": "R02",
+   "quantity": 1
+  },
+  {
+   "service": "S04",
+   "part": "R04",
+   "quantity": 1
+  },
+  {
+   "service": "S05",
+   "part": "R06",
+   "quantity": 1
+  },
+  {
+   "service": "S06",
+   "part": "R05",
+   "quantity": 1
+  },
+  {
+   "service": "S08",
+   "part": "R07",
+   "quantity": 1
+  },
+  {
+   "service": "S09",
+   "part": "R10",
+   "quantity": 1
+  },
+  {
+   "service": "S10",
+   "part": "R08",
+   "quantity": 1
+  }
+ ],
+ "fault_types": [
+  {
+   "id": "F01",
+   "name": "Frenos sin respuesta",
+   "priority": "HIGH",
+   "estimated_minutes": 60
+  },
+  {
+   "id": "F02",
+   "name": "No enciende o batería no carga",
+   "priority": "HIGH",
+   "estimated_minutes": 60
+  },
+  {
+   "id": "F03",
+   "name": "Pérdida de potencia",
+   "priority": "MEDIUM",
+   "estimated_minutes": 60
+  },
+  {
+   "id": "F04",
+   "name": "Ruido en el motor",
+   "priority": "MEDIUM",
+   "estimated_minutes": 45
+  },
+  {
+   "id": "F05",
+   "name": "Luces o pito sin funcionar",
+   "priority": "LOW",
+   "estimated_minutes": 15
+  },
+  {
+   "id": "F06",
+   "name": "Ajuste de freno o tornillería",
+   "priority": "LOW",
+   "estimated_minutes": 10
+  },
+  {
+   "id": "F07",
+   "name": "Conector o fusible suelto",
+   "priority": "MEDIUM",
+   "estimated_minutes": 10
+  }
+ ],
+ "appointments": [
+  {
+   "id": "CT1",
+   "code": "CITA-D0-0001",
+   "customer": "C4",
+   "vehicle": "V8",
+   "service": "S03",
+   "start": {
+    "day": 0,
+    "time": "08:00"
+   },
+   "status": "ATTENDED"
+  },
+  {
+   "id": "CT5",
+   "code": "CITA-D0-0002",
+   "customer": "C2",
+   "vehicle": "V7",
+   "service": "S05",
+   "start": {
+    "day": 0,
+    "time": "09:00"
+   },
+   "status": "ATTENDED"
+  },
+  {
+   "id": "CT2",
+   "code": "CITA-D1-0003",
+   "customer": "C1",
+   "vehicle": "V9",
+   "service": "S02",
+   "start": {
+    "day": 1,
+    "time": "10:00"
+   },
+   "status": "CONFIRMED"
+  },
+  {
+   "id": "CT4",
+   "code": "CITA-D1-0004",
+   "customer": "C3",
+   "vehicle": "V5",
+   "service": "S05",
+   "start": {
+    "day": 1,
+    "time": "08:00"
+   },
+   "status": "RESCHEDULED"
+  },
+  {
+   "id": "CT3",
+   "code": "CITA-D2-0005",
+   "customer": "C4",
+   "vehicle": "V4",
+   "service": "S04",
+   "start": {
+    "day": 2,
+    "time": "14:00"
+   },
+   "status": "CONFIRMED"
+  },
+  {
+   "id": "CT6",
+   "code": "CITA-DM3-0006",
+   "customer": "C4",
+   "vehicle": "V8",
+   "service": "S01",
+   "start": {
+    "day": -3,
+    "time": "11:00"
+   },
+   "status": "CANCELLED"
+  },
+  {
+   "id": "CT7",
+   "code": "CITA-DM1-0007",
+   "customer": "C1",
+   "vehicle": "V1",
+   "service": "S01",
+   "start": {
+    "day": -1,
+    "time": "15:00"
+   },
+   "status": "NO_SHOW"
+  },
+  {
+   "id": "CT9",
+   "code": "CITA-D0-0009",
+   "customer": "C2",
+   "vehicle": "V10",
+   "service": "S05",
+   "start": {
+    "day": 0,
+    "time": "next"
+   },
+   "status": "CONFIRMED"
+  },
+  {
+   "id": "CT8",
+   "code": "CITA-D3-0008",
+   "customer": "C2",
+   "vehicle": "V6",
+   "service": "S01",
+   "start": {
+    "day": 3,
+    "time": "09:00"
+   },
+   "status": "HELD",
+   "hold_expires_minutes": -5
+  },
+  {
+   "id": "CT10",
+   "code": "CITA-D4-0010",
+   "customer": "C6",
+   "vehicle": "V12",
+   "service": "S08",
+   "start": {
+    "day": 4,
+    "time": "10:00"
+   },
+   "status": "CONFIRMED"
+  }
+ ],
+ "reservations": [
+  {
+   "id": "RS1",
+   "part": "R01",
+   "quantity": 1,
+   "appointment": "CT2",
+   "work_order": null,
+   "status": "ACTIVE"
+  },
+  {
+   "id": "RS2",
+   "part": "R02",
+   "quantity": 1,
+   "appointment": "CT1",
+   "work_order": "O1",
+   "status": "ACTIVE"
+  },
+  {
+   "id": "RS3",
+   "part": "R04",
+   "quantity": 1,
+   "appointment": "CT3",
+   "work_order": null,
+   "status": "ACTIVE"
+  },
+  {
+   "id": "RS4",
+   "part": "R06",
+   "quantity": 1,
+   "appointment": "CT5",
+   "work_order": "O6",
+   "status": "ACTIVE"
+  },
+  {
+   "id": "RS5",
+   "part": "R06",
+   "quantity": 1,
+   "appointment": "CT4",
+   "work_order": null,
+   "status": "ACTIVE"
+  },
+  {
+   "id": "RS6",
+   "part": "R06",
+   "quantity": 1,
+   "appointment": "CT9",
+   "work_order": null,
+   "status": "ACTIVE"
+  },
+  {
+   "id": "RS7",
+   "part": "R07",
+   "quantity": 1,
+   "appointment": "CT10",
+   "work_order": null,
+   "status": "ACTIVE"
+  }
+ ],
+ "work_orders": [
+  {
+   "id": "O1",
+   "number": "OT-000001",
+   "tracking_code": "K7M2QX9P4T",
+   "vehicle": "V8",
+   "origin": "APPOINTMENT",
+   "appointment": "CT1",
+   "fault_type": null,
+   "priority": null,
+   "mechanic": "U3",
+   "status": "REPAIRING",
+   "queue_position": null,
+   "intake_reason": "Cambio de batería 60V",
+   "diagnosis": "Batería degradada al 62 %",
+   "estimated_delivery_at": {
+    "day": 0,
+    "time": "16:00"
+   },
+   "services": [
+    "S03"
+   ],
+   "slots": [
+    {
+     "day": 0,
+     "time": "08:00"
+    }
+   ],
+   "parts": [
+    {
+     "part": "R02",
+     "quantity": 1,
+     "status": "RESERVED",
+     "reservation": "RS2"
+    }
+   ],
+   "history": [
+    {
+     "from": null,
+     "to": "RECEIVED",
+     "user": "U2",
+     "at": {
+      "day": 0,
+      "time": "08:02"
+     }
+    },
+    {
+     "from": "RECEIVED",
+     "to": "ASSIGNED",
+     "user": "U1",
+     "at": {
+      "day": 0,
+      "time": "08:10"
+     }
+    },
+    {
+     "from": "ASSIGNED",
+     "to": "DIAGNOSING",
+     "user": "U3",
+     "at": {
+      "day": 0,
+      "time": "08:20"
+     }
+    },
+    {
+     "from": "DIAGNOSING",
+     "to": "REPAIRING",
+     "user": "U3",
+     "at": {
+      "day": 0,
+      "time": "09:05"
+     }
+    }
+   ]
+  },
+  {
+   "id": "O2",
+   "number": "OT-000002",
+   "tracking_code": "H3R8WN2C6Y",
+   "vehicle": "V3",
+   "origin": "WALK_IN",
+   "appointment": null,
+   "fault_type": "F02",
+   "priority": "HIGH",
+   "mechanic": "U4",
+   "status": "WAITING_PARTS",
+   "queue_position": null,
+   "intake_reason": "No enciende o batería no carga",
+   "diagnosis": "Cargador defectuoso. Batería en buen estado.",
+   "estimated_delivery_at": null,
+   "services": [
+    "S01"
+   ],
+   "slots": [
+    {
+     "day": 0,
+     "time": "08:00"
+    }
+   ],
+   "parts": [],
+   "history": [
+    {
+     "from": null,
+     "to": "RECEIVED",
+     "user": "U2",
+     "at": {
+      "day": 0,
+      "time": "08:05"
+     }
+    },
+    {
+     "from": "RECEIVED",
+     "to": "ASSIGNED",
+     "user": "U1",
+     "at": {
+      "day": 0,
+      "time": "08:12"
+     }
+    },
+    {
+     "from": "ASSIGNED",
+     "to": "DIAGNOSING",
+     "user": "U4",
+     "at": {
+      "day": 0,
+      "time": "08:30"
+     }
+    },
+    {
+     "from": "DIAGNOSING",
+     "to": "WAITING_PARTS",
+     "user": "U4",
+     "at": {
+      "day": 0,
+      "time": "09:00"
+     }
+    }
+   ]
+  },
+  {
+   "id": "O3",
+   "number": "OT-000003",
+   "tracking_code": "P9TZ4D7K2M",
+   "vehicle": "V6",
+   "origin": "WALK_IN",
+   "appointment": null,
+   "fault_type": "F03",
+   "priority": "MEDIUM",
+   "mechanic": "U3",
+   "status": "FINISHED",
+   "queue_position": null,
+   "intake_reason": "Pérdida de potencia",
+   "diagnosis": "Controlador con MOSFET dañado",
+   "estimated_delivery_at": null,
+   "services": [
+    "S01"
+   ],
+   "slots": [
+    {
+     "day": -1,
+     "time": "10:00"
+    }
+   ],
+   "parts": [
+    {
+     "part": "R03",
+     "quantity": 1,
+     "status": "INSTALLED",
+     "reservation": null
+    }
+   ],
+   "history": [
+    {
+     "from": null,
+     "to": "RECEIVED",
+     "user": "U2",
+     "at": {
+      "day": -1,
+      "time": "10:01"
+     }
+    },
+    {
+     "from": "RECEIVED",
+     "to": "ASSIGNED",
+     "user": "U1",
+     "at": {
+      "day": -1,
+      "time": "10:05"
+     }
+    },
+    {
+     "from": "ASSIGNED",
+     "to": "DIAGNOSING",
+     "user": "U3",
+     "at": {
+      "day": -1,
+      "time": "10:15"
+     }
+    },
+    {
+     "from": "DIAGNOSING",
+     "to": "REPAIRING",
+     "user": "U3",
+     "at": {
+      "day": -1,
+      "time": "10:50"
+     }
+    },
+    {
+     "from": "REPAIRING",
+     "to": "FINISHED",
+     "user": "U3",
+     "at": {
+      "day": -1,
+      "time": "12:30"
+     }
+    }
+   ]
+  },
+  {
+   "id": "O4",
+   "number": "OT-000004",
+   "tracking_code": "A4F6JX8R3E",
+   "vehicle": "V1",
+   "origin": "WALK_IN",
+   "appointment": null,
+   "fault_type": "F06",
+   "priority": "LOW",
+   "mechanic": "U4",
+   "status": "DELIVERED",
+   "queue_position": null,
+   "intake_reason": "Ajuste de freno o tornillería",
+   "diagnosis": null,
+   "estimated_delivery_at": null,
+   "services": [
+    "S05"
+   ],
+   "slots": [
+    {
+     "day": -20,
+     "time": "09:00"
+    }
+   ],
+   "parts": [
+    {
+     "part": "R06",
+     "quantity": 1,
+     "status": "INSTALLED",
+     "reservation": null
+    }
+   ],
+   "history": [
+    {
+     "from": null,
+     "to": "RECEIVED",
+     "user": "U2",
+     "at": {
+      "day": -20,
+      "time": "09:01"
+     }
+    },
+    {
+     "from": "RECEIVED",
+     "to": "ASSIGNED",
+     "user": "U1",
+     "at": {
+      "day": -20,
+      "time": "09:05"
+     }
+    },
+    {
+     "from": "ASSIGNED",
+     "to": "DIAGNOSING",
+     "user": "U4",
+     "at": {
+      "day": -20,
+      "time": "09:10"
+     }
+    },
+    {
+     "from": "DIAGNOSING",
+     "to": "REPAIRING",
+     "user": "U4",
+     "at": {
+      "day": -20,
+      "time": "09:30"
+     }
+    },
+    {
+     "from": "REPAIRING",
+     "to": "FINISHED",
+     "user": "U4",
+     "at": {
+      "day": -20,
+      "time": "10:00"
+     }
+    },
+    {
+     "from": "FINISHED",
+     "to": "PENDING_PAYMENT",
+     "user": "U2",
+     "at": {
+      "day": -20,
+      "time": "10:10"
+     }
+    },
+    {
+     "from": "PENDING_PAYMENT",
+     "to": "PAID",
+     "user": "U2",
+     "at": {
+      "day": -20,
+      "time": "10:15"
+     }
+    },
+    {
+     "from": "PAID",
+     "to": "DELIVERED",
+     "user": "U2",
+     "at": {
+      "day": -20,
+      "time": "10:20"
+     }
+    }
+   ]
+  },
+  {
+   "id": "O5",
+   "number": "OT-000005",
+   "tracking_code": "W2N7C5V9QB",
+   "vehicle": "V2",
+   "origin": "WALK_IN",
+   "appointment": null,
+   "fault_type": "F06",
+   "priority": "LOW",
+   "mechanic": null,
+   "status": "RECEIVED",
+   "queue_position": 1,
+   "intake_reason": "Freno trasero suelto",
+   "diagnosis": null,
+   "estimated_delivery_at": null,
+   "services": [
+    "S07"
+   ],
+   "slots": [],
+   "parts": [],
+   "history": [
+    {
+     "from": null,
+     "to": "RECEIVED",
+     "user": "U2",
+     "at": {
+      "day": 0,
+      "time": "08:40"
+     }
+    }
+   ]
+  },
+  {
+   "id": "O6",
+   "number": "OT-000006",
+   "tracking_code": "M8E3K6T4ZD",
+   "vehicle": "V7",
+   "origin": "APPOINTMENT",
+   "appointment": "CT5",
+   "fault_type": null,
+   "priority": null,
+   "mechanic": "U4",
+   "status": "ASSIGNED",
+   "queue_position": null,
+   "intake_reason": "Mantenimiento preventivo",
+   "diagnosis": null,
+   "estimated_delivery_at": {
+    "day": 0,
+    "time": "13:00"
+   },
+   "services": [
+    "S05"
+   ],
+   "slots": [
+    {
+     "day": 0,
+     "time": "09:00"
+    }
+   ],
+   "parts": [
+    {
+     "part": "R06",
+     "quantity": 1,
+     "status": "RESERVED",
+     "reservation": "RS4"
+    }
+   ],
+   "history": [
+    {
+     "from": null,
+     "to": "RECEIVED",
+     "user": "U2",
+     "at": {
+      "day": 0,
+      "time": "09:02"
+     }
+    },
+    {
+     "from": "RECEIVED",
+     "to": "ASSIGNED",
+     "user": "U1",
+     "at": {
+      "day": 0,
+      "time": "09:08"
+     }
+    }
+   ]
+  },
+  {
+   "id": "O7",
+   "number": "OT-000007",
+   "tracking_code": "B5Q9T3H7XK",
+   "vehicle": "V1",
+   "origin": "WALK_IN",
+   "appointment": null,
+   "fault_type": "F03",
+   "priority": "MEDIUM",
+   "mechanic": "U3",
+   "status": "DELIVERED",
+   "queue_position": null,
+   "intake_reason": "Pérdida de potencia",
+   "diagnosis": null,
+   "estimated_delivery_at": null,
+   "services": [
+    "S01"
+   ],
+   "slots": [
+    {
+     "day": -106,
+     "time": "09:00"
+    }
+   ],
+   "parts": [],
+   "history": [
+    {
+     "from": null,
+     "to": "RECEIVED",
+     "user": "U2",
+     "at": {
+      "day": -106,
+      "time": "09:01"
+     }
+    },
+    {
+     "from": "RECEIVED",
+     "to": "ASSIGNED",
+     "user": "U1",
+     "at": {
+      "day": -106,
+      "time": "09:05"
+     }
+    },
+    {
+     "from": "ASSIGNED",
+     "to": "DIAGNOSING",
+     "user": "U3",
+     "at": {
+      "day": -106,
+      "time": "09:10"
+     }
+    },
+    {
+     "from": "DIAGNOSING",
+     "to": "REPAIRING",
+     "user": "U3",
+     "at": {
+      "day": -106,
+      "time": "09:30"
+     }
+    },
+    {
+     "from": "REPAIRING",
+     "to": "FINISHED",
+     "user": "U3",
+     "at": {
+      "day": -106,
+      "time": "10:00"
+     }
+    },
+    {
+     "from": "FINISHED",
+     "to": "PENDING_PAYMENT",
+     "user": "U2",
+     "at": {
+      "day": -106,
+      "time": "10:10"
+     }
+    },
+    {
+     "from": "PENDING_PAYMENT",
+     "to": "PAID",
+     "user": "U2",
+     "at": {
+      "day": -106,
+      "time": "10:15"
+     }
+    },
+    {
+     "from": "PAID",
+     "to": "DELIVERED",
+     "user": "U2",
+     "at": {
+      "day": -106,
+      "time": "10:20"
+     }
+    }
+   ]
+  },
+  {
+   "id": "O8",
+   "number": "OT-000008",
+   "tracking_code": "Q4W8E2R6TY",
+   "vehicle": "V11",
+   "origin": "WALK_IN",
+   "appointment": null,
+   "fault_type": "F04",
+   "priority": "MEDIUM",
+   "mechanic": "U3",
+   "status": "DIAGNOSING",
+   "queue_position": null,
+   "intake_reason": "Ruido en el motor al acelerar",
+   "diagnosis": null,
+   "estimated_delivery_at": {
+    "day": 0,
+    "time": "15:00"
+   },
+   "services": [
+    "S01"
+   ],
+   "slots": [
+    {
+     "day": 0,
+     "time": "08:00"
+    }
+   ],
+   "parts": [],
+   "history": [
+    {
+     "from": null,
+     "to": "RECEIVED",
+     "user": "U2",
+     "at": {
+      "day": 0,
+      "time": "08:15"
+     }
+    },
+    {
+     "from": "RECEIVED",
+     "to": "ASSIGNED",
+     "user": "U1",
+     "at": {
+      "day": 0,
+      "time": "08:20"
+     }
+    },
+    {
+     "from": "ASSIGNED",
+     "to": "DIAGNOSING",
+     "user": "U3",
+     "at": {
+      "day": 0,
+      "time": "08:40"
+     }
+    }
+   ]
+  },
+  {
+   "id": "O9",
+   "number": "OT-000009",
+   "tracking_code": "Z7X3C9V5BN",
+   "vehicle": "V13",
+   "origin": "WALK_IN",
+   "appointment": null,
+   "fault_type": "F01",
+   "priority": "HIGH",
+   "mechanic": "U4",
+   "status": "DELIVERED",
+   "queue_position": null,
+   "intake_reason": "Frenos sin respuesta",
+   "diagnosis": "Pastillas gastadas",
+   "estimated_delivery_at": null,
+   "services": [
+    "S05"
+   ],
+   "slots": [
+    {
+     "day": -5,
+     "time": "09:00"
+    }
+   ],
+   "parts": [
+    {
+     "part": "R06",
+     "quantity": 1,
+     "status": "INSTALLED",
+     "reservation": null
+    }
+   ],
+   "history": [
+    {
+     "from": null,
+     "to": "RECEIVED",
+     "user": "U2",
+     "at": {
+      "day": -5,
+      "time": "09:01"
+     }
+    },
+    {
+     "from": "RECEIVED",
+     "to": "ASSIGNED",
+     "user": "U1",
+     "at": {
+      "day": -5,
+      "time": "09:05"
+     }
+    },
+    {
+     "from": "ASSIGNED",
+     "to": "DIAGNOSING",
+     "user": "U4",
+     "at": {
+      "day": -5,
+      "time": "09:10"
+     }
+    },
+    {
+     "from": "DIAGNOSING",
+     "to": "REPAIRING",
+     "user": "U4",
+     "at": {
+      "day": -5,
+      "time": "09:30"
+     }
+    },
+    {
+     "from": "REPAIRING",
+     "to": "FINISHED",
+     "user": "U4",
+     "at": {
+      "day": -5,
+      "time": "10:00"
+     }
+    },
+    {
+     "from": "FINISHED",
+     "to": "PENDING_PAYMENT",
+     "user": "U2",
+     "at": {
+      "day": -5,
+      "time": "10:10"
+     }
+    },
+    {
+     "from": "PENDING_PAYMENT",
+     "to": "PAID",
+     "user": "U2",
+     "at": {
+      "day": -5,
+      "time": "10:15"
+     }
+    },
+    {
+     "from": "PAID",
+     "to": "DELIVERED",
+     "user": "U2",
+     "at": {
+      "day": -5,
+      "time": "10:20"
+     }
+    }
+   ]
+  },
+  {
+   "id": "O10",
+   "number": "OT-000010",
+   "tracking_code": "L2K8J4H6GF",
+   "vehicle": "V15",
+   "origin": "WALK_IN",
+   "appointment": null,
+   "fault_type": "F05",
+   "priority": "LOW",
+   "mechanic": "U3",
+   "status": "PENDING_PAYMENT",
+   "queue_position": null,
+   "intake_reason": "Luces sin funcionar",
+   "diagnosis": "Fusible de luces quemado",
+   "estimated_delivery_at": null,
+   "services": [
+    "S01"
+   ],
+   "slots": [
+    {
+     "day": -2,
+     "time": "14:00"
+    }
+   ],
+   "parts": [],
+   "history": [
+    {
+     "from": null,
+     "to": "RECEIVED",
+     "user": "U2",
+     "at": {
+      "day": -2,
+      "time": "14:01"
+     }
+    },
+    {
+     "from": "RECEIVED",
+     "to": "ASSIGNED",
+     "user": "U1",
+     "at": {
+      "day": -2,
+      "time": "14:05"
+     }
+    },
+    {
+     "from": "ASSIGNED",
+     "to": "DIAGNOSING",
+     "user": "U3",
+     "at": {
+      "day": -2,
+      "time": "14:10"
+     }
+    },
+    {
+     "from": "DIAGNOSING",
+     "to": "REPAIRING",
+     "user": "U3",
+     "at": {
+      "day": -2,
+      "time": "14:30"
+     }
+    },
+    {
+     "from": "REPAIRING",
+     "to": "FINISHED",
+     "user": "U3",
+     "at": {
+      "day": -2,
+      "time": "15:00"
+     }
+    },
+    {
+     "from": "FINISHED",
+     "to": "PENDING_PAYMENT",
+     "user": "U2",
+     "at": {
+      "day": -2,
+      "time": "15:10"
+     }
+    }
+   ]
+  }
+ ],
+ "technical_notes": [
+  {
+   "vehicle": "V1",
+   "work_order": "O4",
+   "author": "U4",
+   "content_html": "<p>Celdas <strong>18650 13S4P</strong> balanceadas. Voltaje en reposo 53,1 V.</p>",
+   "at": {
+    "day": -20,
+    "time": "09:50"
+   }
+  },
+  {
+   "vehicle": "V6",
+   "work_order": "O3",
+   "author": "U3",
+   "content_html": "<p>MOSFET Q3 del controlador en corto. Se reemplazó el controlador completo.</p>",
+   "at": {
+    "day": -1,
+    "time": "12:20"
+   }
+  }
+ ],
+ "receipts": [
+  {
+   "work_order": "O4",
+   "number": "CMP-000001",
+   "subtotal": 80000,
+   "vat": 15200,
+   "total": 95200,
+   "at": {
+    "day": -20,
+    "time": "10:15"
+   }
+  },
+  {
+   "work_order": "O7",
+   "number": "CMP-000002",
+   "subtotal": 50000,
+   "vat": 9500,
+   "total": 59500,
+   "at": {
+    "day": -106,
+    "time": "10:15"
+   }
+  },
+  {
+   "work_order": "O9",
+   "number": "CMP-000003",
+   "subtotal": 80000,
+   "vat": 15200,
+   "total": 95200,
+   "at": {
+    "day": -5,
+    "time": "10:15"
+   }
+  }
+ ],
+ "payments": [
+  {
+   "work_order": "O4",
+   "amount": 95200,
+   "method": "CASH",
+   "at": {
+    "day": -20,
+    "time": "10:15"
+   }
+  },
+  {
+   "work_order": "O7",
+   "amount": 59500,
+   "method": "CASH",
+   "at": {
+    "day": -106,
+    "time": "10:15"
+   }
+  },
+  {
+   "work_order": "O9",
+   "amount": 95200,
+   "method": "CARD",
+   "at": {
+    "day": -5,
+    "time": "10:15"
+   }
+  }
+ ],
+ "surveys": [
+  {
+   "work_order": "O4",
+   "token": "ENC-O4-SEMILLA",
+   "score": 5,
+   "comment": "Atención rápida y clara.",
+   "at": {
+    "day": -19,
+    "time": "11:00"
+   }
+  },
+  {
+   "work_order": "O9",
+   "token": "ENC-O9-PENDIENTE",
+   "score": null,
+   "comment": null,
+   "at": null
+  }
+ ],
+ "sequences": {
+  "WO": 10,
+  "RCP": 3
+ }
+}

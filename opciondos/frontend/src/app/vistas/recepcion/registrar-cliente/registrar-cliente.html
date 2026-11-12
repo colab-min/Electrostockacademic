@@ -1,0 +1,104 @@
+<section class="pagina">
+  <h1>Registrar cliente y vehículo</h1>
+
+  @if (exito()) { <app-aviso tipo="exito">{{ exito() }}</app-aviso> }
+  @if (error() && modo() === 'buscar') { <app-aviso tipo="error">{{ error() }}</app-aviso> }
+
+  <app-tarjeta titulo="Buscar cliente por documento">
+    <form class="busqueda" (ngSubmit)="buscar()">
+      <app-campo etiqueta="Tipo de documento" para="doc-tipo">
+        <select id="doc-tipo" name="document_type" [(ngModel)]="documento.document_type" [disabled]="modo() !== 'buscar'">
+          <option value="CC">Cédula de ciudadanía</option>
+          <option value="CE">Cédula de extranjería</option>
+          <option value="PA">Pasaporte</option>
+        </select>
+      </app-campo>
+      <app-campo etiqueta="Número de documento" para="doc-numero" [error]="campoError('document_number')">
+        <input id="doc-numero" name="document_number" required maxlength="12" autocomplete="off"
+          [(ngModel)]="documento.document_number" [disabled]="modo() !== 'buscar'"
+          [attr.aria-invalid]="!!campoError('document_number')" />
+      </app-campo>
+      @if (modo() === 'buscar') {
+        <app-boton tipo="submit" [procesando]="buscando()" [deshabilitado]="!documento.document_number.trim()">Buscar</app-boton>
+      } @else {
+        <app-boton variante="secundario" (click)="otraBusqueda()">Buscar otro documento</app-boton>
+      }
+    </form>
+  </app-tarjeta>
+
+  @if (modo() === 'existente' && cliente(); as c) {
+    <app-tarjeta [titulo]="c.full_name">
+      <p class="texto-suave">
+        {{ c.document_type }} {{ c.document_number }} · {{ c.has_account ? 'Con cuenta en el portal' : 'Sin cuenta en el portal' }}.
+        El documento y la autorización de datos no se modifican.
+      </p>
+      <form class="formulario" (ngSubmit)="guardarContacto()">
+        <div class="formulario-2col">
+          <app-campo etiqueta="Teléfono" para="ct-telefono" [error]="campoError('phone')">
+            <input id="ct-telefono" name="phone" type="tel" required [(ngModel)]="contacto.phone" [attr.aria-invalid]="!!campoError('phone')" />
+          </app-campo>
+          <app-campo etiqueta="Correo" para="ct-correo" [error]="campoError('email')">
+            <input id="ct-correo" name="email" type="email" [(ngModel)]="contacto.email" [attr.aria-invalid]="!!campoError('email')" />
+          </app-campo>
+        </div>
+        <app-boton tipo="submit" variante="secundario" [procesando]="guardandoContacto()">Guardar contacto</app-boton>
+      </form>
+      @if (c.vehicles.length) {
+        <h3>Vehículos registrados</h3>
+        <ul class="vehiculos">
+          @for (v of c.vehicles; track v.id) {
+            <li><span class="codigo">{{ v.serial_number }}</span> · {{ tipos[v.type] }} {{ v.brand }} {{ v.model }}@if (v.plate) { · {{ v.plate }} }</li>
+          }
+        </ul>
+      }
+    </app-tarjeta>
+  }
+
+  @if (modo() !== 'buscar') {
+    <app-tarjeta [titulo]="modo() === 'nuevo' ? 'Cliente nuevo' : 'Agregar vehículo'">
+      <form class="formulario" (ngSubmit)="registrar()">
+        @if (modo() === 'nuevo') {
+          <p class="texto-suave">No hay un cliente con ese documento. Complete sus datos y los del vehículo.</p>
+          <app-campo etiqueta="Nombres y apellidos" para="cl-nombre" [error]="campoError('full_name')">
+            <input id="cl-nombre" name="full_name" required maxlength="120" [(ngModel)]="nuevo.full_name"
+              [attr.aria-invalid]="!!campoError('full_name')" />
+          </app-campo>
+          <div class="formulario-2col">
+            <app-campo etiqueta="Teléfono" para="cl-telefono" [error]="campoError('phone')">
+              <input id="cl-telefono" name="phone" type="tel" required [(ngModel)]="nuevo.phone" [attr.aria-invalid]="!!campoError('phone')" />
+            </app-campo>
+            <app-campo etiqueta="Correo (opcional)" para="cl-correo" ayuda="Sin correo no se podrá vincular una cuenta del portal."
+              [error]="campoError('email')">
+              <input id="cl-correo" name="email" type="email" [(ngModel)]="nuevo.email" [attr.aria-invalid]="!!campoError('email')" />
+            </app-campo>
+          </div>
+        }
+
+        <app-formulario-vehiculo [datos]="vehiculo()" [errores]="errores()" />
+        <app-espacio-fotos />
+
+        @if (modo() === 'nuevo') {
+          <div class="casilla">
+            <input id="cl-autorizacion" name="data_consent" type="checkbox" [(ngModel)]="nuevo.data_consent"
+              [attr.aria-invalid]="!!campoError('data_consent')" />
+            <label for="cl-autorizacion">El cliente autorizó el tratamiento de sus datos personales</label>
+          </div>
+          @if (campoError('data_consent')) { <p class="error-casilla" role="alert">{{ campoError('data_consent') }}</p> }
+          <button type="button" class="enlace" (click)="verAviso.set(!verAviso())" [attr.aria-expanded]="verAviso()">
+            Aviso de privacidad para leer al cliente
+          </button>
+          @if (verAviso()) {
+            <p class="aviso-privacidad">
+              Electrostock usa tus datos personales (nombre, documento, teléfono, correo y datos de tus vehículos) para gestionar
+              tus citas, las órdenes de trabajo de tus vehículos y el contacto contigo sobre esos servicios. Según la Ley 1581 de
+              2012, puedes conocer, actualizar y rectificar tus datos, y revocar esta autorización. Para hacerlo, acércate a la
+              recepción del taller.
+            </p>
+          }
+        }
+        @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
+        <app-boton tipo="submit" [procesando]="guardando()">Registrar</app-boton>
+      </form>
+    </app-tarjeta>
+  }
+</section>

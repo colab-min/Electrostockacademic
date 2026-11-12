@@ -1,0 +1,65 @@
+<section class="pagina">
+  <h1>Usuarios</h1>
+  @if (exito()) { <app-aviso tipo="exito">{{ exito() }}</app-aviso> }
+  @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
+
+  <app-tarjeta titulo="Usuarios internos">
+    <p class="texto-suave">Los usuarios no se borran: se desactivan y su historial se conserva.</p>
+    <app-tabla-datos titulo="Usuarios internos" [columnas]="columnas" [filas]="$any(usuarios())" [celda]="celda" [acciones]="acciones" />
+    <ng-template #celda let-f let-columna="columna">
+      @switch (columna.clave) {
+        @case ('role') {
+          <label class="solo-lector" [for]="'rol-' + f.id">Rol de {{ f.full_name }}</label>
+          <select class="rol" [id]="'rol-' + f.id" [value]="f.role" [disabled]="cambiando() === f.id || f.id === yo()?.id"
+            (change)="cambiarRol(fila(f), $any($event.target).value)">
+            @for (r of roles; track r[0]) { <option [value]="r[0]" [selected]="r[0] === f.role">{{ r[1] }}</option> }
+          </select>
+        }
+        @case ('active') {
+          <app-insignia-estado [estado]="f.active ? 'ACTIVE' : 'INACTIVE'" />
+          @if (f.must_change_password) { <span class="texto-suave"> Contraseña temporal</span> }
+        }
+        @default { {{ f[columna.clave] }} }
+      }
+    </ng-template>
+    <ng-template #acciones let-f>
+      @if (f.id !== yo()?.id) {
+        @if (f.active) {
+          <app-boton variante="peligro" [procesando]="cambiando() === f.id" (click)="porDesactivar.set(fila(f))">Desactivar</app-boton>
+        } @else {
+          <app-boton variante="secundario" [procesando]="cambiando() === f.id" (click)="cambiarEstado(fila(f), true)">Reactivar</app-boton>
+        }
+      }
+    </ng-template>
+  </app-tarjeta>
+
+  <app-tarjeta titulo="Crear usuario interno">
+    <form class="formulario" (ngSubmit)="crear()">
+      <div class="formulario-2col">
+        <app-campo etiqueta="Nombres y apellidos" para="us-nombre" [error]="invalido('full_name') ? 'Campo obligatorio.' : null">
+          <input id="us-nombre" name="full_name" required maxlength="120" [(ngModel)]="nuevo.full_name" [attr.aria-invalid]="invalido('full_name')" />
+        </app-campo>
+        <app-campo etiqueta="Correo" para="us-correo" [error]="invalido('email') ? 'Revise el correo: debe ser válido y no estar en uso.' : null">
+          <input id="us-correo" name="email" type="email" required [(ngModel)]="nuevo.email" [attr.aria-invalid]="invalido('email')" />
+        </app-campo>
+        <app-campo etiqueta="Rol" para="us-rol" [error]="invalido('role') ? 'Seleccione el rol.' : null">
+          <select id="us-rol" name="role" required [(ngModel)]="nuevo.role" [attr.aria-invalid]="invalido('role')">
+            <option value="" disabled>Elegir rol</option>
+            @for (r of roles; track r[0]) { <option [value]="r[0]">{{ r[1] }}</option> }
+          </select>
+        </app-campo>
+        <app-campo etiqueta="Contraseña temporal" para="us-clave" ayuda="Mínimo 10 caracteres, con mayúscula, minúscula, número y símbolo."
+          [error]="invalido('temporary_password') ? 'La contraseña no cumple la política.' : null">
+          <input id="us-clave" name="temporary_password" type="text" required autocomplete="off" [(ngModel)]="nuevo.temporary_password"
+            [attr.aria-invalid]="invalido('temporary_password')" />
+        </app-campo>
+      </div>
+      <app-boton tipo="submit" [procesando]="creando()">Crear usuario</app-boton>
+    </form>
+  </app-tarjeta>
+
+  <app-dialogo-confirmacion [abierto]="!!porDesactivar()" [titulo]="'Desactivar a ' + (porDesactivar()?.full_name ?? '')"
+    mensaje="No podrá iniciar sesión y sus sesiones abiertas se cerrarán. Su historial se conserva."
+    textoConfirmar="Desactivar" [procesando]="cambiando() !== null"
+    (confirmar)="cambiarEstado(porDesactivar()!, false)" (cancelar)="porDesactivar.set(null)" />
+</section>

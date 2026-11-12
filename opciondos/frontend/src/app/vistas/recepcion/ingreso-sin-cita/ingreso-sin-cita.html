@@ -1,0 +1,91 @@
+<section class="pagina">
+  <h1>Ingreso sin cita</h1>
+  @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
+
+  @if (resultado(); as r) {
+    <app-tarjeta [titulo]="'Orden ' + r.number + ' registrada'" [destacada]="true">
+      @if (r.queue_position === null) {
+        <app-aviso tipo="exito">Quedó ubicada en la agenda de hoy. Entrega estimada: {{ r.estimated_delivery_at ? fecha(r.estimated_delivery_at) : '—' }}.</app-aviso>
+      } @else {
+        <app-aviso tipo="informacion">No había cupo: quedó en la cola en la posición {{ r.queue_position }}.
+          Hora estimada: {{ r.hora_estimada ? fecha(r.hora_estimada) : 'sin cupo en los próximos días' }}. Ninguna cita se desplazó.</app-aviso>
+      }
+      <div class="codigo-bloque">
+        <span class="texto-suave">Código de seguimiento (solo se muestra ahora)</span>
+        <span class="codigo">{{ r.tracking_code }}</span>
+        <app-boton variante="secundario" (click)="copiar(r.tracking_code)">{{ copiado() ? 'Código copiado' : 'Copiar código' }}</app-boton>
+      </div>
+    </app-tarjeta>
+  }
+
+  <div class="columnas">
+    <app-tarjeta titulo="Registrar ingreso">
+      @if (errorCatalogo()) { <app-aviso tipo="error">{{ errorCatalogo() }}</app-aviso> }
+      <app-buscador-vehiculo [buscando]="buscando()" (buscar)="buscar($event)" />
+      @if (vehiculos(); as lista) {
+        @if (lista.length === 0) {
+          <app-estado-vacio titulo="No se encontró un vehículo con esa serie, placa o documento.">
+            <a routerLink="/recepcion/clientes/nuevo">Registrar cliente y vehículo</a>
+          </app-estado-vacio>
+        } @else {
+          <ul class="vehiculos">
+            @for (v of lista; track v.id) {
+              <li>
+                <button type="button" [class.elegido]="elegido()?.id === v.id" [attr.aria-pressed]="elegido()?.id === v.id"
+                  (click)="elegido.set(v)">
+                  <strong>{{ v.brand }} {{ v.model }}</strong> · Serie {{ v.serial_number }}
+                  <span class="texto-suave">{{ v.customer.full_name }} · {{ v.customer.document_type }} {{ v.customer.document_number }}</span>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      }
+
+      <form class="formulario" (ngSubmit)="registrar()">
+        <app-campo etiqueta="Tipo de falla" para="falla" [error]="intentado && !fallaId ? 'Seleccione el tipo de falla' : null">
+          <select id="falla" name="falla" [(ngModel)]="fallaId" [attr.aria-invalid]="intentado && !fallaId ? true : null">
+            <option [ngValue]="null">Seleccione el tipo de falla</option>
+            @for (f of fallas(); track f.id) { <option [ngValue]="f.id">{{ f.name }} ({{ f.estimated_minutes }} min)</option> }
+          </select>
+        </app-campo>
+        <app-campo etiqueta="Servicio" para="servicio" [error]="intentado && !servicioId ? 'Seleccione el servicio' : null">
+          <select id="servicio" name="servicio" [(ngModel)]="servicioId" [attr.aria-invalid]="intentado && !servicioId ? true : null">
+            <option [ngValue]="null">Seleccione el servicio</option>
+            @for (s of servicios(); track s.id) { <option [ngValue]="s.id">{{ s.name }} ({{ s.duration_min }} min)</option> }
+          </select>
+        </app-campo>
+        <app-campo etiqueta="Motivo de ingreso" para="motivo">
+          <textarea id="motivo" name="motivo" rows="3" maxlength="500" [(ngModel)]="motivo"></textarea>
+        </app-campo>
+        <app-boton tipo="submit" [procesando]="procesando()" [deshabilitado]="!elegido() || !!errorCatalogo()">
+          Registrar ingreso
+        </app-boton>
+        @if (!elegido()) { <p class="texto-suave">Busque y seleccione el vehículo para continuar.</p> }
+      </form>
+    </app-tarjeta>
+
+    <app-tarjeta titulo="Cola de espera">
+      @if (cola(); as lista) {
+        @if (lista.length === 0) {
+          <app-estado-vacio titulo="No hay vehículos en cola." />
+        } @else {
+          <ol class="cola">
+            @for (o of lista; track o.id) {
+              <li>
+                <div class="fila">
+                  <strong>{{ o.queue_position }}. {{ o.number }}</strong>
+                  @if (o.priority) { <app-insignia-estado [estado]="o.priority" /> }
+                </div>
+                <span>{{ o.vehicle.brand }} {{ o.vehicle.model }} · {{ o.fault_name }}</span>
+                <span class="texto-suave">Hora estimada: {{ o.hora_estimada ? fecha(o.hora_estimada) : 'sin cupo en los próximos días' }}</span>
+              </li>
+            }
+          </ol>
+        }
+      } @else {
+        <div class="esqueleto" aria-busy="true"></div>
+      }
+    </app-tarjeta>
+  </div>
+</section>

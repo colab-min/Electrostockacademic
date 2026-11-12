@@ -1,0 +1,16 @@
+<header class="barra">
+  <a class="logo" routerLink="/">Electrostock</a>
+  @if (sesion.usuario(); as usuario) {
+    <nav aria-label="Principal">
+      @for (item of menu(); track item.ruta) {
+        <a [routerLink]="item.ruta" routerLinkActive="activo" ariaCurrentWhenActive="page">{{ item.texto }}</a>
+      }
+    </nav>
+    <div class="usuario">
+      <span class="nombre">{{ usuario.full_name }}</span>
+      <button type="button" (click)="salir()">Salir</button>
+    </div>
+  } @else {
+    <nav aria-label="Público"><a routerLink="/seguimiento">Seguimiento</a></nav>
+  }
+</header>

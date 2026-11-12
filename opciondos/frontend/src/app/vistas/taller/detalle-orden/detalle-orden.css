@@ -1,0 +1,14 @@
+:host { display: block; }
+.cabecera { display: grid; gap: var(--espacio-2); }
+.cabecera h1, .cabecera p { margin: 0; }
+.estados { display: grid; gap: var(--espacio-3); grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+.estados app-boton { display: block; }
+.estados app-boton ::ng-deep button { min-height: 56px; }
+.columnas { display: grid; gap: var(--espacio-4); }
+@media (min-width: 860px) { .columnas { grid-template-columns: 1fr 1fr; align-items: start; } }
+.lineas { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--espacio-2); }
+.lineas li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--espacio-2); align-items: center;
+  padding: var(--espacio-2) 0; border-bottom: 1px solid var(--color-campo); }
+.agregar { display: grid; gap: var(--espacio-3); }
+@media (min-width: 720px) { .agregar { grid-template-columns: 2fr 1fr; align-items: end; } }
+.esqueleto { height: 320px; border-radius: var(--radio); background: var(--color-superficie); }

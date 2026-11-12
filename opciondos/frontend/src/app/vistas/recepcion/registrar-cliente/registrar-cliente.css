@@ -1,0 +1,10 @@
+:host { display: block; }
+.pagina { max-width: 860px; }
+.busqueda { display: grid; gap: var(--espacio-4); align-items: end; }
+@media (min-width: 720px) { .busqueda { grid-template-columns: 1fr 1fr auto; } }
+.vehiculos { margin: 0; padding-left: var(--espacio-6); display: grid; gap: var(--espacio-1); }
+.formulario { max-width: none; }
+.casilla { display: flex; gap: var(--espacio-2); align-items: flex-start; }
+.enlace { justify-self: start; background: none; border: none; padding: 0; color: var(--color-etiqueta); text-decoration: underline; font: inherit; cursor: pointer; }
+.aviso-privacidad { margin: 0; padding: var(--espacio-3); background: var(--color-campo); border-radius: var(--radio); font-size: 13px; }
+.error-casilla { margin: 0; font-size: 13px; font-weight: 600; border-left: 3px solid var(--color-registro); padding-left: var(--espacio-2); }

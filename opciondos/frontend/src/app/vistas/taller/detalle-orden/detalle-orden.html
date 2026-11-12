@@ -1,0 +1,131 @@
+<section class="pagina">
+  <a routerLink="/taller/bahia">← Volver al panel</a>
+  @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
+  @if (exito()) { <app-aviso tipo="exito">{{ exito() }}</app-aviso> }
+
+  @if (orden(); as o) {
+    <header class="cabecera">
+      <h1>{{ o.number }}</h1>
+      <div class="fila">
+        <app-insignia-estado [estado]="o.status" />
+        @if (o.priority) { <app-insignia-estado [estado]="o.priority" /> }
+      </div>
+      <p>{{ o.vehicle.type_label }} · {{ o.vehicle.brand }} {{ o.vehicle.model }} · {{ o.vehicle.nominal_voltage_v }} V ·
+        <a [routerLink]="['/taller/vehiculos', o.vehicle.serial_number]">Expediente {{ o.vehicle.serial_number }}</a></p>
+      <p class="texto-suave">Motivo: {{ o.intake_reason }}
+        @if (o.estimated_delivery_at) { · Entrega estimada: {{ fecha(o.estimated_delivery_at) }} }</p>
+    </header>
+
+    <app-tarjeta titulo="Cambiar estado" [destacada]="true">
+      @if (transiciones().length === 0) {
+        <p class="texto-suave">No hay cambios de estado disponibles para usted en esta orden.</p>
+      } @else {
+        @if (pideMotivo()) {
+          <app-campo etiqueta="Motivo y repuesto esperado (para devolver sin repuesto)" para="motivo">
+            <input id="motivo" name="motivo" maxlength="300" [(ngModel)]="motivo" />
+          </app-campo>
+        }
+        <div class="estados">
+          @for (t of transiciones(); track t.to_status) {
+            <app-boton [variante]="$first ? 'primario' : 'secundario'" [procesando]="procesando() === t.to_status"
+              [deshabilitado]="t.to_status === 'PENDING_INSTALLATION' && !motivo.trim()" (click)="cambiar(t)">
+              {{ t.to_status === 'PENDING_INSTALLATION' ? 'Devolver sin repuesto' : t.label }}
+            </app-boton>
+          }
+        </div>
+      }
+    </app-tarjeta>
+
+    <div class="columnas">
+      <app-tarjeta titulo="Diagnóstico">
+        <form class="formulario" (ngSubmit)="guardarDiagnostico()">
+          <app-campo etiqueta="Diagnóstico técnico" para="diagnostico">
+            <textarea id="diagnostico" name="diagnostico" rows="5" maxlength="5000" [disabled]="!editable()"
+              [(ngModel)]="diagnostico"></textarea>
+          </app-campo>
+          @if (editable()) {
+            <app-boton tipo="submit" variante="secundario" [procesando]="procesando() === 'diagnostico'"
+              [deshabilitado]="!diagnostico.trim()">Guardar diagnóstico</app-boton>
+          }
+        </form>
+      </app-tarjeta>
+
+      <app-tarjeta titulo="Servicios">
+        <ul class="lineas">
+          @for (s of o.service_lines; track s.service_id) {
+            <li><span>{{ s.name }}</span><span>{{ pesos(s.applied_price) }}</span></li>
+          }
+        </ul>
+        @if (editable()) {
+          <form class="agregar" (ngSubmit)="agregarServicio()">
+            <app-campo etiqueta="Agregar servicio" para="servicio">
+              <select id="servicio" name="servicio" [(ngModel)]="servicioId">
+                <option [ngValue]="null">Seleccione el servicio</option>
+                @for (s of servicios(); track s.id) { <option [ngValue]="s.id">{{ s.name }}</option> }
+              </select>
+            </app-campo>
+            <app-boton tipo="submit" variante="secundario" [procesando]="procesando() === 'servicio'"
+              [deshabilitado]="!servicioId">Agregar servicio</app-boton>
+          </form>
+        }
+      </app-tarjeta>
+    </div>
+
+    <app-tarjeta titulo="Repuestos">
+      @if (errorRepuesto()) { <app-aviso tipo="error">{{ errorRepuesto() }}</app-aviso> }
+      @if (o.parts.length === 0) {
+        <p class="texto-suave">Esta orden no tiene repuestos.</p>
+      } @else {
+        <ul class="lineas">
+          @for (p of o.parts; track p.id) {
+            <li>
+              <span>{{ p.quantity }} × {{ p.name }} <span class="texto-suave">{{ p.sku }}</span></span>
+              <span class="fila">
+                <app-insignia-estado [estado]="p.status" />
+                @if (p.status === 'RESERVED' && editable()) {
+                  <app-boton variante="primario" [procesando]="procesando() === 'instalar-' + p.id"
+                    (click)="linea(p.id, 'instalar')">Marcar instalado</app-boton>
+                  <app-boton variante="neutro" [procesando]="procesando() === 'retirar-' + p.id"
+                    (click)="linea(p.id, 'retirar')">Retirar</app-boton>
+                }
+              </span>
+            </li>
+          }
+        </ul>
+      }
+      @if (editable()) {
+        <form class="agregar" (ngSubmit)="agregarRepuesto()">
+          <app-campo etiqueta="Repuesto" para="repuesto">
+            <select id="repuesto" name="repuesto" [(ngModel)]="repuestoId">
+              <option [ngValue]="null">Seleccione el repuesto</option>
+              @for (r of repuestos(); track r.id) {
+                <option [ngValue]="r.id">{{ r.sku }} · {{ r.name }} (Disponible: {{ r.available }})</option>
+              }
+            </select>
+          </app-campo>
+          <app-campo etiqueta="Cantidad" para="cantidad">
+            <input id="cantidad" name="cantidad" type="number" min="1" max="100" [(ngModel)]="cantidad" />
+          </app-campo>
+          @if (errorRepuesto()?.startsWith('Riesgo eléctrico')) {
+            <app-campo etiqueta="Motivo para continuar con otro voltaje" para="voltaje">
+              <input id="voltaje" name="voltaje" maxlength="300" [(ngModel)]="motivoVoltaje" />
+            </app-campo>
+          }
+          <app-boton tipo="submit" variante="secundario" [procesando]="procesando() === 'repuesto'"
+            [deshabilitado]="!repuestoId || cantidad < 1">Agregar repuesto</app-boton>
+        </form>
+      }
+    </app-tarjeta>
+
+    <div class="columnas">
+      <app-tarjeta titulo="Historial">
+        <app-linea-tiempo [eventos]="eventos()" />
+      </app-tarjeta>
+      <app-tarjeta titulo="Fotos">
+        <app-espacio-fotos />
+      </app-tarjeta>
+    </div>
+  } @else if (!error()) {
+    <div class="esqueleto" aria-busy="true"><span class="solo-lector">Cargando…</span></div>
+  }
+</section>

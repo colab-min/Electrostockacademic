@@ -1,0 +1,4 @@
+:host { display: block; }
+section { background: var(--color-superficie); border-radius: var(--radio); padding: var(--espacio-6); display: grid; gap: var(--espacio-3); }
+.destacada { border-left: 4px solid var(--color-accion); }
+@media (max-width: 480px) { section { padding: var(--espacio-4); } }

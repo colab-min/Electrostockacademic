@@ -1,0 +1,35 @@
+<section class="pagina">
+  <h1>Panel de bahía</h1>
+  @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
+
+  @if (ordenes(); as lista) {
+    @if (lista.length === 0) {
+      <app-estado-vacio titulo="No tiene órdenes asignadas"
+        mensaje="Cuando el administrador le asigne una orden, aparecerá aquí sin recargar la página." />
+    } @else {
+      <div class="rejilla">
+        @for (o of lista; track o.id) {
+          <app-tarjeta [titulo]="o.number">
+            <div class="fila">
+              <app-insignia-estado [estado]="o.status" />
+              @if (o.priority) { <app-insignia-estado [estado]="o.priority" /> }
+            </div>
+            <p class="vehiculo">{{ o.vehicle.type_label }} · {{ o.vehicle.brand }} {{ o.vehicle.model }}</p>
+            <p class="texto-suave">{{ o.intake_reason }} · {{ o.services.join(', ') }}</p>
+            @if (o.estimated_delivery_at) { <p class="texto-suave">Entrega estimada: {{ fecha(o.estimated_delivery_at) }}</p> }
+            <div class="acciones">
+              @if (o.transitions[0]; as t) {
+                <app-boton [procesando]="procesando() === o.id" (click)="avanzar(o, t.to_status)">{{ t.label }}</app-boton>
+              }
+              <a [routerLink]="['/taller/ordenes', o.id]">Abrir detalle</a>
+            </div>
+          </app-tarjeta>
+        }
+      </div>
+    }
+  } @else if (!error()) {
+    <div class="rejilla" aria-busy="true">
+      <div class="esqueleto"></div><div class="esqueleto"></div>
+    </div>
+  }
+</section>

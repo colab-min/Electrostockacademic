@@ -1,0 +1,23 @@
+/* Paleta Riso wa-iro (IS-4 7.2) y tipografía (IS-4 7.3). Único archivo con colores. */
+:root {
+  --color-fondo: #2b3a55;      /* Kon: fondo */
+  --color-superficie: #3a4c6e; /* Ai: tarjetas y paneles */
+  --color-campo: #222e44;      /* Tetsukon: campos y barras */
+  --color-etiqueta: #9ec5c1;   /* Kamenozoki: etiquetas, bordes, botón secundario */
+  --color-accion: #e3c27a;     /* Kuchinashi: botón principal, títulos, selección */
+  --color-registro: #c8724f;   /* Kaki: solo bordes y detalles, nunca texto */
+  --color-texto: #efe8da;      /* Kinari: texto */
+
+  --fuente-titulo: 'Shippori Mincho', Georgia, serif;
+  --fuente-cuerpo: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --fuente-codigo: ui-monospace, Menlo, monospace;
+
+  --radio: 8px;
+  --descalce: 3px;
+  --espacio-1: 4px;
+  --espacio-2: 8px;
+  --espacio-3: 12px;
+  --espacio-4: 16px;
+  --espacio-6: 24px;
+  --ancho-max: 1200px;
+}

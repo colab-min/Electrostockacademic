@@ -1,0 +1,94 @@
+<section class="pagina">
+  <h1>Expediente técnico</h1>
+  <app-buscador-vehiculo [buscando]="buscando()" [valorInicial]="serie() ?? ''" (buscar)="buscar($event)" />
+
+  @if (error()) {
+    <app-aviso tipo="error">
+      {{ error() }}
+      @if (serie(); as s) { <button type="button" class="enlace" (click)="cargar(s)">Reintentar</button> }
+    </app-aviso>
+  }
+  @if (noEncontrado()) {
+    <app-estado-vacio [titulo]="mensajeNoEncontrado" mensaje="Puede buscar también por placa o por documento del propietario." />
+  }
+
+  @if (coincidencias(); as lista) {
+    <app-tarjeta titulo="Vehículos encontrados">
+      <ul class="lista">
+        @for (v of lista; track v.id) {
+          <li>
+            <a [routerLink]="['/taller/vehiculos', v.serial_number]"><span class="codigo">{{ v.serial_number }}</span></a>
+            · {{ tipos[v.type] }} {{ v.brand }} {{ v.model }} · {{ v.customer.full_name }}
+          </li>
+        }
+      </ul>
+    </app-tarjeta>
+  }
+
+  @if (cargando()) {
+    <div class="esqueleto" aria-busy="true"><span class="solo-lector">Procesando…</span></div>
+  } @else if (expediente(); as exp) {
+    <div class="columnas">
+      <app-tarjeta [titulo]="exp.vehicle.brand + ' ' + exp.vehicle.model" [destacada]="true">
+        <dl class="ficha">
+          <dt>Serie</dt><dd class="codigo">{{ exp.vehicle.serial_number }}</dd>
+          <dt>Placa</dt><dd>{{ exp.vehicle.plate ?? 'Sin placa' }}</dd>
+          <dt>Tipo</dt><dd>{{ tipos[exp.vehicle.type] }}</dd>
+          <dt>Año</dt><dd>{{ exp.vehicle.year }}</dd>
+          <dt>Voltaje nominal</dt><dd>{{ exp.vehicle.nominal_voltage_v }} V</dd>
+          <dt>Capacidad</dt><dd>{{ exp.vehicle.battery_capacity_ah }} Ah</dd>
+          <dt>Celda</dt><dd>{{ exp.vehicle.battery_cell ?? 'Sin dato' }}</dd>
+          <dt>Potencia</dt><dd>{{ exp.vehicle.power_w ? exp.vehicle.power_w + ' W' : 'Sin dato' }}</dd>
+          <dt>Controlador</dt><dd>{{ exp.vehicle.controller ?? 'Sin dato' }}</dd>
+          <dt>Propietario</dt><dd>{{ exp.customer.full_name }} ({{ exp.customer.document_type }} {{ exp.customer.document_number }})</dd>
+        </dl>
+        <app-espacio-fotos />
+      </app-tarjeta>
+
+      <app-tarjeta titulo="Notas técnicas">
+        @if (puedeAnotar()) {
+          <div class="editor">
+            <div class="herramientas" role="toolbar" aria-label="Formato de la nota">
+              <button type="button" (click)="formato('bold')" aria-label="Negrita"><strong>B</strong></button>
+              <button type="button" (click)="formato('insertUnorderedList')" aria-label="Lista con viñetas">• Lista</button>
+            </div>
+            <div #editor class="area" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Nueva nota técnica"></div>
+            @if (errorNota()) { <app-aviso tipo="error">{{ errorNota() }}</app-aviso> }
+            <app-boton [procesando]="guardando()" (click)="guardarNota()">Guardar nota</app-boton>
+          </div>
+        }
+        @for (n of exp.notes; track n.id) {
+          <article class="nota">
+            <p class="texto-suave">{{ n.author }} · <time [attr.datetime]="n.created_at">{{ fecha(n.created_at) }}</time></p>
+            <div class="contenido" [innerHTML]="n.content_html"></div>
+          </article>
+        } @empty {
+          <app-estado-vacio titulo="Sin notas técnicas." />
+        }
+      </app-tarjeta>
+    </div>
+
+    <app-tarjeta titulo="Órdenes anteriores">
+      @for (o of exp.orders; track o.id) {
+        <article class="orden">
+          <div class="fila">
+            <span class="codigo">{{ o.number }}</span>
+            <app-insignia-estado [estado]="o.status" />
+            <span class="texto-suave">Ingreso {{ fecha(o.created_at) }}@if (o.delivered_at) { · Entrega {{ fecha(o.delivered_at) }} }</span>
+          </div>
+          <p>{{ o.intake_reason }}@if (o.services.length) { · {{ o.services.join(', ') }} }</p>
+          @if (o.diagnosis) { <p><span class="texto-suave">Diagnóstico:</span> {{ o.diagnosis }}</p> }
+          @if (o.parts.length) {
+            <p><span class="texto-suave">Repuestos instalados:</span>
+              @for (p of o.parts; track p.sku) { {{ p.quantity }} × {{ p.name }} ({{ p.sku }}){{ $last ? '' : ', ' }} }
+            </p>
+          }
+        </article>
+      } @empty {
+        <app-estado-vacio titulo="Este vehículo aún no tiene órdenes." />
+      }
+    </app-tarjeta>
+  } @else if (!noEncontrado() && !coincidencias()) {
+    <p class="texto-suave">Busque un vehículo por serie, placa o documento del propietario.</p>
+  }
+</section>

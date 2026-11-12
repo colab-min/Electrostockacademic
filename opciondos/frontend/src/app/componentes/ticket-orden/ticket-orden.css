@@ -1,0 +1,18 @@
+.ticket-orden { display: grid; gap: var(--espacio-3); justify-items: start; }
+.ticket-orden__papel {
+  width: 100%; max-width: 80mm; padding: var(--espacio-3); background: var(--color-texto); color: var(--color-fondo);
+  border-radius: var(--radio); font-family: var(--fuente-codigo); font-size: 13px;
+}
+.ticket-orden__papel p { margin: 0 0 var(--espacio-1); }
+.ticket-orden__taller { font-weight: 700; text-align: center; }
+.ticket-orden__numero { font-size: 18px; font-weight: 700; text-align: center; }
+.ticket-orden__codigo { font-size: 20px; font-weight: 700; letter-spacing: 2px; text-align: center; }
+.ticket-orden__boton {
+  min-height: 44px; padding: var(--espacio-2) var(--espacio-4); background: transparent; color: var(--color-etiqueta);
+  border: 1px solid var(--color-etiqueta); border-radius: var(--radio); font: inherit; cursor: pointer;
+}
+@media print {
+  body * { visibility: hidden; }
+  .ticket-orden__papel, .ticket-orden__papel * { visibility: visible; }
+  .ticket-orden__papel { position: absolute; left: 0; top: 0; width: 80mm; max-width: none; border-radius: 0; }
+}

@@ -1,0 +1,5 @@
+:host { display: block; }
+p { margin: 0; }
+.columnas { display: grid; gap: var(--espacio-4); }
+.franjas { display: grid; gap: var(--espacio-2); grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+@media (min-width: 860px) { .columnas { grid-template-columns: auto 1fr; align-items: start; } }

@@ -1,0 +1,15 @@
+:host { display: block; }
+.columnas { display: grid; gap: var(--espacio-4); }
+@media (min-width: 960px) { .columnas { grid-template-columns: 3fr 2fr; align-items: start; } }
+.codigo-bloque { display: grid; gap: var(--espacio-2); justify-items: start; }
+.codigo { font-family: var(--fuente-codigo); font-size: 30px; font-weight: 700; letter-spacing: 4px; color: var(--color-accion); }
+.vehiculos { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--espacio-2); }
+.vehiculos button {
+  width: 100%; min-height: 44px; display: grid; gap: var(--espacio-1); text-align: left; padding: var(--espacio-3);
+  background: var(--color-campo); color: var(--color-texto); border: 1px solid var(--color-campo); border-radius: var(--radio);
+  font: inherit; cursor: pointer;
+}
+.vehiculos button.elegido { border: 2px solid var(--color-accion); }
+.cola { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--espacio-3); }
+.cola li { display: grid; gap: var(--espacio-1); padding-bottom: var(--espacio-3); border-bottom: 1px solid var(--color-campo); }
+.esqueleto { height: 160px; border-radius: var(--radio); background: var(--color-campo); }

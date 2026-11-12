@@ -1,0 +1,4 @@
+:host { display: grid; gap: var(--espacio-1); }
+label { font-size: 12.5px; font-weight: 600; color: var(--color-etiqueta); }
+.ayuda { margin: 0; font-size: 13px; color: var(--color-etiqueta); }
+.error { margin: 0; font-size: 13px; color: var(--color-texto); padding-left: var(--espacio-2); border-left: 3px solid var(--color-registro); }

@@ -1,0 +1,6 @@
+<form class="buscador" role="search" (submit)="$event.preventDefault(); enviar()">
+  <label for="buscador-q" class="solo-lector">{{ etiqueta() }}</label>
+  <input id="buscador-q" type="search" [placeholder]="etiqueta()" [value]="valorInicial()"
+    (input)="texto.set($any($event.target).value)" autocomplete="off" />
+  <button type="submit" [disabled]="buscando()">{{ buscando() ? 'Procesando…' : 'Buscar' }}</button>
+</form>

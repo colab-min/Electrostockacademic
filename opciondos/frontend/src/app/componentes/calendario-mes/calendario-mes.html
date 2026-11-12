@@ -1,0 +1,17 @@
+<div class="calendario">
+  <div class="cabecera">
+    <button type="button" (click)="mover(-1)" aria-label="Mes anterior">‹</button>
+    <span class="titulo">{{ titulo() }}</span>
+    <button type="button" (click)="mover(1)" aria-label="Mes siguiente">›</button>
+  </div>
+  <div class="rejilla" role="grid">
+    @for (d of semana; track d) { <span class="dia-semana" aria-hidden="true">{{ d }}</span> }
+    @for (c of celdas(); track $index) {
+      @if (c) {
+        <button type="button" [class]="c.estado" [class.seleccionado]="c.fecha === seleccionado()"
+          [disabled]="c.estado !== 'disponible'" (click)="elegir.emit(c.fecha)"
+          [attr.aria-label]="c.fecha + (c.estado === 'disponible' ? '' : ', sin cupo')">{{ c.dia }}</button>
+      } @else { <span></span> }
+    }
+  </div>
+</div>

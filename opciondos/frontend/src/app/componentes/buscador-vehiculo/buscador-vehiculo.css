@@ -1,0 +1,3 @@
+.buscador { display: flex; gap: var(--espacio-2); }
+button { min-height: 44px; padding: 0 var(--espacio-4); background: var(--color-accion); color: var(--color-fondo); border: none; border-radius: var(--radio); font: inherit; font-weight: 600; cursor: pointer; }
+button:disabled { opacity: 0.6; }

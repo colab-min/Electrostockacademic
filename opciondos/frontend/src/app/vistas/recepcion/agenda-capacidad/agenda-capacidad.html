@@ -1,0 +1,74 @@
+<section class="pagina">
+  <div class="fila encabezado">
+    <h1>Agenda y capacidad</h1>
+    <app-boton variante="secundario" (click)="cargar()">Actualizar</app-boton>
+  </div>
+
+  <div class="columnas">
+    <app-tarjeta titulo="Calendario">
+      <app-calendario-mes [mes]="mes()" [dias]="dias()" [seleccionado]="fecha()" (elegir)="elegir($event)" (cambiarMes)="mes.set($event)" />
+      <ul class="leyenda" aria-label="Semáforo">
+        <li class="verde">Disponible: menos del 50 %</li>
+        <li class="amarillo">Pocos cupos: 50 % a menos del 100 %</li>
+        <li class="rojo">Sin cupo o bloqueado</li>
+      </ul>
+    </app-tarjeta>
+
+    <app-tarjeta [titulo]="'Franjas del ' + fechaLarga(fecha())">
+      @if (error()) {
+        <app-aviso tipo="error">{{ error() }} <button type="button" class="enlace" (click)="cargar()">Reintentar</button></app-aviso>
+      } @else if (datos(); as d) {
+        @for (f of d.franjas; track f.id) {
+          <article class="franja" [class]="f.semaforo">
+            <div class="fila">
+              <strong class="hora">{{ f.hora }}</strong>
+              <span class="etiqueta">{{ f.etiqueta }}</span>
+              <span class="texto-suave">{{ f.ocupados }} de {{ f.capacidad }} cupos</span>
+              <span class="espacio"></span>
+              @if (f.bloqueada) {
+                <app-boton variante="secundario" [procesando]="procesando()" (click)="desbloquear(f)">Desbloquear</app-boton>
+              } @else {
+                <app-boton variante="peligro" (click)="abrirBloqueo(f)">Bloquear</app-boton>
+              }
+            </div>
+            @if (f.motivo) { <p class="texto-suave">Motivo: {{ f.motivo }}</p> }
+            @if (f.citas.length) {
+              <ul class="citas" [attr.aria-label]="'Citas de las ' + f.hora">
+                @for (c of f.citas; track c.id) {
+                  <li><span class="codigo">{{ c.code }}</span> · {{ c.cliente }} · {{ c.vehiculo }} · {{ c.servicio }}
+                    <app-insignia-estado [estado]="c.status" /></li>
+                }
+              </ul>
+              @if (f.bloqueada) { <p class="texto-suave">Estas citas se conservan: gestiónelas manualmente.</p> }
+            }
+          </article>
+        } @empty {
+          <app-estado-vacio titulo="No hay franjas para este día." mensaje="El taller atiende de lunes a sábado." />
+        }
+      } @else {
+        <p class="texto-suave" aria-busy="true">Cargando…</p>
+      }
+    </app-tarjeta>
+  </div>
+
+  <app-tarjeta titulo="Recordatorios enviados (simulados)">
+    @if (datos(); as d) {
+      <ul class="recordatorios">
+        @for (r of d.recordatorios; track r.id) {
+          <li><span class="codigo">{{ r.code }}</span> · cita {{ fechaHora(r.starts_at) }} · <app-insignia-estado [estado]="r.status" />
+            @if (r.sent_at) { <span class="texto-suave">{{ fechaHora(r.sent_at) }}</span> }</li>
+        } @empty {
+          <li class="texto-suave">Aún no se han enviado recordatorios.</li>
+        }
+      </ul>
+    }
+  </app-tarjeta>
+</section>
+
+<app-dialogo-confirmacion [abierto]="aBloquear() !== null" [titulo]="'Bloquear la franja de las ' + (aBloquear()?.hora ?? '')"
+  mensaje="La franja no se ofrecerá a nuevas citas. Las citas ya agendadas se conservan y se listan para su gestión."
+  textoConfirmar="Bloquear" [procesando]="procesando()" (confirmar)="bloquear()" (cancelar)="aBloquear.set(null)">
+  <app-campo etiqueta="Motivo" para="motivo-bloqueo" [error]="errorBloqueo()">
+    <input id="motivo-bloqueo" name="motivo" maxlength="200" [(ngModel)]="motivo" [attr.aria-invalid]="!!errorBloqueo()" />
+  </app-campo>
+</app-dialogo-confirmacion>

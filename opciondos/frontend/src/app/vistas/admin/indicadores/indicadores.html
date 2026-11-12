@@ -1,0 +1,60 @@
+<section class="pagina" [attr.aria-busy]="procesando()">
+  <h1>Indicadores y reportes</h1>
+
+  <form class="rango" (ngSubmit)="generar()">
+    <app-campo etiqueta="Desde" para="desde">
+      <input id="desde" name="desde" type="date" required [(ngModel)]="desde" />
+    </app-campo>
+    <app-campo etiqueta="Hasta" para="hasta">
+      <input id="hasta" name="hasta" type="date" required [(ngModel)]="hasta" />
+    </app-campo>
+    <app-boton tipo="submit" [procesando]="procesando()">Generar</app-boton>
+  </form>
+
+  @if (error()) {
+    <app-aviso tipo="error">
+      {{ error() }} <button type="button" class="enlace" (click)="generar()">Reintentar</button>
+    </app-aviso>
+  }
+
+  @if (resumen(); as r) {
+    @if (totalOrdenes() === 0 && r.ingresos === 0) {
+      <app-estado-vacio titulo="No hay órdenes ni pagos en este rango." mensaje="Elija un rango de fechas más amplio." />
+    } @else {
+      <div class="cifras">
+        <app-tarjeta titulo="Ingresos cobrados" [destacada]="true">
+          <p class="cifra">{{ pesos(r.ingresos) }}</p>
+          <p class="texto-suave">Pagos registrados en caja</p>
+        </app-tarjeta>
+        <app-tarjeta titulo="Órdenes">
+          <p class="cifra">{{ totalOrdenes() }}</p>
+          <p class="texto-suave">Creadas en el rango</p>
+        </app-tarjeta>
+        <app-tarjeta titulo="Ocupación de franjas">
+          <p class="cifra">{{ r.ocupacion.porcentaje }} %</p>
+          <p class="texto-suave">{{ r.ocupacion.reservadas }} de {{ r.ocupacion.capacidad }} cupos</p>
+        </app-tarjeta>
+        <app-tarjeta titulo="Satisfacción promedio">
+          <p class="cifra">{{ r.satisfaccion.promedio !== null ? r.satisfaccion.promedio + ' / 5' : 'Sin datos' }}</p>
+          <p class="texto-suave">{{ r.satisfaccion.respuestas }} encuestas respondidas</p>
+        </app-tarjeta>
+      </div>
+
+      <div class="tablas">
+        <app-tarjeta titulo="Órdenes por estado">
+          <app-tabla-datos titulo="Órdenes por estado" [columnas]="columnasEstado" [filas]="r.ordenes_por_estado" [celda]="celdaEstado" />
+          <ng-template #celdaEstado let-fila let-columna="columna">
+            @if (columna.clave === 'estado') { <app-insignia-estado [estado]="$any(fila).estado" /> } @else { {{ fila[columna.clave] }} }
+          </ng-template>
+        </app-tarjeta>
+        <app-tarjeta titulo="Repuestos consumidos">
+          @if (r.repuestos.length) {
+            <app-tabla-datos titulo="Repuestos consumidos" [columnas]="columnasRepuestos" [filas]="r.repuestos" />
+          } @else {
+            <app-estado-vacio titulo="No se instalaron repuestos en este rango." />
+          }
+        </app-tarjeta>
+      </div>
+    }
+  }
+</section>

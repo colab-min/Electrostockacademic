@@ -1,0 +1,32 @@
+<section class="pagina">
+  <h1>Seguimiento de tu servicio</h1>
+
+  <app-tarjeta titulo="Consulta con tu código">
+    <form class="consulta" (ngSubmit)="buscar()">
+      <app-campo etiqueta="Código de seguimiento" para="codigo" ayuda="10 caracteres, lo encuentras en tu ticket.">
+        <input id="codigo" name="codigo" autocomplete="off" maxlength="10" required [(ngModel)]="texto"
+          [attr.aria-invalid]="error() ? true : null" />
+      </app-campo>
+      <app-boton tipo="submit" [procesando]="cargando()" [deshabilitado]="!texto.trim()">Consultar</app-boton>
+    </form>
+  </app-tarjeta>
+
+  @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
+
+  @if (cargando()) {
+    <div class="esqueleto" aria-busy="true"><span class="solo-lector">Cargando…</span></div>
+  } @else if (datos(); as d) {
+    <div class="resultado" aria-live="polite">
+      <app-tarjeta titulo="Estado del servicio" [destacada]="true">
+        <p class="vehiculo">{{ d.tipo }} · {{ d.modelo }}</p>
+        <app-insignia-estado [estado]="d.estado" [texto]="d.estado_publico" />
+        @if (d.entrega_estimada) {
+          <p class="texto-suave">Entrega estimada: {{ fecha(d.entrega_estimada) }}</p>
+        }
+      </app-tarjeta>
+      <app-tarjeta titulo="Línea de tiempo">
+        <app-linea-tiempo [eventos]="d.linea_tiempo" />
+      </app-tarjeta>
+    </div>
+  }
+</section>

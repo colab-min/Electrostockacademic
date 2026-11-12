@@ -1,0 +1,16 @@
+<div class="ticket-orden">
+  <div class="ticket-orden__papel">
+    <p class="ticket-orden__taller">{{ datos().taller }}</p>
+    <p class="ticket-orden__numero">{{ datos().number }}</p>
+    @if (datos().tracking_code; as codigo) {
+      <p>Código de seguimiento</p>
+      <p class="ticket-orden__codigo">{{ codigo }}</p>
+      <p>Consulta el estado en /seguimiento/{{ codigo }}</p>
+    }
+    <p>Ingreso: {{ fecha(datos().fecha_ingreso) }}</p>
+    <p>{{ datos().tipo }} · {{ datos().marca }} {{ datos().modelo }}</p>
+    <p>Serie: …{{ datos().serie_ultimos4 }}</p>
+    <p>Motivo: {{ datos().motivo }}</p>
+  </div>
+  <button type="button" class="ticket-orden__boton" (click)="imprimir()">Imprimir ticket</button>
+</div>

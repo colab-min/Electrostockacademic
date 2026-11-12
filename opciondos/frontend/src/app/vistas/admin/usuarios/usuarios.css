@@ -1,0 +1,3 @@
+:host { display: block; }
+.rol { min-height: 36px; padding: var(--espacio-1) var(--espacio-2); width: auto; }
+.formulario { max-width: none; }

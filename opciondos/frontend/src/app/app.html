@@ -1,0 +1,7 @@
+<app-barra-superior />
+<main class="contenido">
+  @if (aviso(); as a) {
+    <app-aviso [tipo]="a.tipo" class="aviso-ruta">{{ a.texto }}</app-aviso>
+  }
+  <router-outlet />
+</main>

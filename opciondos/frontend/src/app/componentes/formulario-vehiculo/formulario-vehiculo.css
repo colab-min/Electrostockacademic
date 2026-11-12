@@ -1,0 +1,4 @@
+:host { display: block; }
+fieldset { border: 1px solid var(--color-etiqueta); border-radius: var(--radio); padding: var(--espacio-4); margin: 0; min-width: 0; }
+legend { padding: 0 var(--espacio-2); font-family: var(--fuente-titulo); font-weight: 700; color: var(--color-accion); }
+.mayusculas { text-transform: uppercase; }

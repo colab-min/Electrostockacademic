@@ -1,0 +1,11 @@
+.calendario { display: grid; gap: var(--espacio-3); max-width: 420px; }
+.cabecera { display: flex; align-items: center; justify-content: space-between; }
+.titulo { font-family: var(--fuente-titulo); font-weight: 700; color: var(--color-accion); text-transform: capitalize; }
+.cabecera button { width: 40px; min-height: 40px; background: var(--color-campo); color: var(--color-texto); border: 1px solid var(--color-etiqueta); border-radius: var(--radio); cursor: pointer; }
+.rejilla { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--espacio-1); }
+.dia-semana { text-align: center; font-size: 12px; color: var(--color-etiqueta); }
+.rejilla button { min-height: 44px; border-radius: var(--radio); font: inherit; cursor: pointer; background: var(--color-campo); color: var(--color-texto); border: 1px solid var(--color-etiqueta); }
+.rejilla button:disabled { cursor: not-allowed; opacity: 0.55; border-style: dotted; }
+.rejilla .bloqueado { border-color: var(--color-registro); }
+.rejilla .cerrado { border-color: transparent; }
+.rejilla .seleccionado { background: var(--color-accion); color: var(--color-fondo); }

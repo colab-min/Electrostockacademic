@@ -1,0 +1,5 @@
+.contenedor { display: block; max-width: 640px; margin: 0 auto; }
+.casilla { display: flex; gap: var(--espacio-2); align-items: flex-start; font-size: 14px; }
+.enlace { background: none; border: none; padding: 0; color: var(--color-etiqueta); text-decoration: underline; font: inherit; cursor: pointer; }
+.aviso-privacidad { margin: 0; padding: var(--espacio-3); background: var(--color-campo); border-radius: var(--radio); font-size: 13px; }
+.secundario { margin: 0; text-align: center; font-size: 14px; }

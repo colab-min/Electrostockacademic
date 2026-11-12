@@ -1,0 +1,11 @@
+span {
+  display: inline-flex; align-items: center; gap: var(--espacio-1);
+  padding: 2px var(--espacio-2); border-radius: 999px; font-size: 12.5px; font-weight: 600;
+  border: 1px solid transparent; white-space: nowrap;
+}
+.correcto { background: var(--color-etiqueta); color: var(--color-fondo); }
+.informacion { border-color: var(--color-etiqueta); color: var(--color-etiqueta); }
+.advertencia { background: var(--color-accion); color: var(--color-fondo); }
+.alerta { border-color: var(--color-registro); color: var(--color-texto); }
+.alerta::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--color-registro); }
+.neutra { background: var(--color-campo); color: var(--color-texto); }

@@ -1,0 +1,68 @@
+<section class="pagina">
+  <h1>Asignación de mecánicos</h1>
+  @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
+  @if (exito()) { <app-aviso tipo="exito">{{ exito() }}</app-aviso> }
+
+  <app-tarjeta titulo="Mecánicos activos">
+    <ul class="mecanicos">
+      @for (m of activos(); track m.id) {
+        <li><strong>{{ m.full_name }}</strong><span class="texto-suave">{{ m.carga }} {{ m.carga === 1 ? 'orden' : 'órdenes' }} en taller</span></li>
+      }
+    </ul>
+  </app-tarjeta>
+
+  <ng-template #selector let-o>
+    <form class="asignar" (ngSubmit)="asignar(o)">
+      <label class="solo-lector" [for]="'mec-' + o.id">Mecánico para {{ o.number }}</label>
+      <select [id]="'mec-' + o.id" [name]="'mec-' + o.id" [(ngModel)]="elegidos[o.id]">
+        <option [ngValue]="null">Seleccione el mecánico</option>
+        @for (m of activos(); track m.id) {
+          @if (m.id !== o.mechanic_id) { <option [ngValue]="m.id">{{ m.full_name }} ({{ m.carga }})</option> }
+        }
+      </select>
+      <app-boton tipo="submit" [procesando]="procesando() === o.id" [deshabilitado]="!elegidos[o.id]">
+        {{ o.mechanic_id ? 'Reasignar' : 'Asignar' }}
+      </app-boton>
+    </form>
+  </ng-template>
+
+  <app-tarjeta titulo="Órdenes ingresadas" [destacada]="true">
+    @if (ordenes() === null && !error()) {
+      <div class="esqueleto" aria-busy="true"></div>
+    } @else if (ingresadas().length === 0) {
+      <app-estado-vacio titulo="No hay órdenes por asignar." />
+    } @else {
+      <ul class="ordenes">
+        @for (o of ingresadas(); track o.id) {
+          <li>
+            <div class="datos">
+              <div class="fila"><strong>{{ o.number }}</strong>
+                @if (o.priority) { <app-insignia-estado [estado]="o.priority" /> }</div>
+              <span>{{ o.vehicle.brand }} {{ o.vehicle.model }} · {{ o.intake_reason }}</span>
+              <span class="texto-suave">Llegada: {{ fecha(o.created_at) }}</span>
+            </div>
+            <ng-container *ngTemplateOutlet="selector; context: { $implicit: o }" />
+          </li>
+        }
+      </ul>
+    }
+  </app-tarjeta>
+
+  <app-tarjeta titulo="En taller (reasignación)">
+    @if (enTaller().length === 0) {
+      <app-estado-vacio titulo="No hay órdenes en taller." />
+    } @else {
+      <ul class="ordenes">
+        @for (o of enTaller(); track o.id) {
+          <li>
+            <div class="datos">
+              <div class="fila"><strong>{{ o.number }}</strong><app-insignia-estado [estado]="o.status" /></div>
+              <span>{{ o.vehicle.brand }} {{ o.vehicle.model }} · {{ o.mechanic_name }}</span>
+            </div>
+            <ng-container *ngTemplateOutlet="selector; context: { $implicit: o }" />
+          </li>
+        }
+      </ul>
+    }
+  </app-tarjeta>
+</section>

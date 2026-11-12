@@ -1,0 +1,28 @@
+<section class="pagina">
+  <h1>Encuesta de satisfacción</h1>
+  @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
+
+  @if (encuesta(); as e) {
+    @if (e.answered) {
+      <app-aviso tipo="exito">¡Gracias por calificarnos! Tu opinión sobre la orden {{ e.number }} nos ayuda a mejorar.</app-aviso>
+    } @else {
+      <app-tarjeta [titulo]="'¿Cómo te atendimos en la orden ' + e.number + '?'" [destacada]="true">
+        <form class="formulario" (ngSubmit)="enviar()">
+          <fieldset class="estrellas">
+            <legend>Califica de 1 a 5</legend>
+            @for (p of puntajes; track p) {
+              <label [class.elegida]="puntaje !== null && p <= puntaje">
+                <input type="radio" name="puntaje" [value]="p" [(ngModel)]="puntaje" />
+                <span aria-hidden="true">★</span><span class="solo-lector">{{ p }} de 5</span>
+              </label>
+            }
+          </fieldset>
+          <app-campo etiqueta="Comentario (opcional)" para="comentario" ayuda="Hasta 500 caracteres.">
+            <textarea id="comentario" name="comentario" rows="4" maxlength="500" [(ngModel)]="comentario"></textarea>
+          </app-campo>
+          <app-boton tipo="submit" [procesando]="procesando()" [deshabilitado]="!puntaje">Enviar calificación</app-boton>
+        </form>
+      </app-tarjeta>
+    }
+  }
+</section>

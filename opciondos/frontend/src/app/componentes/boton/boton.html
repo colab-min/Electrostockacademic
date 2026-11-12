@@ -1,0 +1,3 @@
+<button [type]="tipo()" [class]="variante()" [disabled]="deshabilitado() || procesando()" [attr.aria-busy]="procesando()">
+  @if (procesando()) { Procesando… } @else { <ng-content /> }
+</button>

@@ -1,0 +1,8 @@
+:host { display: block; }
+.mecanicos, .ordenes { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--espacio-3); }
+.mecanicos li { display: flex; justify-content: space-between; gap: var(--espacio-2); flex-wrap: wrap; }
+.ordenes li { display: grid; gap: var(--espacio-3); padding-bottom: var(--espacio-3); border-bottom: 1px solid var(--color-campo); }
+@media (min-width: 860px) { .ordenes li { grid-template-columns: 1fr 1fr; align-items: center; } }
+.datos { display: grid; gap: var(--espacio-1); }
+.asignar { display: grid; gap: var(--espacio-2); grid-template-columns: 1fr auto; align-items: center; }
+.esqueleto { height: 120px; border-radius: var(--radio); background: var(--color-campo); }

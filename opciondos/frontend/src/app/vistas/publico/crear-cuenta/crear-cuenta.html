@@ -1,0 +1,48 @@
+<app-tarjeta titulo="Crear cuenta" class="contenedor">
+  @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
+  <form class="formulario" (ngSubmit)="crear()">
+    <app-campo etiqueta="Nombres" para="nombres">
+      <input id="nombres" name="full_name" required autocomplete="name" [(ngModel)]="datos.full_name" [attr.aria-invalid]="invalido('full_name')" />
+    </app-campo>
+    <div class="formulario-2col">
+      <app-campo etiqueta="Tipo de documento" para="tipo">
+        <select id="tipo" name="document_type" [(ngModel)]="datos.document_type">
+          <option value="CC">Cédula de ciudadanía</option>
+          <option value="CE">Cédula de extranjería</option>
+          <option value="PA">Pasaporte</option>
+        </select>
+      </app-campo>
+      <app-campo etiqueta="Número de documento" para="documento">
+        <input id="documento" name="document_number" required [(ngModel)]="datos.document_number" [attr.aria-invalid]="invalido('document_number')" />
+      </app-campo>
+    </div>
+    <div class="formulario-2col">
+      <app-campo etiqueta="Teléfono" para="telefono">
+        <input id="telefono" name="phone" type="tel" required autocomplete="tel" [(ngModel)]="datos.phone" [attr.aria-invalid]="invalido('phone')" />
+      </app-campo>
+      <app-campo etiqueta="Correo" para="correo">
+        <input id="correo" name="email" type="email" required autocomplete="email" [(ngModel)]="datos.email" [attr.aria-invalid]="invalido('email')" />
+      </app-campo>
+    </div>
+    <app-campo etiqueta="Contraseña" para="contrasena" ayuda="Mínimo 10 caracteres, con mayúscula, minúscula, número y símbolo.">
+      <input id="contrasena" name="password" type="password" required autocomplete="new-password" [(ngModel)]="datos.password" />
+    </app-campo>
+    <div class="casilla">
+      <input id="autorizacion" name="data_consent" type="checkbox" [(ngModel)]="datos.data_consent" [attr.aria-invalid]="invalido('data_consent')" />
+      <label for="autorizacion">
+        Autorizo el tratamiento de mis datos personales según el
+        <button type="button" class="enlace" (click)="verAviso.set(!verAviso())" [attr.aria-expanded]="verAviso()">aviso de privacidad</button>
+      </label>
+    </div>
+    @if (verAviso()) {
+      <p class="aviso-privacidad">
+        Electrostock usa tus datos personales (nombre, documento, teléfono, correo y datos de tus vehículos) para gestionar
+        tus citas, las órdenes de trabajo de tus vehículos y el contacto contigo sobre esos servicios. Según la Ley 1581 de
+        2012, puedes conocer, actualizar y rectificar tus datos, y revocar esta autorización. Para hacerlo, acércate a la
+        recepción del taller.
+      </p>
+    }
+    <app-boton tipo="submit" [procesando]="procesando()">Crear cuenta</app-boton>
+  </form>
+  <p class="secundario">¿Ya tienes cuenta? <a routerLink="/ingresar">Iniciar sesión</a></p>
+</app-tarjeta>

@@ -1,0 +1,9 @@
+<ol>
+  @for (e of eventos(); track $index) {
+    <li [class.ultimo]="$last">
+      <span class="titulo">{{ e.titulo }}</span>
+      <time [attr.datetime]="e.fecha">{{ formato(e.fecha) }}</time>
+      @if (e.detalle) { <span class="detalle">{{ e.detalle }}</span> }
+    </li>
+  }
+</ol>

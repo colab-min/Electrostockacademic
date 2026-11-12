@@ -1,0 +1,4 @@
+<label [for]="para()">{{ etiqueta() }}</label>
+<ng-content />
+@if (ayuda()) { <p class="ayuda">{{ ayuda() }}</p> }
+@if (error()) { <p class="error" role="alert">{{ error() }}</p> }

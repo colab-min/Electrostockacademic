@@ -1,0 +1,90 @@
+<section class="pagina">
+  <div class="fila encabezado">
+    <h1>Catálogo y repuestos por servicio</h1>
+    <app-boton (click)="abrir('nuevo')">Nuevo servicio</app-boton>
+  </div>
+
+  @if (exito()) { <app-aviso tipo="exito">{{ exito() }}</app-aviso> }
+  @if (error()) {
+    <app-aviso tipo="error">{{ error() }} <button type="button" class="enlace" (click)="cargar()">Reintentar</button></app-aviso>
+  }
+
+  <div class="columnas">
+    <app-tarjeta titulo="Servicios">
+      @if (servicios(); as lista) {
+        <ul class="servicios">
+          @for (s of lista; track s.id) {
+            <li>
+              <button type="button" [class.activo]="$any(seleccion())?.id === s.id" (click)="abrir(s)">
+                <strong>{{ s.name }}</strong>
+                <span class="codigo texto-suave">{{ s.code }}</span>
+                <span class="texto-suave">{{ pesos(s.labor_price) }} · {{ s.duration_min }} min · {{ s.repuestos.length }} repuesto(s)</span>
+                @if (!s.active) { <app-insignia-estado estado="INACTIVE" /> }
+              </button>
+            </li>
+          }
+        </ul>
+      } @else if (!error()) {
+        <p class="texto-suave" aria-busy="true">Cargando…</p>
+      }
+    </app-tarjeta>
+
+    @if (seleccion(); as s) {
+      <div class="detalle">
+        <app-tarjeta [titulo]="s === 'nuevo' ? 'Nuevo servicio' : 'Ficha de ' + s.name" [destacada]="true">
+          @if (errorForm()) { <app-aviso tipo="error">{{ errorForm() }}</app-aviso> }
+          <form class="formulario-2col" (ngSubmit)="guardar()">
+            <app-campo etiqueta="Código" para="codigo">
+              <input id="codigo" name="code" required maxlength="20" [(ngModel)]="form.code" [disabled]="s !== 'nuevo'" [attr.aria-invalid]="camposError().includes('code')" />
+            </app-campo>
+            <app-campo etiqueta="Nombre" para="nombre-servicio">
+              <input id="nombre-servicio" name="name" required maxlength="120" [(ngModel)]="form.name" [attr.aria-invalid]="camposError().includes('name')" />
+            </app-campo>
+            <app-campo etiqueta="Mano de obra (COP)" para="precio" [error]="camposError().includes('labor_price') ? 'Debe ser mayor a cero.' : null">
+              <input id="precio" name="labor_price" type="number" min="1" required [(ngModel)]="form.labor_price" [attr.aria-invalid]="camposError().includes('labor_price')" />
+            </app-campo>
+            <app-campo etiqueta="Duración (minutos)" para="duracion" ayuda="Define cuántas franjas de 1 hora ocupa la cita."
+              [error]="camposError().includes('duration_min') ? 'Debe ser mayor a cero.' : null">
+              <input id="duracion" name="duration_min" type="number" min="1" required [(ngModel)]="form.duration_min" [attr.aria-invalid]="camposError().includes('duration_min')" />
+            </app-campo>
+            <label class="casilla"><input type="checkbox" name="active" [(ngModel)]="form.active" /> Activo para nuevas citas</label>
+            <div class="fila">
+              <app-boton tipo="submit" [procesando]="guardando()">Guardar servicio</app-boton>
+              <app-boton variante="secundario" (click)="seleccion.set(null)">Cerrar</app-boton>
+            </div>
+          </form>
+        </app-tarjeta>
+
+        @if (s !== 'nuevo') {
+          <app-tarjeta titulo="Repuestos requeridos">
+            @if (errorLineas()) { <app-aviso tipo="error">{{ errorLineas() }}</app-aviso> }
+            @for (l of lineas(); track l.part_id) {
+              <div class="fila linea">
+                <span class="nombre"><span class="codigo">{{ l.sku }}</span> {{ l.name }} <span class="texto-suave">· disponible {{ l.available }}</span></span>
+                <label class="solo-lector" [for]="'cant-' + l.part_id">Cantidad de {{ l.name }}</label>
+                <input class="cantidad" type="number" min="1" [id]="'cant-' + l.part_id" [ngModel]="l.quantity" (ngModelChange)="cambiarCantidad(l.part_id, $event)" />
+                <app-boton variante="peligro" (click)="quitar(l.part_id)">Quitar</app-boton>
+              </div>
+            } @empty {
+              <app-estado-vacio titulo="Este servicio no tiene repuestos definidos." />
+            }
+            <div class="fila agregar">
+              <app-campo etiqueta="Agregar repuesto" para="agregar-repuesto">
+                <select id="agregar-repuesto" name="agregar" [(ngModel)]="agregarId">
+                  <option [ngValue]="null" disabled>Busque por SKU o nombre</option>
+                  @for (r of disponibles(); track r.id) { <option [ngValue]="r.id">{{ r.sku }} · {{ r.name }} (disp. {{ r.available }})</option> }
+                </select>
+              </app-campo>
+              <app-campo etiqueta="Cantidad" para="agregar-cantidad">
+                <input id="agregar-cantidad" class="cantidad" type="number" min="1" [(ngModel)]="agregarCantidad" />
+              </app-campo>
+              <app-boton variante="secundario" [deshabilitado]="!agregarId" (click)="agregar()">Agregar repuesto</app-boton>
+            </div>
+            <p class="texto-suave">Los cambios aplican solo a citas futuras; las reservas existentes no cambian.</p>
+            <div><app-boton [procesando]="guardandoLineas()" (click)="guardarLineas()">Guardar repuestos</app-boton></div>
+          </app-tarjeta>
+        }
+      </div>
+    }
+  </div>
+</section>

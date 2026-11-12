@@ -1,0 +1,8 @@
+:host { display: block; }
+.vehiculo { margin: 0; font-weight: 600; }
+.texto-suave { margin: 0; }
+.acciones { display: grid; gap: var(--espacio-2); }
+.acciones app-boton { display: block; }
+.acciones app-boton ::ng-deep button { min-height: 56px; }
+.acciones a { text-align: center; padding: var(--espacio-2); }
+.esqueleto { height: 200px; border-radius: var(--radio); background: var(--color-superficie); }

@@ -1,0 +1,15 @@
+:host { display: inline-block; }
+button {
+  min-height: 44px;
+  padding: var(--espacio-2) var(--espacio-6);
+  border-radius: var(--radio);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+}
+.primario { background: var(--color-accion); color: var(--color-fondo); border: none; box-shadow: var(--descalce) var(--descalce) 0 var(--color-registro); }
+.secundario { background: transparent; color: var(--color-etiqueta); border: 1px solid var(--color-etiqueta); }
+.peligro { background: transparent; color: var(--color-texto); border: 2px solid var(--color-registro); }
+.neutro { background: var(--color-campo); color: var(--color-texto); border: 1px solid var(--color-campo); }
+button:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }

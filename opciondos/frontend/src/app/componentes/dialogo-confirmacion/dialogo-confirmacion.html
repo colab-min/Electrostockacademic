@@ -1,0 +1,9 @@
+<dialog #dialogo aria-labelledby="dialogo-titulo" (cancel)="$event.preventDefault(); cancelar.emit()">
+  <h2 id="dialogo-titulo">{{ titulo() }}</h2>
+  @if (mensaje()) { <p>{{ mensaje() }}</p> }
+  <ng-content />
+  <div class="acciones">
+    <app-boton variante="secundario" (click)="cancelar.emit()">{{ textoCancelar() }}</app-boton>
+    <app-boton variante="peligro" [procesando]="procesando()" (click)="confirmar.emit()">{{ textoConfirmar() }}</app-boton>
+  </div>
+</dialog>

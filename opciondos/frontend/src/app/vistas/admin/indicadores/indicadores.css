@@ -1,0 +1,9 @@
+:host { display: block; }
+.rango { display: grid; gap: var(--espacio-4); align-items: end; }
+@media (min-width: 720px) { .rango { grid-template-columns: 220px 220px auto; justify-content: start; } }
+.cifras { display: grid; gap: var(--espacio-4); grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.cifras p { margin: 0; }
+.cifra { font-family: var(--fuente-titulo); font-size: 34px; font-weight: 800; color: var(--color-texto); line-height: 1.1; }
+.tablas { display: grid; gap: var(--espacio-4); }
+@media (min-width: 960px) { .tablas { grid-template-columns: 1fr 1fr; align-items: start; } }
+.enlace { background: none; border: none; padding: 0; margin-left: var(--espacio-2); color: inherit; text-decoration: underline; font: inherit; cursor: pointer; }

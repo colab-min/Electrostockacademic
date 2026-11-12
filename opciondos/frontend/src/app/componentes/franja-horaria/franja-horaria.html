@@ -1,0 +1,6 @@
+<button type="button" [class]="estado()" [class.seleccionada]="seleccionada()" [disabled]="estado() !== 'libre'"
+  [attr.aria-pressed]="seleccionada()" (click)="elegir.emit()">
+  <span class="hora">{{ hora() }}</span>
+  <span class="estado">{{ etiqueta() }}</span>
+  @if (detalle()) { <span class="detalle">{{ detalle() }}</span> }
+</button>

@@ -1,0 +1,2 @@
+.contenido { max-width: var(--ancho-max); margin: 0 auto; padding: var(--espacio-6) var(--espacio-4); }
+.aviso-ruta { margin-bottom: var(--espacio-4); }

@@ -1,0 +1,142 @@
+<section class="pagina">
+  <h1>Agendar cita</h1>
+
+  @if (!confirmada()) {
+    <ol class="pasos" aria-label="Pasos para agendar">
+      @for (p of pasos; track p) {
+        <li [class.activo]="paso() === $index + 1" [attr.aria-current]="paso() === $index + 1 ? 'step' : null">
+          <span class="numero">{{ $index + 1 }}</span> {{ p }}
+        </li>
+      }
+    </ol>
+  }
+
+  @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
+
+  @if (confirmada() && cita(); as c) {
+    <app-tarjeta titulo="¡Tu cita está confirmada!" [destacada]="true">
+      <p class="codigo-grande">{{ c.code }}</p>
+      <p>{{ c.service.name }} · {{ fechaHora(c.starts_at) }}</p>
+      <p>{{ c.vehicle.brand }} {{ c.vehicle.model }} ({{ c.vehicle.serial_number }})</p>
+      @for (r of c.repuestos; track r.name) { <p class="texto-suave">{{ r.name }} x{{ r.quantity }} - apartada</p> }
+      <app-aviso tipo="informacion">{{ limite(c) }}</app-aviso>
+      <a class="accion" routerLink="/cliente/citas">Ir a mis citas</a>
+    </app-tarjeta>
+  } @else {
+    @switch (paso()) {
+      @case (1) {
+        <app-tarjeta titulo="1. Elige tu vehículo y el servicio">
+          @if (vehiculos(); as lista) {
+            @if (lista.length === 0) {
+              <app-estado-vacio titulo="Aún no tienes vehículos registrados" mensaje="Registra tu vehículo eléctrico para agendar tu primera cita.">
+                <a class="accion" routerLink="/cliente/vehiculos/nuevo">Registrar vehículo</a>
+              </app-estado-vacio>
+            } @else {
+              <div class="formulario">
+                <app-campo etiqueta="Vehículo" para="vehiculo">
+                  <select id="vehiculo" [ngModel]="vehiculoId()" (ngModelChange)="vehiculoId.set($event)">
+                    <option [ngValue]="null" disabled>Selecciona tu vehículo</option>
+                    @for (v of lista; track v.id) {
+                      <option [ngValue]="v.id">{{ v.brand }} {{ v.model }} · {{ v.serial_number }} · {{ v.nominal_voltage_v }} V</option>
+                    }
+                  </select>
+                </app-campo>
+                <app-campo etiqueta="Servicio" para="servicio">
+                  <select id="servicio" [ngModel]="servicioId()" (ngModelChange)="servicioId.set($event)">
+                    <option [ngValue]="null" disabled>Selecciona el servicio</option>
+                    @for (s of servicios(); track s.id) {
+                      <option [ngValue]="s.id">{{ s.name }} · {{ pesos(s.labor_price) }} · {{ s.duration_min }} min</option>
+                    }
+                  </select>
+                </app-campo>
+
+                @if (servicio(); as s) {
+                  <div class="repuestos">
+                    @for (r of s.repuestos; track r.part_id) {
+                      <p>Requiere {{ r.name }} x{{ r.quantity }} · <span class="texto-suave">disponible: {{ r.available }}</span></p>
+                    } @empty {
+                      <p class="texto-suave">Este servicio no requiere repuestos.</p>
+                    }
+                  </div>
+                  @if (faltante()) { <app-aviso tipo="error">{{ faltante() }}</app-aviso> }
+                  @if (riesgoVoltaje() && !faltante()) {
+                    <app-aviso tipo="advertencia">{{ riesgoVoltaje() }}</app-aviso>
+                    <app-campo etiqueta="Motivo para continuar" para="motivo">
+                      <textarea id="motivo" rows="2" maxlength="200" [(ngModel)]="motivoVoltaje"></textarea>
+                    </app-campo>
+                  }
+                }
+                <app-boton [deshabilitado]="!vehiculoId() || !servicioId() || !!faltante() || (!!riesgoVoltaje() && !motivoVoltaje.trim())"
+                  (click)="irAPaso(2)">Continuar</app-boton>
+              </div>
+            }
+          } @else if (!error()) {
+            <p class="texto-suave" aria-busy="true">Cargando…</p>
+          }
+        </app-tarjeta>
+      }
+      @case (2) {
+        <app-tarjeta titulo="2. Elige el día">
+          <p class="texto-suave">Los días punteados no tienen cupo o repuesto para {{ servicio()?.name }}.</p>
+          <app-calendario-mes [mes]="mes()" [dias]="dias() ?? {}" [seleccionado]="fecha()"
+            (elegir)="elegirDia($event)" (cambiarMes)="cargarMes($event)" [attr.aria-busy]="dias() === null" />
+          @if (mesSinCupo()) {
+            <app-aviso tipo="informacion">Ningún día de este mes tiene cupo para este servicio. Prueba el mes siguiente.</app-aviso>
+          }
+          <div class="fila"><app-boton variante="secundario" (click)="irAPaso(1)">Atrás</app-boton></div>
+        </app-tarjeta>
+      }
+      @case (3) {
+        <app-tarjeta [titulo]="'3. Elige la hora · ' + fechaLarga(fecha() ?? '')">
+          @if (servicio(); as s) {
+            @for (r of s.repuestos; track r.part_id) { <p class="texto-suave">Se apartará: {{ r.name }} x{{ r.quantity }}</p> }
+          }
+          @if (franjas(); as lista) {
+            @if (diaSinCupo()) {
+              <app-estado-vacio titulo="Este día ya no tiene cupo. Elige otro día.">
+                <app-boton variante="secundario" (click)="irAPaso(2)">Elegir otro día</app-boton>
+              </app-estado-vacio>
+            } @else {
+              <div class="franjas" [attr.aria-busy]="procesando()">
+                @for (f of lista; track f.id) {
+                  <app-franja-horaria [hora]="f.hora" [estado]="f.estado" [detalle]="f.ocupados + ' de ' + f.capacidad + ' cupos ocupados'"
+                    (elegir)="elegirHora(f)" />
+                }
+              </div>
+              @if (procesando()) { <p class="texto-suave">Procesando…</p> }
+            }
+          } @else if (!error()) {
+            <p class="texto-suave" aria-busy="true">Cargando…</p>
+          }
+          <div class="fila"><app-boton variante="secundario" (click)="irAPaso(2)">Atrás</app-boton></div>
+        </app-tarjeta>
+      }
+      @case (4) {
+        @if (cita(); as c) {
+          <app-tarjeta titulo="4. Revisa y confirma" [destacada]="true">
+            @if (expirada()) {
+              <app-aviso tipo="error"><strong>Tu reserva expiró</strong>. Pasaron los 5 minutos y el cupo y los repuestos se liberaron. Puedes elegir otra hora.</app-aviso>
+              <app-boton (click)="reiniciarHora()">Elegir otra hora</app-boton>
+            } @else {
+              <p class="contador" role="timer" aria-live="off">Tu cupo está apartado por <strong>{{ contador() }}</strong></p>
+              <dl class="resumen">
+                <dt>Vehículo</dt><dd>{{ c.vehicle.brand }} {{ c.vehicle.model }} ({{ c.vehicle.serial_number }})</dd>
+                <dt>Servicio</dt><dd>{{ c.service.name }} · {{ pesos(c.service.labor_price) }}</dd>
+                <dt>Fecha y hora</dt><dd>{{ fechaHora(c.starts_at) }}</dd>
+                <dt>Repuestos</dt>
+                <dd>
+                  @for (r of c.repuestos; track r.name) { <span class="bloque">{{ r.name }} x{{ r.quantity }} - apartada</span> }
+                  @empty { Sin repuestos }
+                </dd>
+              </dl>
+              <div class="fila">
+                <app-boton [procesando]="procesando()" (click)="confirmar()">Confirmar cita</app-boton>
+                <app-boton variante="secundario" [deshabilitado]="procesando()" (click)="abandonar()">Cancelar</app-boton>
+              </div>
+            }
+          </app-tarjeta>
+        }
+      }
+    }
+  }
+</section>

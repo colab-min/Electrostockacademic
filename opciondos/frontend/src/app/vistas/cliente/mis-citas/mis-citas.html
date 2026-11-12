@@ -1,0 +1,71 @@
+<section class="pagina">
+  <div class="fila encabezado">
+    <h1>Mis citas y vehículos</h1>
+    <a class="accion" routerLink="/cliente/agendar">Agendar nueva cita</a>
+  </div>
+
+  @if (error()) {
+    <app-aviso tipo="error">{{ error() }} <button type="button" class="enlace" (click)="cargar()">Reintentar</button></app-aviso>
+  }
+  @if (exito()) { <app-aviso tipo="exito">{{ exito() }}</app-aviso> }
+
+  <app-tarjeta titulo="Próximas citas">
+    @if (citas(); as lista) {
+      @for (c of lista; track c.id) {
+        <article class="cita">
+          <div class="fila">
+            <strong>{{ c.service.name }}</strong>
+            <app-insignia-estado [estado]="c.status" />
+          </div>
+          <p>{{ fechaHora(c.starts_at) }} · {{ c.vehicle.brand }} {{ c.vehicle.model }} ({{ c.vehicle.serial_number }})</p>
+          <p class="texto-suave">Código <span class="codigo">{{ c.code }}</span>
+            @for (r of c.repuestos; track r.name) { · {{ r.name }} x{{ r.quantity }} - apartada }
+          </p>
+          @if (c.puede_cambiar) {
+            <p class="texto-suave">{{ limite(c) }}</p>
+            <div class="fila">
+              <a class="accion secundaria" [routerLink]="['/cliente/citas', c.id, 'reprogramar']">Reprogramar</a>
+              <app-boton variante="peligro" (click)="abrirCancelar(c)">Cancelar cita</app-boton>
+            </div>
+          } @else {
+            <app-aviso tipo="advertencia">{{ fueraVentana }}</app-aviso>
+          }
+        </article>
+      } @empty {
+        <app-estado-vacio titulo="No tienes citas próximas">
+          <a class="accion" routerLink="/cliente/agendar">Agendar nueva cita</a>
+        </app-estado-vacio>
+      }
+    } @else if (!error()) {
+      <p class="texto-suave" aria-busy="true">Cargando…</p>
+    }
+  </app-tarjeta>
+
+  <app-tarjeta titulo="Mis vehículos">
+    @if (vehiculos(); as lista) {
+      <ul class="vehiculos">
+        @for (v of lista; track v.id) {
+          <li>
+            <span><strong>{{ v.brand }} {{ v.model }}</strong> · {{ v.serial_number }}{{ v.plate ? ' · ' + v.plate : '' }} · {{ v.nominal_voltage_v }} V</span>
+            <a [routerLink]="['/cliente/vehiculos', v.id, 'historial']">Ver historial</a>
+          </li>
+        }
+      </ul>
+      @if (lista.length === 0) {
+        <app-estado-vacio titulo="Aún no tienes vehículos registrados" mensaje="Registra tu vehículo eléctrico para agendar tu primera cita.">
+          <a class="accion" routerLink="/cliente/vehiculos/nuevo">Registrar vehículo</a>
+        </app-estado-vacio>
+      } @else {
+        <a routerLink="/cliente/vehiculos/nuevo">Registrar otro vehículo</a>
+      }
+    } @else if (!error()) {
+      <p class="texto-suave" aria-busy="true">Cargando…</p>
+    }
+  </app-tarjeta>
+</section>
+
+<app-dialogo-confirmacion [abierto]="aCancelar() !== null" [titulo]="'Cancelar la cita ' + (aCancelar()?.code ?? '')"
+  mensaje="Se liberarán tu cupo y los repuestos apartados. Esta acción no se puede deshacer."
+  textoConfirmar="Cancelar cita" [procesando]="procesando()" (confirmar)="cancelar()" (cancelar)="aCancelar.set(null)">
+  @if (errorCancelar()) { <app-aviso tipo="error">{{ errorCancelar() }}</app-aviso> }
+</app-dialogo-confirmacion>

@@ -1,0 +1,72 @@
+<section class="pagina">
+  <h1>Crear y cancelar orden</h1>
+  @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
+
+  @if (creada(); as o) {
+    <app-tarjeta [titulo]="'Orden ' + o.number + ' creada'" [destacada]="true">
+      <app-aviso tipo="advertencia">Entregue este código al cliente: solo se muestra ahora y no se puede recuperar después.</app-aviso>
+      <div class="codigo-bloque">
+        <span class="texto-suave">Código de seguimiento</span>
+        <span class="codigo">{{ o.tracking_code }}</span>
+        <app-boton variante="secundario" (click)="copiar(o.tracking_code)">{{ copiado() ? 'Código copiado' : 'Copiar código' }}</app-boton>
+      </div>
+      @if (ticket(); as t) { <app-ticket-orden [datos]="t" /> }
+    </app-tarjeta>
+  }
+
+  <app-tarjeta titulo="Citas de hoy">
+    <app-buscador-vehiculo etiqueta="Código de cita, serie o placa" [buscando]="buscando()" (buscar)="buscar($event)" />
+    @if (citas(); as lista) {
+      @if (lista.length === 0) {
+        <app-estado-vacio titulo="No se encontró una cita con ese código o serie."
+          mensaje="Si el vehículo llegó sin cita, regístrelo en Ingreso." />
+      } @else {
+        <div class="rejilla">
+          @for (c of lista; track c.id) {
+            <div class="cita">
+              <p class="codigo-cita">{{ c.code }} · {{ fecha(c.starts_at) }}</p>
+              <p>{{ c.vehicle.type_label }} · {{ c.vehicle.brand }} {{ c.vehicle.model }}</p>
+              <p class="texto-suave">Serie {{ c.vehicle.serial_number }}@if (c.vehicle.plate) { · Placa {{ c.vehicle.plate }} }</p>
+              <p class="texto-suave">{{ c.customer.full_name }} · {{ c.service.name }}</p>
+              <app-campo etiqueta="Motivo de ingreso (opcional)" [para]="'motivo-' + c.id">
+                <input [id]="'motivo-' + c.id" [name]="'motivo-' + c.id" maxlength="500" [(ngModel)]="motivos[c.id]" />
+              </app-campo>
+              <app-boton [procesando]="procesando() === c.id" (click)="crear(c)">Generar orden</app-boton>
+            </div>
+          }
+        </div>
+      }
+    } @else if (!error()) {
+      <div class="esqueleto" aria-busy="true"></div>
+    }
+  </app-tarjeta>
+
+  <app-tarjeta titulo="Órdenes que se pueden cancelar">
+    @if (ordenes().length === 0) {
+      <app-estado-vacio titulo="No hay órdenes Ingresadas, Asignadas ni en Pendiente de instalación." />
+    } @else {
+      <ul class="lista">
+        @for (o of ordenes(); track o.id) {
+          <li>
+            <span><strong>{{ o.number }}</strong> · {{ o.vehicle.brand }} {{ o.vehicle.model }} · {{ o.intake_reason }}</span>
+            <span class="fila">
+              <app-insignia-estado [estado]="o.status" />
+              <app-boton variante="peligro" (click)="pedirCancelar(o)">Cancelar orden</app-boton>
+            </span>
+          </li>
+        }
+      </ul>
+    }
+  </app-tarjeta>
+
+  <app-dialogo-confirmacion [abierto]="aCancelar() !== null" [titulo]="'¿Cancelar la orden ' + (aCancelar()?.number ?? '') + '?'"
+    mensaje="Se liberan sus repuestos reservados y sus franjas. Si viene de una cita, la cita sigue Atendida."
+    textoConfirmar="Cancelar orden" [procesando]="cancelando()" (confirmar)="cancelar()" (cancelar)="aCancelar.set(null)">
+    @if (aCancelar()?.status === 'PENDING_INSTALLATION') {
+      <app-campo etiqueta="Motivo (obligatorio)" para="motivo-cancelar">
+        <input id="motivo-cancelar" name="motivo-cancelar" maxlength="300" [(ngModel)]="motivoCancelar" />
+      </app-campo>
+    }
+    @if (errorCancelar()) { <app-aviso tipo="error">{{ errorCancelar() }}</app-aviso> }
+  </app-dialogo-confirmacion>
+</section>

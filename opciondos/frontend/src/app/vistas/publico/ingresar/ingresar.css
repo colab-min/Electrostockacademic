@@ -1,0 +1,4 @@
+.portal { display: grid; gap: var(--espacio-6); align-items: center; }
+.bienvenida p { color: var(--color-etiqueta); max-width: 46ch; }
+.secundario { margin: 0; text-align: center; font-size: 14px; }
+@media (min-width: 860px) { .portal { grid-template-columns: 1.1fr 1fr; min-height: 60vh; } }

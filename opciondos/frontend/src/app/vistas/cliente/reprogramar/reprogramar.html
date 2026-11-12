@@ -1,0 +1,60 @@
+<section class="pagina">
+  <h1>Reprogramar cita</h1>
+
+  @if (noEncontrada()) {
+    <app-estado-vacio titulo="Cita no encontrada" mensaje="Esta cita no existe o ya no está vigente.">
+      <a routerLink="/cliente/citas">Volver a mis citas</a>
+    </app-estado-vacio>
+  } @else if (cita(); as c) {
+    <app-tarjeta [titulo]="c.service.name" [destacada]="true">
+      <p>{{ hecha() ? 'Nuevo horario' : 'Horario actual' }}: <strong>{{ fechaHora(c.starts_at) }}</strong> · <span class="codigo">{{ c.code }}</span></p>
+      <p class="texto-suave">{{ c.vehicle.brand }} {{ c.vehicle.model }} ({{ c.vehicle.serial_number }})
+        @for (r of c.repuestos; track r.name) { · {{ r.name }} x{{ r.quantity }} se conserva }
+      </p>
+      @if (hecha()) {
+        <app-aviso tipo="exito">Tu cita quedó reprogramada. {{ limite(c) }}</app-aviso>
+        <a routerLink="/cliente/citas">Volver a mis citas</a>
+      }
+    </app-tarjeta>
+
+    @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
+
+    @if (!hecha()) {
+      @if (!c.puede_cambiar) {
+        <app-aviso tipo="advertencia">{{ fueraVentana }}</app-aviso>
+      } @else {
+        <div class="columnas">
+          <app-tarjeta titulo="Nuevo día">
+            <app-calendario-mes [mes]="mes()" [dias]="dias()" [seleccionado]="fecha()" (elegir)="elegirDia($event)" (cambiarMes)="cargarMes($event)" />
+          </app-tarjeta>
+          @if (fecha(); as f) {
+            <app-tarjeta [titulo]="'Nueva hora · ' + fechaLarga(f)">
+              @if (franjas(); as lista) {
+                @if (sinHora()) {
+                  <app-aviso tipo="informacion">No hay otra hora disponible ese día. Tu cita sigue igual.</app-aviso>
+                } @else {
+                  <div class="franjas">
+                    @for (fr of lista; track fr.id) {
+                      <app-franja-horaria [hora]="fr.hora" [estado]="fr.estado" [seleccionada]="fr.hora === hora()"
+                        [detalle]="fr.ocupados + ' de ' + fr.capacidad + ' cupos ocupados'" (elegir)="hora.set(fr.hora)" />
+                    }
+                  </div>
+                  <div class="fila">
+                    <app-boton [deshabilitado]="!hora()" [procesando]="procesando()" (click)="confirmar()">Confirmar cambio</app-boton>
+                    <a routerLink="/cliente/citas">Volver sin cambios</a>
+                  </div>
+                }
+              } @else {
+                <p class="texto-suave" aria-busy="true">Cargando…</p>
+              }
+            </app-tarjeta>
+          }
+        </div>
+      }
+    }
+  } @else if (!error()) {
+    <p class="texto-suave" aria-busy="true">Cargando…</p>
+  } @else {
+    <app-aviso tipo="error">{{ error() }}</app-aviso>
+  }
+</section>

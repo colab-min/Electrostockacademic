@@ -1,0 +1,9 @@
+:host { display: block; }
+button { width: 100%; display: grid; gap: 2px; text-align: left; padding: var(--espacio-3); min-height: 64px; border-radius: var(--radio); background: var(--color-campo); color: var(--color-texto); border: 1px solid var(--color-etiqueta); font: inherit; cursor: pointer; }
+.hora { font-weight: 700; font-size: 16px; }
+.estado { font-size: 13px; color: var(--color-etiqueta); }
+.detalle { font-size: 12.5px; }
+.sin-cupo { border-style: dotted; opacity: 0.6; cursor: not-allowed; }
+.bloqueado { border-color: var(--color-registro); opacity: 0.7; cursor: not-allowed; }
+.seleccionada { background: var(--color-accion); color: var(--color-fondo); border-color: var(--color-accion); box-shadow: var(--descalce) var(--descalce) 0 var(--color-registro); }
+.seleccionada .estado { color: var(--color-fondo); }
