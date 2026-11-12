@@ -1,2 +1,4 @@
-.espacio { display: grid; place-items: center; gap: var(--espacio-1); min-height: 120px; border: 2px dashed var(--color-etiqueta); border-radius: var(--radio); color: var(--color-etiqueta); font-size: 14px; text-align: center; padding: var(--espacio-4); }
-.rotulo { font-size: 12.5px; }
+.espacio { display: grid; place-items: center; gap: var(--espacio-1); min-height: 120px; border: 2px dashed var(--color-etiqueta-tenue);
+  border-radius: var(--radio-tarjeta); color: var(--color-etiqueta); font-size: var(--texto-14); text-align: center; padding: var(--espacio-4);
+  background: var(--color-etiqueta-suave); }
+.rotulo { font-size: var(--texto-12); }

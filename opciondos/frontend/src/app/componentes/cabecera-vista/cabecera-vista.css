@@ -1,0 +1,9 @@
+.cabecera { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--espacio-4);
+  padding-bottom: var(--espacio-4); border-bottom: 1px solid var(--color-etiqueta-suave); }
+.texto { display: grid; gap: var(--espacio-2); min-width: 0; }
+h1 { margin: 0; font-size: var(--texto-32); text-shadow: 2px 2px 0 var(--color-registro); }
+.hu { justify-self: start; padding: 2px var(--espacio-3); border-radius: var(--radio-pildora); font-size: var(--texto-12); font-weight: 700;
+  color: var(--color-etiqueta); border: 1.5px solid var(--color-etiqueta); }
+.contexto { margin: 0; color: var(--color-etiqueta); max-width: 60ch; }
+.ilustracion { display: none; }
+@media (min-width: 768px) { .ilustracion { display: inline-block; } }

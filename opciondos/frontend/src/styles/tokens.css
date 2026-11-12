@@ -1,23 +1,84 @@
-/* Paleta Riso wa-iro (IS-4 7.2) y tipografía (IS-4 7.3). Único archivo con colores. */
+/*
+ * Sistema visual Riso wa-iro (IS-4 sección 7). ÚNICO archivo con colores.
+ * Contrastes (IS-4 7.2): texto sobre superficie 7,0:1; etiqueta sobre superficie 4,60:1;
+ * acción sobre superficie 5,0:1; fondo (Kon) sobre acción 6,7:1. El caqui nunca es texto.
+ */
 :root {
-  --color-fondo: #2b3a55;      /* Kon: fondo */
-  --color-superficie: #3a4c6e; /* Ai: tarjetas y paneles */
-  --color-campo: #222e44;      /* Tetsukon: campos y barras */
-  --color-etiqueta: #9ec5c1;   /* Kamenozoki: etiquetas, bordes, botón secundario */
-  --color-accion: #e3c27a;     /* Kuchinashi: botón principal, títulos, selección */
-  --color-registro: #c8724f;   /* Kaki: solo bordes y detalles, nunca texto */
-  --color-texto: #efe8da;      /* Kinari: texto */
+  /* --- Paleta base ---------------------------------------------------------------------- */
+  --color-fondo: #2b3a55;      /* Kon */
+  --color-superficie: #3a4c6e; /* Ai */
+  --color-campo: #222e44;      /* Tetsukon */
+  --color-etiqueta: #9ec5c1;   /* Kamenozoki */
+  --color-accion: #e3c27a;     /* Kuchinashi */
+  --color-registro: #c8724f;   /* Kaki: solo sombras, bordes y puntos */
+  --color-texto: #efe8da;      /* Kinari */
 
+  /* --- Variantes derivadas (±6-10 % de luminosidad, sin colores nuevos) --------------------- */
+  --color-accion-hover: color-mix(in oklab, var(--color-accion) 92%, var(--color-texto));
+  --color-accion-activo: color-mix(in oklab, var(--color-accion) 90%, var(--color-fondo));
+  --color-superficie-alta: color-mix(in oklab, var(--color-superficie) 97%, var(--color-texto));
+  --color-superficie-hover: color-mix(in oklab, var(--color-superficie) 92%, var(--color-texto));
+  --color-campo-hover: color-mix(in oklab, var(--color-campo) 92%, var(--color-etiqueta));
+  --color-etiqueta-suave: color-mix(in oklab, var(--color-etiqueta) 12%, transparent);
+  --color-etiqueta-tenue: color-mix(in oklab, var(--color-etiqueta) 22%, transparent);
+  --color-accion-suave: color-mix(in oklab, var(--color-accion) 16%, transparent);
+  --color-registro-suave: color-mix(in oklab, var(--color-registro) 18%, transparent);
+  --color-indigo-profundo: color-mix(in oklab, var(--color-campo) 80%, black);
+  --color-velo: color-mix(in oklab, var(--color-indigo-profundo) 72%, transparent);
+  --color-luz-borde: color-mix(in oklab, var(--color-texto) 10%, transparent);
+
+  /* --- Tipografía ----------------------------------------------------------------------- */
   --fuente-titulo: 'Shippori Mincho', Georgia, serif;
-  --fuente-cuerpo: 'Plus Jakarta Sans', system-ui, sans-serif;
-  --fuente-codigo: ui-monospace, Menlo, monospace;
+  --fuente-cuerpo: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --fuente-codigo: ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --texto-12: 0.75rem;
+  --texto-14: 0.875rem;
+  --texto-16: 1rem;
+  --texto-20: 1.25rem;
+  --texto-24: 1.5rem;
+  --texto-32: 2rem;
+  --texto-44: 2.75rem;
+  --interlineado: 1.5;
 
-  --radio: 8px;
-  --descalce: 3px;
+  /* --- Espaciado (4/8) y radios -------------------------------------------------------------- */
   --espacio-1: 4px;
   --espacio-2: 8px;
   --espacio-3: 12px;
   --espacio-4: 16px;
   --espacio-6: 24px;
+  --espacio-8: 32px;
+  --espacio-12: 48px;
+  --espacio-16: 64px;
+  --radio-campo: 10px;
+  --radio-boton: 12px;
+  --radio-tarjeta: 18px;
+  --radio-pildora: 999px;
+  --radio: var(--radio-campo);
+  --descalce: 4px;
   --ancho-max: 1200px;
+  --tactil: 44px;
+  --tactil-grande: 56px;
+
+  /* --- Elevación ------------------------------------------------------------------------ */
+  --elev-1: 0 1px 2px color-mix(in oklab, var(--color-indigo-profundo) 40%, transparent),
+            0 6px 16px color-mix(in oklab, var(--color-indigo-profundo) 28%, transparent);
+  --elev-2-accion: var(--descalce) var(--descalce) 0 var(--color-registro);
+  --elev-2: var(--descalce) var(--descalce) 0 var(--color-indigo-profundo);
+  --elev-2-presionado: 1px 1px 0 var(--color-registro);
+  --elev-3: 0 24px 64px color-mix(in oklab, var(--color-indigo-profundo) 60%, transparent),
+            0 2px 8px color-mix(in oklab, var(--color-indigo-profundo) 40%, transparent);
+  --borde-tarjeta: 1px solid var(--color-etiqueta-suave);
+  --gradiente-tarjeta: linear-gradient(180deg, var(--color-superficie-alta), var(--color-superficie));
+  --gradiente-esqueleto: linear-gradient(90deg, var(--color-campo) 0%, var(--color-campo-hover) 50%, var(--color-campo) 100%);
+
+  /* --- Movimiento ----------------------------------------------------------------------- */
+  --dur-micro: 120ms;
+  --dur-estado: 200ms;
+  --dur-panel: 300ms;
+  --curva-entrada: cubic-bezier(0.16, 1, 0.3, 1);
+  --curva-salida: cubic-bezier(0.4, 0, 1, 1);
+
+  /* --- Texturas (IS-4 7.4), exportadas de makups3: fondo shippō 720 px y ondas en negativo ---- */
+  --textura-shippo: url("/assets/figma/fondo-shippo.svg");
+  --textura-ondas: url("/assets/figma/ondas.svg");
 }

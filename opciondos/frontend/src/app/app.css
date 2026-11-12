@@ -1,2 +1,3 @@
-.contenido { max-width: var(--ancho-max); margin: 0 auto; padding: var(--espacio-6) var(--espacio-4); }
+.contenido { max-width: var(--ancho-max); margin: 0 auto; padding: var(--espacio-6) var(--espacio-4) var(--espacio-16); }
 .aviso-ruta { margin-bottom: var(--espacio-4); }
+@media (min-width: 768px) { .contenido { padding: var(--espacio-8) var(--espacio-6) var(--espacio-16); } }

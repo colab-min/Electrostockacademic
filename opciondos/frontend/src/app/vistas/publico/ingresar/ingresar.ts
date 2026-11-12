@@ -4,7 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Aviso } from '../../../componentes/aviso/aviso';
 import { Boton } from '../../../componentes/boton/boton';
+import { CabeceraVista } from '../../../componentes/cabecera-vista/cabecera-vista';
 import { Campo } from '../../../componentes/campo/campo';
+import { IlustracionVehiculo } from '../../../componentes/ilustracion-vehiculo/ilustracion-vehiculo';
 import { Tarjeta } from '../../../componentes/tarjeta/tarjeta';
 import { mensajeError } from '../../../core/errores';
 import { INICIO_POR_ROL, RespuestaSesion, SesionService, Usuario } from '../../../core/sesion.service';
@@ -12,7 +14,7 @@ import { INICIO_POR_ROL, RespuestaSesion, SesionService, Usuario } from '../../.
 /** PU-01 Iniciar sesión (HU-21) con el paso obligatorio de contraseña temporal (HU-15, RN-52). */
 @Component({
   selector: 'app-vista-ingresar',
-  imports: [FormsModule, RouterLink, Aviso, Boton, Campo, Tarjeta],
+  imports: [FormsModule, RouterLink, Aviso, Boton, CabeceraVista, Campo, IlustracionVehiculo, Tarjeta],
   templateUrl: './ingresar.html',
   styleUrl: './ingresar.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

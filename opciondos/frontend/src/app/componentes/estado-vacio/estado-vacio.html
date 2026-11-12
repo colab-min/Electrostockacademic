@@ -1,4 +1,5 @@
 <div class="vacio">
+  <span class="sello"><app-icono [nombre]="icono()" [tamano]="32" /></span>
   <p class="titulo">{{ titulo() }}</p>
   @if (mensaje()) { <p class="mensaje">{{ mensaje() }}</p> }
   <ng-content />

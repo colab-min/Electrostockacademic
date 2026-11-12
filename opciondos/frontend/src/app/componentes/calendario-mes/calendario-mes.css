@@ -1,11 +1,18 @@
-.calendario { display: grid; gap: var(--espacio-3); max-width: 420px; }
+.calendario { display: grid; gap: var(--espacio-3); max-width: 440px; padding: var(--espacio-4); background: var(--color-campo);
+  border-radius: var(--radio-tarjeta); border: var(--borde-tarjeta); box-shadow: var(--elev-1); }
 .cabecera { display: flex; align-items: center; justify-content: space-between; }
-.titulo { font-family: var(--fuente-titulo); font-weight: 700; color: var(--color-accion); text-transform: capitalize; }
-.cabecera button { width: 40px; min-height: 40px; background: var(--color-campo); color: var(--color-texto); border: 1px solid var(--color-etiqueta); border-radius: var(--radio); cursor: pointer; }
+.titulo { font-family: var(--fuente-titulo); font-weight: 700; font-size: var(--texto-20); color: var(--color-accion); text-transform: capitalize; }
+.cabecera button { width: var(--tactil); min-height: var(--tactil); background: var(--color-superficie); color: var(--color-texto);
+  border: 1px solid var(--color-etiqueta-tenue); border-radius: var(--radio-boton); cursor: pointer; font-size: var(--texto-20);
+  transition: background-color var(--dur-micro) var(--curva-entrada); }
+.cabecera button:hover { background: var(--color-superficie-hover); }
 .rejilla { display: grid; grid-template-columns: repeat(7, 1fr); gap: var(--espacio-1); }
-.dia-semana { text-align: center; font-size: 12px; color: var(--color-etiqueta); }
-.rejilla button { min-height: 44px; border-radius: var(--radio); font: inherit; cursor: pointer; background: var(--color-campo); color: var(--color-texto); border: 1px solid var(--color-etiqueta); }
-.rejilla button:disabled { cursor: not-allowed; opacity: 0.55; border-style: dotted; }
+.dia-semana { text-align: center; font-size: var(--texto-12); font-weight: 700; color: var(--color-etiqueta); padding-bottom: var(--espacio-1); }
+.rejilla button { min-height: var(--tactil); border-radius: var(--radio-campo); font: inherit; font-variant-numeric: tabular-nums; cursor: pointer;
+  background: var(--color-superficie); color: var(--color-texto); border: 1px solid var(--color-etiqueta-tenue);
+  transition: transform var(--dur-micro) var(--curva-entrada), background-color var(--dur-micro) var(--curva-entrada); }
+.rejilla button:hover:not(:disabled) { background: var(--color-superficie-hover); transform: translateY(-1px); }
+.rejilla button:disabled { cursor: not-allowed; opacity: 0.45; border-style: dotted; background: transparent; }
 .rejilla .bloqueado { border-color: var(--color-registro); }
 .rejilla .cerrado { border-color: transparent; }
-.rejilla .seleccionado { background: var(--color-accion); color: var(--color-fondo); }
+.rejilla .seleccionado { background: var(--color-accion); color: var(--color-fondo); box-shadow: var(--elev-2-accion); font-weight: 700; }

@@ -1,5 +1,13 @@
 :host { display: block; }
-div { padding: var(--espacio-3) var(--espacio-4); background: var(--color-campo); border-radius: var(--radio); border-left: 4px solid var(--color-etiqueta); font-size: 14px; }
+div:not(.contenido) {
+  display: flex; gap: var(--espacio-3); align-items: flex-start; padding: var(--espacio-3) var(--espacio-4);
+  background: var(--color-campo); border-radius: var(--radio-campo); border: 1px solid var(--color-etiqueta-suave);
+  border-left: 4px solid var(--color-etiqueta); font-size: var(--texto-14); animation: entrar var(--dur-estado) var(--curva-entrada);
+}
+.contenido { flex: 1; min-width: 0; }
+app-icono { color: var(--color-etiqueta); margin-top: 1px; }
 .error { border-left-color: var(--color-registro); }
-.advertencia { border-left-color: var(--color-accion); }
-.exito { border-left-color: var(--color-etiqueta); }
+.error app-icono { color: var(--color-registro); }
+.advertencia, .demostracion { border-left-color: var(--color-accion); }
+.advertencia app-icono, .demostracion app-icono { color: var(--color-accion); }
+.demostracion { border-style: dashed; }

@@ -1,8 +1,11 @@
 :host { display: block; }
-.vehiculo { margin: 0; font-weight: 600; }
-.texto-suave { margin: 0; }
-.acciones { display: grid; gap: var(--espacio-2); }
+.cuadricula { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start; }
+.orden { display: grid; gap: 10px; width: 100%; max-width: 380px; padding: 14px; border-radius: var(--radio-tarjeta);
+  background: var(--color-superficie); box-shadow: var(--elev-1); animation: entrar var(--dur-panel) var(--curva-entrada) both; }
+.ilustracion { display: grid; place-items: center; height: 140px; border-radius: 14px; background: var(--color-superficie); }
+.ilustracion ::ng-deep img { height: 100%; width: auto; }
+.titulo-orden { display: flex; justify-content: space-between; align-items: center; gap: var(--espacio-2); }
+.numero { margin: 0; font-size: var(--texto-16); font-weight: 700; }
+.acciones { display: grid; gap: var(--espacio-3); }
 .acciones app-boton { display: block; }
-.acciones app-boton ::ng-deep button { min-height: 56px; }
-.acciones a { text-align: center; padding: var(--espacio-2); }
-.esqueleto { height: 200px; border-radius: var(--radio); background: var(--color-superficie); }
+.acciones a { display: grid; place-items: center; min-height: var(--tactil); font-size: var(--texto-14); }

@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Rol, SesionService } from '../../core/sesion.service';
+import { Icono } from '../icono/icono';
 
 const MENU: Record<Rol, { ruta: string; texto: string }[]> = {
   CUSTOMER: [{ ruta: '/cliente/citas', texto: 'Mis citas' }, { ruta: '/cliente/agendar', texto: 'Agendar' }],
@@ -21,7 +22,7 @@ const MENU: Record<Rol, { ruta: string; texto: string }[]> = {
 /** Barra superior: logo, menú del rol y "Salir". */
 @Component({
   selector: 'app-barra-superior',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, Icono],
   templateUrl: './barra-superior.html',
   styleUrl: './barra-superior.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,6 +30,9 @@ const MENU: Record<Rol, { ruta: string; texto: string }[]> = {
 export class BarraSuperior {
   protected readonly sesion = inject(SesionService);
   private readonly router = inject(Router);
+  protected readonly abierto = signal(false);
+  protected readonly iniciales = computed(() =>
+    (this.sesion.usuario()?.full_name ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toUpperCase());
   protected readonly menu = computed(() => {
     const rol = this.sesion.rol();
     return rol ? MENU[rol] : [];

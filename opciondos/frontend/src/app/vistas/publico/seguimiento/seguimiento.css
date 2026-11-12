@@ -1,6 +1,19 @@
 :host { display: block; }
-.consulta { display: grid; gap: var(--espacio-3); max-width: 420px; }
-.resultado { display: grid; gap: var(--espacio-4); }
-@media (min-width: 860px) { .resultado { grid-template-columns: 1fr 1fr; align-items: start; } }
-.vehiculo { margin: 0; font-size: 17px; font-weight: 600; }
-.esqueleto { height: 180px; border-radius: var(--radio); background: var(--color-superficie); }
+.bloque { display: grid; gap: 10px; }
+.titulo-seccion { margin: 0; font-size: 17px; font-weight: 700; }
+.consulta { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+.campo-codigo { flex: 1 1 260px; }
+.consulta app-boton { flex: 0 0 auto; }
+.estado { display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; }
+.vehiculo { margin: 0; display: grid; gap: 8px; width: 260px; max-width: 100%; }
+.ilustracion { display: grid; place-items: center; height: 160px; border-radius: 14px; }
+.ilustracion ::ng-deep img { height: 100%; width: auto; max-width: 100%; }
+figcaption { text-align: center; font-size: var(--texto-12); font-weight: 500; color: var(--color-etiqueta); }
+.datos { flex: 1 1 280px; display: grid; gap: 8px; }
+.estado-grande { margin: 0 0 6px; font-family: var(--fuente-titulo); font-weight: 800; font-size: 30px; line-height: 1.2; color: var(--color-accion);
+  text-shadow: 2px 2px 0 var(--color-registro); }
+.en-vivo { display: flex; align-items: center; gap: var(--espacio-2); }
+.pulso { width: 8px; height: 8px; border-radius: 50%; background: var(--color-etiqueta); animation: latir 2s ease-in-out infinite; }
+@keyframes latir { 50% { opacity: 0.3; } }
+.nota-repuesto { margin: 0; display: flex; gap: 12px; align-items: center; font-size: var(--texto-14); color: var(--color-etiqueta); }
+.punto { width: 14px; height: 14px; flex-shrink: 0; border-radius: 50%; border: 2px solid var(--color-etiqueta); }

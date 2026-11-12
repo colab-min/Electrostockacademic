@@ -1,11 +1,12 @@
 <section class="pagina">
-  <h1>Agendar cita</h1>
+  <app-cabecera-vista [titulo]="confirmada() ? 'Cita confirmada' : 'Agendar paso ' + paso() + ': ' + titulos[paso() - 1]" hu="HU-01, HU-19" />
 
   @if (!confirmada()) {
     <ol class="pasos" aria-label="Pasos para agendar">
-      @for (p of pasos; track p) {
-        <li [class.activo]="paso() === $index + 1" [attr.aria-current]="paso() === $index + 1 ? 'step' : null">
-          <span class="numero">{{ $index + 1 }}</span> {{ p }}
+      @for (p of pasosCortos; track p) {
+        <li [class.hecho]="paso() > $index + 1" [class.activo]="paso() === $index + 1" [attr.aria-current]="paso() === $index + 1 ? 'step' : null">
+          <span class="barra" aria-hidden="true"></span>
+          <span class="etiqueta">{{ $index + 1 }}. {{ p }}</span>
         </li>
       }
     </ol>
@@ -14,15 +15,25 @@
   @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
 
   @if (confirmada() && cita(); as c) {
-    <app-tarjeta titulo="¡Tu cita está confirmada!" [destacada]="true">
-      <p class="codigo-grande">{{ c.code }}</p>
-      <p>{{ c.service.name }} · {{ fechaHora(c.starts_at) }}</p>
-      <p>{{ c.vehicle.brand }} {{ c.vehicle.model }} ({{ c.vehicle.serial_number }})</p>
-      @for (r of c.repuestos; track r.name) { <p class="texto-suave">{{ r.name }} x{{ r.quantity }} - apartada</p> }
-      <app-aviso tipo="informacion">{{ limite(c) }}</app-aviso>
-      <a class="accion" routerLink="/cliente/citas">Ir a mis citas</a>
+    <app-tarjeta>
+      <div class="titulo-exito">
+        <span class="sello-exito" aria-hidden="true"><app-icono nombre="check" [tamano]="24" /></span>
+        <p class="estado-grande">Cita confirmada</p>
+      </div>
+      <p class="fila-dato tabular">Código {{ c.code }}</p>
+      @if (c.repuestos.length) { <p class="fila-dato">El repuesto quedó reservado para tu vehículo</p> }
+      <p class="fila-dato">Tienes 15 minutos de tolerancia el día de la cita</p>
+      <p class="fila-dato">{{ limite(c) }}</p>
+      <a class="boton-secundario" routerLink="/cliente/citas">Ver mis citas</a>
     </app-tarjeta>
   } @else {
+    @if (paso() > 1 && paso() < 4) {
+      <aside class="resumen-lateral" aria-label="Lo que elegiste">
+        @if (vehiculo(); as v) { <span><app-icono nombre="bateria" [tamano]="16" /> {{ v.brand }} {{ v.model }}</span> }
+        @if (servicio(); as s) { <span><app-icono nombre="llave" [tamano]="16" /> {{ s.name }}</span> }
+        @if (paso() === 3 && fecha()) { <span><app-icono nombre="calendario" [tamano]="16" /> {{ fechaLarga(fecha() ?? '') }}</span> }
+      </aside>
+    }
     @switch (paso()) {
       @case (1) {
         <app-tarjeta titulo="1. Elige tu vehículo y el servicio">
@@ -71,7 +82,7 @@
               </div>
             }
           } @else if (!error()) {
-            <p class="texto-suave" aria-busy="true">Cargando…</p>
+            <app-esqueleto tipo="fila" [cantidad]="2" />
           }
         </app-tarjeta>
       }
@@ -99,14 +110,14 @@
             } @else {
               <div class="franjas" [attr.aria-busy]="procesando()">
                 @for (f of lista; track f.id) {
-                  <app-franja-horaria [hora]="f.hora" [estado]="f.estado" [detalle]="f.ocupados + ' de ' + f.capacidad + ' cupos ocupados'"
+                  <app-franja-horaria [hora]="f.hora" [estado]="f.estado" [detalle]="f.ocupados + ' de ' + f.capacidad + ' cupos ocupados'" [libres]="f.capacidad - f.ocupados"
                     (elegir)="elegirHora(f)" />
                 }
               </div>
               @if (procesando()) { <p class="texto-suave">Procesando…</p> }
             }
           } @else if (!error()) {
-            <p class="texto-suave" aria-busy="true">Cargando…</p>
+            <app-esqueleto tipo="fila" [cantidad]="3" />
           }
           <div class="fila"><app-boton variante="secundario" (click)="irAPaso(2)">Atrás</app-boton></div>
         </app-tarjeta>
@@ -118,17 +129,21 @@
               <app-aviso tipo="error"><strong>Tu reserva expiró</strong>. Pasaron los 5 minutos y el cupo y los repuestos se liberaron. Puedes elegir otra hora.</app-aviso>
               <app-boton (click)="reiniciarHora()">Elegir otra hora</app-boton>
             } @else {
-              <p class="contador" role="timer" aria-live="off">Tu cupo está apartado por <strong>{{ contador() }}</strong></p>
-              <dl class="resumen">
-                <dt>Vehículo</dt><dd>{{ c.vehicle.brand }} {{ c.vehicle.model }} ({{ c.vehicle.serial_number }})</dd>
-                <dt>Servicio</dt><dd>{{ c.service.name }} · {{ pesos(c.service.labor_price) }}</dd>
-                <dt>Fecha y hora</dt><dd>{{ fechaHora(c.starts_at) }}</dd>
-                <dt>Repuestos</dt>
-                <dd>
-                  @for (r of c.repuestos; track r.name) { <span class="bloque">{{ r.name }} x{{ r.quantity }} - apartada</span> }
-                  @empty { Sin repuestos }
-                </dd>
-              </dl>
+              <div class="contador" role="timer" aria-live="off">
+                <div class="contador-fila">
+                  <p>Cupo y repuestos apartados por</p>
+                  <strong class="reloj tabular">{{ contador() }}</strong>
+                </div>
+                <div class="pista" aria-hidden="true"><span class="relleno" [style.width.%]="(restante() / retencion) * 100"></span></div>
+              </div>
+              <h2 class="titulo-seccion">Resumen de la cita</h2>
+              <div class="resumen">
+                <p class="fila-dato">{{ fechaHora(c.starts_at) }}</p>
+                <p class="fila-dato">{{ c.service.name }}, {{ pesos(c.service.labor_price) }}</p>
+                <p class="fila-dato">{{ c.vehicle.brand }} {{ c.vehicle.model }}, serie {{ c.vehicle.serial_number }}</p>
+                @for (r of c.repuestos; track r.name) { <p class="fila-dato">{{ r.name }} x{{ r.quantity }} - apartada</p> }
+              </div>
+              <p class="nota">{{ limite(c) }}</p>
               <div class="fila">
                 <app-boton [procesando]="procesando()" (click)="confirmar()">Confirmar cita</app-boton>
                 <app-boton variante="secundario" [deshabilitado]="procesando()" (click)="abandonar()">Cancelar</app-boton>

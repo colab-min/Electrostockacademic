@@ -1,0 +1,10 @@
+<div class="esqueleto" [class]="tipo()" aria-busy="true" role="status">
+  <span class="solo-lector">Cargando…</span>
+  @for (i of items(); track i) {
+    @if (tipo() === 'tarjeta') {
+      <div class="tarjeta-e"><span class="linea corta"></span><span class="linea"></span><span class="linea media"></span></div>
+    } @else {
+      <div class="fila-e"><span class="linea"></span><span class="linea media"></span><span class="linea corta"></span></div>
+    }
+  }
+</div>

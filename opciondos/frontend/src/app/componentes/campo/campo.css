@@ -1,4 +1,5 @@
-:host { display: grid; gap: var(--espacio-1); }
+:host { display: grid; gap: 6px; }
 label { font-size: 12.5px; font-weight: 600; color: var(--color-etiqueta); }
-.ayuda { margin: 0; font-size: 13px; color: var(--color-etiqueta); }
-.error { margin: 0; font-size: 13px; color: var(--color-texto); padding-left: var(--espacio-2); border-left: 3px solid var(--color-registro); }
+.ayuda { margin: 0; font-size: var(--texto-14); color: var(--color-etiqueta); }
+.error { margin: 0; display: flex; gap: var(--espacio-1); align-items: flex-start; font-size: var(--texto-14); color: var(--color-texto); }
+.error app-icono { color: var(--color-registro); margin-top: 2px; }

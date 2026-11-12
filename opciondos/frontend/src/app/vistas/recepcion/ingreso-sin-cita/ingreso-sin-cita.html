@@ -74,7 +74,8 @@
             @for (o of lista; track o.id) {
               <li>
                 <div class="fila">
-                  <strong>{{ o.queue_position }}. {{ o.number }}</strong>
+                  <span class="posicion tabular" [attr.aria-label]="'Posición ' + o.queue_position">{{ o.queue_position }}</span>
+                  <strong>{{ o.number }}</strong>
                   @if (o.priority) { <app-insignia-estado [estado]="o.priority" /> }
                 </div>
                 <span>{{ o.vehicle.brand }} {{ o.vehicle.model }} · {{ o.fault_name }}</span>

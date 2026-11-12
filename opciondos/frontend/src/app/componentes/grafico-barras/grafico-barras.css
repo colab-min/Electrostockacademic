@@ -1,0 +1,17 @@
+.grafico { margin: 0; display: grid; gap: var(--espacio-4); }
+figcaption { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--espacio-2); }
+.titulo { font-family: var(--fuente-titulo); font-weight: 700; font-size: var(--texto-16); color: var(--color-accion); }
+.leyenda { display: inline-flex; align-items: center; gap: var(--espacio-1); font-size: var(--texto-12); color: var(--color-etiqueta); }
+.muestra { width: 12px; height: 12px; border-radius: 3px; background: var(--color-accion); box-shadow: 2px 2px 0 var(--color-registro); }
+.barras { display: grid; gap: var(--espacio-2); }
+.fila { position: relative; display: grid; grid-template-columns: minmax(80px, 30%) 1fr auto; gap: var(--espacio-3); align-items: center;
+  padding: var(--espacio-1) var(--espacio-2); border-radius: var(--radio-campo); }
+.fila:hover, .fila:focus-visible { background: var(--color-etiqueta-suave); }
+.etiqueta { font-size: var(--texto-14); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pista { height: 14px; border-radius: var(--radio-pildora); background: var(--color-campo); overflow: hidden; }
+.barra { display: block; height: 100%; border-radius: var(--radio-pildora); background: var(--color-accion); box-shadow: inset -3px 0 0 var(--color-registro);
+  transform-origin: left; animation: crecer var(--dur-panel) var(--curva-entrada) both; }
+.valor { font-size: var(--texto-14); font-weight: 700; }
+.tooltip { position: absolute; right: 0; top: -32px; z-index: 2; padding: var(--espacio-1) var(--espacio-2); border-radius: var(--radio-campo);
+  background: var(--color-campo); border: 1px solid var(--color-etiqueta-tenue); box-shadow: var(--elev-3); font-size: var(--texto-12); white-space: nowrap; }
+@keyframes crecer { from { transform: scaleX(0); } to { transform: scaleX(1); } }

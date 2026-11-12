@@ -1,0 +1,5 @@
+:host { display: inline-block; line-height: 0; }
+img { display: block; height: auto; border-radius: 14px; }
+.pequena { width: 120px; }
+.mediana { width: 240px; }
+.grande { width: 100%; max-width: 480px; }

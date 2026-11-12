@@ -1,3 +1,9 @@
-<button [type]="tipo()" [class]="variante()" [disabled]="deshabilitado() || procesando()" [attr.aria-busy]="procesando()">
-  @if (procesando()) { Procesando… } @else { <ng-content /> }
+<button [type]="tipo()" [class]="variante() + ' ' + tamano()" [disabled]="deshabilitado() || procesando()"
+  [attr.aria-busy]="procesando()">
+  @if (procesando()) {
+    <span class="giro" aria-hidden="true"></span> Procesando…
+  } @else {
+    @if (icono(); as i) { <app-icono [nombre]="i" /> }
+    <ng-content />
+  }
 </button>

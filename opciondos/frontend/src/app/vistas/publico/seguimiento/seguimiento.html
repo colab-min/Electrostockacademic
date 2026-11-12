@@ -1,32 +1,52 @@
 <section class="pagina">
-  <h1>Seguimiento de tu servicio</h1>
+  <app-cabecera-vista titulo="Seguimiento público" hu="HU-07" />
 
-  <app-tarjeta titulo="Consulta con tu código">
-    <form class="consulta" (ngSubmit)="buscar()">
-      <app-campo etiqueta="Código de seguimiento" para="codigo" ayuda="10 caracteres, lo encuentras en tu ticket.">
-        <input id="codigo" name="codigo" autocomplete="off" maxlength="10" required [(ngModel)]="texto"
-          [attr.aria-invalid]="error() ? true : null" />
-      </app-campo>
-      <app-boton tipo="submit" [procesando]="cargando()" [deshabilitado]="!texto.trim()">Consultar</app-boton>
-    </form>
-  </app-tarjeta>
+  <div class="bloque">
+    <h2 class="titulo-seccion">Consulta con tu código</h2>
+    <app-tarjeta>
+      <form class="consulta" (ngSubmit)="buscar()">
+        <app-campo etiqueta="Código de seguimiento" para="codigo" class="campo-codigo">
+          <input id="codigo" name="codigo" autocomplete="off" maxlength="10" required placeholder="K7M2QX9P4T" [(ngModel)]="texto"
+            [attr.aria-invalid]="error() ? true : null" />
+        </app-campo>
+        <app-boton tipo="submit" [procesando]="cargando()" [deshabilitado]="!texto.trim()">Consultar</app-boton>
+      </form>
+    </app-tarjeta>
+  </div>
 
   @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
 
   @if (cargando()) {
-    <div class="esqueleto" aria-busy="true"><span class="solo-lector">Cargando…</span></div>
+    <app-esqueleto tipo="tarjeta" [cantidad]="2" />
   } @else if (datos(); as d) {
-    <div class="resultado" aria-live="polite">
-      <app-tarjeta titulo="Estado del servicio" [destacada]="true">
-        <p class="vehiculo">{{ d.tipo }} · {{ d.modelo }}</p>
-        <app-insignia-estado [estado]="d.estado" [texto]="d.estado_publico" />
-        @if (d.entrega_estimada) {
-          <p class="texto-suave">Entrega estimada: {{ fecha(d.entrega_estimada) }}</p>
-        }
+    <div class="bloque" aria-live="polite">
+      <h2 class="titulo-seccion">Estado del servicio</h2>
+      <app-tarjeta>
+        <div class="estado">
+          <figure class="vehiculo">
+            <app-ilustracion-vehiculo [tipo]="d.tipo" tamano="grande" class="ilustracion" />
+            <figcaption>{{ d.tipo }}</figcaption>
+          </figure>
+          <div class="datos">
+            <p class="estado-grande">{{ d.estado_publico }}</p>
+            <p class="fila-dato">{{ d.tipo }} {{ d.modelo }}</p>
+            @if (d.entrega_estimada) { <p class="fila-dato tabular">Entrega estimada: {{ fecha(d.entrega_estimada) }}</p> }
+            <p class="fila-dato en-vivo"><span class="pulso" aria-hidden="true"></span>Se actualiza sola, sin recargar</p>
+          </div>
+        </div>
       </app-tarjeta>
-      <app-tarjeta titulo="Línea de tiempo">
-        <app-linea-tiempo [eventos]="d.linea_tiempo" />
+    </div>
+
+    <div class="bloque">
+      <h2 class="titulo-seccion">Si falta un repuesto</h2>
+      <app-tarjeta>
+        <p class="nota-repuesto"><span class="punto" aria-hidden="true"></span>Pendiente de instalación: te devolvemos tu vehículo sin cobro y te avisamos cuando entre el repuesto.</p>
       </app-tarjeta>
+    </div>
+
+    <div class="bloque">
+      <h2 class="titulo-seccion">Línea de tiempo</h2>
+      <app-tarjeta><app-linea-tiempo [eventos]="eventosVisibles()" /></app-tarjeta>
     </div>
   }
 </section>

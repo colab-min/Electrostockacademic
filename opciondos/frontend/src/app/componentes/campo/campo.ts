@@ -1,11 +1,13 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Icono } from '../icono/icono';
 
 /**
- * Etiqueta + control + ayuda + error. El control (input, select, textarea) va proyectado y debe tener
- * el mismo `id` que `para`, y `[attr.aria-invalid]` cuando hay error.
+ * Etiqueta siempre visible + control proyectado + ayuda + error con icono y texto.
+ * El control debe tener el mismo `id` que `para` y `[attr.aria-invalid]` cuando hay error.
  */
 @Component({
   selector: 'app-campo',
+  imports: [Icono],
   templateUrl: './campo.html',
   styleUrl: './campo.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

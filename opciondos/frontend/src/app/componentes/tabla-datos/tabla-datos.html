@@ -8,7 +8,7 @@
       </tr>
     </thead>
     <tbody>
-      @for (fila of filas(); track $index) {
+      @for (fila of visibles(); track $index) {
         <tr>
           @for (c of columnas(); track c.clave) {
             <td [attr.data-titulo]="c.titulo">
@@ -25,3 +25,10 @@
     </tbody>
   </table>
 </div>
+@if (paginas() > 1) {
+  <nav class="paginacion" [attr.aria-label]="'Paginación de ' + titulo()">
+    <button type="button" (click)="pagina.set(pagina() - 1)" [disabled]="pagina() === 0" aria-label="Página anterior">‹</button>
+    <span class="tabular" aria-live="polite">Página {{ pagina() + 1 }} de {{ paginas() }}</span>
+    <button type="button" (click)="pagina.set(pagina() + 1)" [disabled]="pagina() === paginas() - 1" aria-label="Página siguiente">›</button>
+  </nav>
+}

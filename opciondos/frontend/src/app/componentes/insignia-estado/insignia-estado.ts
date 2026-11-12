@@ -18,6 +18,11 @@ const ESTADOS: Record<string, [string, Tipo]> = {
   PENDING: ['Pendiente', 'advertencia'], SENT: ['Enviada', 'correcto'], UNDELIVERED: ['No entregada', 'alerta'],
 };
 
+/** Etiqueta en español de un código de estado (para gráficos y textos). */
+export function etiquetaEstado(codigo: string): string {
+  return ESTADOS[codigo]?.[0] ?? codigo;
+}
+
 @Component({
   selector: 'app-insignia-estado',
   templateUrl: './insignia-estado.html',

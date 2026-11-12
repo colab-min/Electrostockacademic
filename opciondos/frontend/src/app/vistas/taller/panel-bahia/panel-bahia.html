@@ -1,35 +1,41 @@
 <section class="pagina">
-  <h1>Panel de bahía</h1>
+  <app-cabecera-vista titulo="Panel de bahía" hu="HU-05" />
   @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
 
   @if (ordenes(); as lista) {
     @if (lista.length === 0) {
-      <app-estado-vacio titulo="No tiene órdenes asignadas"
+      <app-estado-vacio titulo="No tiene órdenes asignadas" icono="llave"
         mensaje="Cuando el administrador le asigne una orden, aparecerá aquí sin recargar la página." />
     } @else {
-      <div class="rejilla">
+      <div class="cuadricula">
         @for (o of lista; track o.id) {
-          <app-tarjeta [titulo]="o.number">
-            <div class="fila">
+          <article class="orden">
+            <app-ilustracion-vehiculo [tipo]="o.vehicle.type_label" tamano="grande" class="ilustracion" />
+            <div class="titulo-orden">
+              <h2 class="numero tabular">{{ o.number }}</h2>
               <app-insignia-estado [estado]="o.status" />
-              @if (o.priority) { <app-insignia-estado [estado]="o.priority" /> }
             </div>
-            <p class="vehiculo">{{ o.vehicle.type_label }} · {{ o.vehicle.brand }} {{ o.vehicle.model }}</p>
-            <p class="texto-suave">{{ o.intake_reason }} · {{ o.services.join(', ') }}</p>
-            @if (o.estimated_delivery_at) { <p class="texto-suave">Entrega estimada: {{ fecha(o.estimated_delivery_at) }}</p> }
+            @if (o.priority) { <p class="fila-dato"><app-insignia-estado [estado]="o.priority" /></p> }
+            <p class="fila-dato">{{ o.vehicle.type_label }} {{ o.vehicle.brand }} {{ o.vehicle.model }}</p>
+            <p class="fila-dato">{{ o.intake_reason }} · {{ o.services.join(', ') }}</p>
+            @if (o.estimated_delivery_at) { <p class="fila-dato tabular">Entrega estimada: {{ fecha(o.estimated_delivery_at) }}</p> }
             <div class="acciones">
-              @if (o.transitions[0]; as t) {
-                <app-boton [procesando]="procesando() === o.id" (click)="avanzar(o, t.to_status)">{{ t.label }}</app-boton>
+              @for (t of o.transitions; track t.to_status; let primero = $first) {
+                <app-boton tamano="grande" [variante]="primero ? 'primario' : 'secundario'" [procesando]="procesando() === o.id && pendiente()?.to_status === t.to_status"
+                  (click)="pendiente.set({ orden: o, to_status: t.to_status, label: t.label })">{{ t.label }}</app-boton>
               }
               <a [routerLink]="['/taller/ordenes', o.id]">Abrir detalle</a>
             </div>
-          </app-tarjeta>
+          </article>
         }
       </div>
     }
   } @else if (!error()) {
-    <div class="rejilla" aria-busy="true">
-      <div class="esqueleto"></div><div class="esqueleto"></div>
-    </div>
+    <app-esqueleto tipo="tarjeta" [cantidad]="2" />
   }
+
+  <app-dialogo-confirmacion [abierto]="pendiente() !== null" variante="primario"
+    [titulo]="'¿Pasar ' + (pendiente()?.orden?.number ?? '') + ' a ' + (pendiente()?.label ?? '') + '?'"
+    mensaje="El cliente verá el nuevo estado en su seguimiento." textoConfirmar="Sí, cambiar estado"
+    [procesando]="procesando() !== null" (confirmar)="confirmar()" (cancelar)="pendiente.set(null)" />
 </section>

@@ -1,0 +1,13 @@
+<article class="indicador">
+  <div class="cabecera"><span class="titulo">{{ titulo() }}</span><span class="sello"><app-icono [nombre]="icono()" /></span></div>
+  <p class="valor tabular">{{ valor() }}</p>
+  <div class="pie">
+    @if (variacion() !== null) {
+      <span class="variacion" [class.sube]="sube()">
+        <app-icono [nombre]="sube() ? 'sube' : 'baja'" [tamano]="16" />
+        {{ sube() ? '+' : '' }}{{ variacion() }} %<span class="solo-lector">{{ sube() ? ' más' : ' menos' }} que el periodo anterior</span>
+      </span>
+    }
+    @if (detalle()) { <span class="detalle">{{ detalle() }}</span> }
+  </div>
+</article>

@@ -1,0 +1,8 @@
+.tarjeta { display: grid; gap: var(--espacio-4); grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); }
+.fila { display: grid; gap: var(--espacio-2); }
+.tarjeta-e { display: grid; gap: var(--espacio-3); padding: var(--espacio-6); border-radius: var(--radio-tarjeta); background: var(--color-superficie); border: var(--borde-tarjeta); }
+.fila-e { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: var(--espacio-4); padding: var(--espacio-3); border-radius: var(--radio-campo); background: var(--color-superficie); }
+.linea { display: block; height: 14px; border-radius: var(--radio-pildora); background: var(--gradiente-esqueleto); background-size: 200% 100%;
+  animation: brillo 1.4s linear infinite; }
+.corta { width: 40%; height: 20px; }
+.media { width: 70%; }

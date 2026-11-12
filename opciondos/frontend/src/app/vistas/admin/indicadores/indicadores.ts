@@ -5,7 +5,10 @@ import { Aviso } from '../../../componentes/aviso/aviso';
 import { Boton } from '../../../componentes/boton/boton';
 import { Campo } from '../../../componentes/campo/campo';
 import { EstadoVacio } from '../../../componentes/estado-vacio/estado-vacio';
-import { InsigniaEstado } from '../../../componentes/insignia-estado/insignia-estado';
+import { CabeceraVista } from '../../../componentes/cabecera-vista/cabecera-vista';
+import { GraficoBarras, DatoBarra } from '../../../componentes/grafico-barras/grafico-barras';
+import { Indicador } from '../../../componentes/indicador/indicador';
+import { InsigniaEstado, etiquetaEstado } from '../../../componentes/insignia-estado/insignia-estado';
 import { Columna, TablaDatos } from '../../../componentes/tabla-datos/tabla-datos';
 import { Tarjeta } from '../../../componentes/tarjeta/tarjeta';
 import { mensajeError } from '../../../core/errores';
@@ -25,7 +28,7 @@ const iso = (d: Date): string =>
 /** AD-01 Indicadores y reportes (HU-14): cifras del rango elegido, sin librerías de gráficos. */
 @Component({
   selector: 'app-vista-indicadores',
-  imports: [FormsModule, Aviso, Boton, Campo, EstadoVacio, InsigniaEstado, TablaDatos, Tarjeta],
+  imports: [FormsModule, Aviso, Boton, Campo, EstadoVacio, InsigniaEstado, TablaDatos, Tarjeta, GraficoBarras, Indicador, CabeceraVista],
   templateUrl: './indicadores.html',
   styleUrl: './indicadores.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,6 +44,14 @@ export class VistaIndicadores {
   protected readonly error = signal<string | null>(null);
   protected readonly totalOrdenes = computed(() =>
     (this.resumen()?.ordenes_por_estado ?? []).reduce((suma, e) => suma + e.cantidad, 0));
+  protected barrasEstado(filas: { estado: string; cantidad: number }[]): DatoBarra[] {
+    return filas.map((f) => ({ etiqueta: etiquetaEstado(f.estado), valor: f.cantidad }));
+  }
+
+  protected barrasRepuestos(filas: { name: string; cantidad: number }[]): DatoBarra[] {
+    return filas.map((f) => ({ etiqueta: f.name, valor: f.cantidad }));
+  }
+
   protected readonly columnasEstado: Columna[] = [{ clave: 'estado', titulo: 'Estado' }, { clave: 'cantidad', titulo: 'Órdenes' }];
   protected readonly columnasRepuestos: Columna[] = [
     { clave: 'sku', titulo: 'SKU' }, { clave: 'name', titulo: 'Repuesto' }, { clave: 'cantidad', titulo: 'Unidades' },

@@ -1,5 +1,5 @@
 <section class="pagina" [attr.aria-busy]="procesando()">
-  <h1>Indicadores y reportes</h1>
+  <app-cabecera-vista titulo="Indicadores y reportes" hu="HU-14" contexto="Resumen del taller en el rango elegido." />
 
   <form class="rango" (ngSubmit)="generar()">
     <app-campo etiqueta="Desde" para="desde">
@@ -22,21 +22,24 @@
       <app-estado-vacio titulo="No hay órdenes ni pagos en este rango." mensaje="Elija un rango de fechas más amplio." />
     } @else {
       <div class="cifras">
-        <app-tarjeta titulo="Ingresos cobrados" [destacada]="true">
-          <p class="cifra">{{ pesos(r.ingresos) }}</p>
-          <p class="texto-suave">Pagos registrados en caja</p>
+        <app-indicador titulo="Ingresos cobrados" [valor]="pesos(r.ingresos)" detalle="Pagos registrados en caja" icono="grafico" />
+        <app-indicador titulo="Órdenes" [valor]="totalOrdenes()" detalle="Creadas en el rango" icono="orden" />
+        <app-indicador titulo="Ocupación de franjas" [valor]="r.ocupacion.porcentaje + ' %'"
+          [detalle]="r.ocupacion.reservadas + ' de ' + r.ocupacion.capacidad + ' cupos'" icono="calendario" />
+        <app-indicador titulo="Satisfacción promedio" [valor]="r.satisfaccion.promedio !== null ? r.satisfaccion.promedio + ' / 5' : 'Sin datos'"
+          [detalle]="r.satisfaccion.respuestas + ' encuestas respondidas'" icono="check-circulo" />
+      </div>
+
+      <div class="graficos">
+        <app-tarjeta>
+          <app-grafico-barras titulo="Órdenes por estado" [datos]="barrasEstado($any(r.ordenes_por_estado))" leyenda="Número de órdenes" />
         </app-tarjeta>
-        <app-tarjeta titulo="Órdenes">
-          <p class="cifra">{{ totalOrdenes() }}</p>
-          <p class="texto-suave">Creadas en el rango</p>
-        </app-tarjeta>
-        <app-tarjeta titulo="Ocupación de franjas">
-          <p class="cifra">{{ r.ocupacion.porcentaje }} %</p>
-          <p class="texto-suave">{{ r.ocupacion.reservadas }} de {{ r.ocupacion.capacidad }} cupos</p>
-        </app-tarjeta>
-        <app-tarjeta titulo="Satisfacción promedio">
-          <p class="cifra">{{ r.satisfaccion.promedio !== null ? r.satisfaccion.promedio + ' / 5' : 'Sin datos' }}</p>
-          <p class="texto-suave">{{ r.satisfaccion.respuestas }} encuestas respondidas</p>
+        <app-tarjeta>
+          @if (r.repuestos.length) {
+            <app-grafico-barras titulo="Repuestos consumidos" [datos]="barrasRepuestos($any(r.repuestos))" unidad="u." leyenda="Unidades instaladas" />
+          } @else {
+            <app-estado-vacio titulo="No se instalaron repuestos en este rango." icono="paquete" />
+          }
         </app-tarjeta>
       </div>
 

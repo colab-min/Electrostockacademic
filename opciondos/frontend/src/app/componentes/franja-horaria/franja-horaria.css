@@ -1,9 +1,18 @@
 :host { display: block; }
-button { width: 100%; display: grid; gap: 2px; text-align: left; padding: var(--espacio-3); min-height: 64px; border-radius: var(--radio); background: var(--color-campo); color: var(--color-texto); border: 1px solid var(--color-etiqueta); font: inherit; cursor: pointer; }
-.hora { font-weight: 700; font-size: 16px; }
-.estado { font-size: 13px; color: var(--color-etiqueta); }
-.detalle { font-size: 12.5px; }
-.sin-cupo { border-style: dotted; opacity: 0.6; cursor: not-allowed; }
-.bloqueado { border-color: var(--color-registro); opacity: 0.7; cursor: not-allowed; }
-.seleccionada { background: var(--color-accion); color: var(--color-fondo); border-color: var(--color-accion); box-shadow: var(--descalce) var(--descalce) 0 var(--color-registro); }
-.seleccionada .estado { color: var(--color-fondo); }
+button { width: 100%; display: grid; gap: 2px; text-align: left; padding: var(--espacio-3) var(--espacio-4); min-height: 72px;
+  border-radius: var(--radio-boton); background: var(--color-campo); color: var(--color-texto); border: 1px solid var(--color-etiqueta-tenue);
+  font: inherit; cursor: pointer; box-shadow: var(--elev-2);
+  transition: transform var(--dur-micro) var(--curva-entrada), background-color var(--dur-micro) var(--curva-entrada), box-shadow var(--dur-micro) var(--curva-entrada); }
+button:hover:not(:disabled) { background: var(--color-campo-hover); transform: translateY(-1px); }
+.hora { font-weight: 700; font-size: var(--texto-20); }
+.estado { display: inline-flex; align-items: center; gap: 6px; font-size: var(--texto-14); color: var(--color-etiqueta); }
+.punto { width: 8px; height: 8px; border-radius: 50%; background: var(--color-etiqueta); }
+.detalle { font-size: var(--texto-12); color: var(--color-etiqueta); }
+.pocos { border-color: var(--color-accion); }
+.pocos .punto { background: var(--color-accion); }
+.sin-cupo, .bloqueado { border-style: dashed; box-shadow: none; opacity: 0.6; cursor: not-allowed; background: transparent; }
+.bloqueado { border-color: var(--color-registro); }
+.bloqueado .punto { background: var(--color-registro); }
+.seleccionada { background: var(--color-accion); color: var(--color-fondo); border-color: var(--color-accion); box-shadow: var(--elev-2-accion); }
+.seleccionada .estado, .seleccionada .detalle { color: var(--color-fondo); }
+.seleccionada .punto { background: var(--color-fondo); }

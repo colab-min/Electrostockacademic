@@ -4,6 +4,7 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, map } from 'rxjs';
 import { Aviso } from './componentes/aviso/aviso';
 import { BarraSuperior } from './componentes/barra-superior/barra-superior';
+import { Toast } from './componentes/toast/toast';
 
 const AVISOS: Record<string, { texto: string; tipo: 'advertencia' | 'informacion' }> = {
   sin_permiso: { texto: 'No tiene permisos para esta sección', tipo: 'advertencia' },
@@ -12,7 +13,7 @@ const AVISOS: Record<string, { texto: string; tipo: 'advertencia' | 'informacion
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, BarraSuperior, Aviso],
+  imports: [RouterOutlet, BarraSuperior, Aviso, Toast],
   templateUrl: './app.html',
   styleUrl: './app.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

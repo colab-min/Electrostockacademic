@@ -1,6 +1,11 @@
-ol { list-style: none; margin: 0; padding: 0 0 0 var(--espacio-4); border-left: 2px solid var(--color-etiqueta); display: grid; gap: var(--espacio-4); }
-li { position: relative; display: grid; gap: 2px; }
-li::before { content: ''; position: absolute; left: calc(-1 * var(--espacio-4) - 7px); top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--color-campo); border: 2px solid var(--color-etiqueta); }
-li.ultimo::before { background: var(--color-accion); border-color: var(--color-registro); }
-.titulo { font-weight: 600; }
-time, .detalle { font-size: 13px; color: var(--color-etiqueta); }
+/* makups3 PU-03: puntos de 14 px; completos en gardenia con descalce caqui, pendientes huecos. */
+ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+li { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; padding: 2px var(--espacio-2); margin: 0 calc(-1 * var(--espacio-2));
+  border-radius: var(--radio-campo); transition: background-color var(--dur-panel) var(--curva-salida); }
+li::before { content: ''; width: 14px; height: 14px; flex-shrink: 0; border-radius: 50%; background: var(--color-accion); box-shadow: 2px 2px 0 var(--color-registro); }
+.pendiente::before { background: transparent; border: 2px solid var(--color-etiqueta); box-shadow: none; }
+.titulo { font-weight: 600; font-size: var(--texto-14); }
+.pendiente .titulo { font-weight: 400; color: var(--color-etiqueta); }
+.actual .titulo { color: var(--color-accion); }
+time, .detalle { font-size: var(--texto-14); color: var(--color-etiqueta); }
+.nuevo { background: var(--color-accion-suave); animation: entrar var(--dur-panel) var(--curva-entrada); }

@@ -1,0 +1,9 @@
+<div class="pila" aria-live="polite" aria-atomic="false">
+  @for (t of toasts.lista(); track t.id) {
+    <div class="toast" [class]="t.tipo" role="status">
+      <app-icono [nombre]="t.tipo === 'error' ? 'error' : t.tipo === 'exito' ? 'check-circulo' : 'info'" />
+      <span class="mensaje">{{ t.mensaje }}</span>
+      <button type="button" (click)="toasts.cerrar(t.id)" aria-label="Cerrar notificación"><app-icono nombre="cerrar" [tamano]="16" /></button>
+    </div>
+  }
+</div>

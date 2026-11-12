@@ -7,3 +7,7 @@
 .tablas { display: grid; gap: var(--espacio-4); }
 @media (min-width: 960px) { .tablas { grid-template-columns: 1fr 1fr; align-items: start; } }
 .enlace { background: none; border: none; padding: 0; margin-left: var(--espacio-2); color: inherit; text-decoration: underline; font: inherit; cursor: pointer; }
+
+.cifras { display: grid; gap: var(--espacio-4); grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); }
+.graficos { display: grid; gap: var(--espacio-4); }
+@media (min-width: 1024px) { .graficos { grid-template-columns: 1fr 1fr; } }

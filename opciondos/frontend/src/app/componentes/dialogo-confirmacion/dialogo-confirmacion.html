@@ -4,6 +4,6 @@
   <ng-content />
   <div class="acciones">
     <app-boton variante="secundario" (click)="cancelar.emit()">{{ textoCancelar() }}</app-boton>
-    <app-boton variante="peligro" [procesando]="procesando()" (click)="confirmar.emit()">{{ textoConfirmar() }}</app-boton>
+    <app-boton [variante]="variante()" [procesando]="procesando()" (click)="confirmar.emit()">{{ textoConfirmar() }}</app-boton>
   </div>
 </dialog>

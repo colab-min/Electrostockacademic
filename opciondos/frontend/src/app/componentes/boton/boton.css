@@ -1,15 +1,23 @@
 :host { display: inline-block; }
 button {
-  min-height: 44px;
-  padding: var(--espacio-2) var(--espacio-6);
-  border-radius: var(--radio);
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-  width: 100%;
+  width: 100%; min-height: var(--tactil); padding: 13px 22px;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--espacio-2);
+  border-radius: var(--radio-boton); font: inherit; font-weight: 700; font-size: 15px; cursor: pointer;
+  transition: transform var(--dur-micro) var(--curva-entrada), box-shadow var(--dur-micro) var(--curva-entrada),
+    background-color var(--dur-micro) var(--curva-entrada);
 }
-.primario { background: var(--color-accion); color: var(--color-fondo); border: none; box-shadow: var(--descalce) var(--descalce) 0 var(--color-registro); }
-.secundario { background: transparent; color: var(--color-etiqueta); border: 1px solid var(--color-etiqueta); }
-.peligro { background: transparent; color: var(--color-texto); border: 2px solid var(--color-registro); }
-.neutro { background: var(--color-campo); color: var(--color-texto); border: 1px solid var(--color-campo); }
-button:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: none; }
+.grande { min-height: var(--tactil-grande); font-size: var(--texto-20); padding: var(--espacio-3) var(--espacio-8); }
+.primario { background: var(--color-accion); color: var(--color-fondo); border: none; box-shadow: var(--elev-2-accion); }
+.primario:hover:not(:disabled) { background: var(--color-accion-hover); }
+.primario:active:not(:disabled) { background: var(--color-accion-activo); box-shadow: var(--elev-2-presionado); transform: translate(3px, 3px); }
+.secundario { background: transparent; color: var(--color-etiqueta); border: 2px solid var(--color-etiqueta); }
+.secundario:hover:not(:disabled) { background: var(--color-etiqueta-suave); color: var(--color-texto); }
+.peligro { background: var(--color-registro-suave); color: var(--color-texto); border: 2px solid var(--color-registro); box-shadow: var(--elev-2); }
+.peligro:hover:not(:disabled) { background: var(--color-campo); }
+.peligro:active:not(:disabled), .secundario:active:not(:disabled), .neutro:active:not(:disabled) { transform: translateY(2px); box-shadow: none; }
+.neutro { background: var(--color-campo); color: var(--color-texto); border: 1px solid var(--color-etiqueta-suave); box-shadow: var(--elev-2); }
+.neutro:hover:not(:disabled) { background: var(--color-campo-hover); }
+button:focus-visible { outline: 2px solid var(--color-accion); outline-offset: 2px; }
+button:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+.giro { width: 16px; height: 16px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: girar 700ms linear infinite; }
+@keyframes girar { to { transform: rotate(360deg); } }

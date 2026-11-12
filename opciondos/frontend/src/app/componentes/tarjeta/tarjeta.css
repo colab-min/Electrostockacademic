@@ -1,4 +1,12 @@
 :host { display: block; }
-section { background: var(--color-superficie); border-radius: var(--radio); padding: var(--espacio-6); display: grid; gap: var(--espacio-3); }
+section {
+  position: relative; display: grid; gap: 14px; padding: 20px;
+  background: var(--gradiente-tarjeta); border: var(--borde-tarjeta); border-radius: var(--radio-tarjeta);
+  box-shadow: var(--elev-1), inset 0 1px 0 var(--color-luz-borde);
+  transition: transform var(--dur-estado) var(--curva-entrada), box-shadow var(--dur-estado) var(--curva-entrada);
+  animation: entrar var(--dur-panel) var(--curva-entrada) both;
+}
 .destacada { border-left: 4px solid var(--color-accion); }
+.interactiva:hover { transform: translateY(-2px); box-shadow: var(--elev-1), var(--elev-2), inset 0 1px 0 var(--color-luz-borde); }
+h2 { margin: 0; }
 @media (max-width: 480px) { section { padding: var(--espacio-4); } }

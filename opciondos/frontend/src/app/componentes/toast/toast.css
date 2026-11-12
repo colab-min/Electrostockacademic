@@ -1,0 +1,13 @@
+.pila { position: fixed; right: var(--espacio-4); bottom: var(--espacio-4); z-index: 50; display: grid; gap: var(--espacio-2);
+  width: min(380px, calc(100vw - 32px)); }
+.toast { display: flex; align-items: center; gap: var(--espacio-3); padding: var(--espacio-3) var(--espacio-3) var(--espacio-3) var(--espacio-4);
+  border-radius: var(--radio-boton); background: var(--color-campo); border: 1px solid var(--color-etiqueta-tenue);
+  border-left: 4px solid var(--color-etiqueta); box-shadow: var(--elev-3); animation: entrar var(--dur-panel) var(--curva-entrada); }
+.exito { border-left-color: var(--color-accion); }
+.exito app-icono { color: var(--color-accion); }
+.error { border-left-color: var(--color-registro); }
+.error app-icono { color: var(--color-registro); }
+.mensaje { flex: 1; font-size: var(--texto-14); }
+button { display: grid; place-items: center; width: var(--tactil); height: var(--tactil); border: none; border-radius: var(--radio-campo);
+  background: transparent; color: var(--color-etiqueta); cursor: pointer; }
+button:hover { background: var(--color-etiqueta-suave); color: var(--color-texto); }

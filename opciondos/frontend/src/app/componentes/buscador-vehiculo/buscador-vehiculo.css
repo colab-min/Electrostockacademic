@@ -1,3 +1,10 @@
 .buscador { display: flex; gap: var(--espacio-2); }
-button { min-height: 44px; padding: 0 var(--espacio-4); background: var(--color-accion); color: var(--color-fondo); border: none; border-radius: var(--radio); font: inherit; font-weight: 600; cursor: pointer; }
-button:disabled { opacity: 0.6; }
+.caja { position: relative; flex: 1; }
+.caja app-icono { position: absolute; left: var(--espacio-3); top: 50%; transform: translateY(-50%); color: var(--color-etiqueta); pointer-events: none; }
+.caja input { padding-left: 40px; }
+button { min-height: var(--tactil); padding: 0 var(--espacio-6); background: var(--color-accion); color: var(--color-fondo); border: none;
+  border-radius: var(--radio-boton); font: inherit; font-weight: 600; cursor: pointer; box-shadow: var(--elev-2-accion);
+  transition: transform var(--dur-micro) var(--curva-entrada), box-shadow var(--dur-micro) var(--curva-entrada); }
+button:hover:not(:disabled) { background: var(--color-accion-hover); }
+button:active:not(:disabled) { transform: translate(3px, 3px); box-shadow: var(--elev-2-presionado); }
+button:disabled { opacity: 0.6; box-shadow: none; }

@@ -15,7 +15,10 @@ export class FranjaHoraria {
   readonly seleccionada = input(false);
   /** Texto adicional (p. ej. "2 de 3 cupos" o el repuesto que se apartará). */
   readonly detalle = input<string | null>(null);
+  /** Cupos libres; con 1 se marca "Pocos cupos". */
+  readonly libres = input<number | null>(null);
+  protected readonly pocos = computed(() => this.estado() === 'libre' && this.libres() === 1);
   readonly elegir = output<void>();
   protected readonly etiqueta = computed(() =>
-    ({ libre: 'Disponible', 'sin-cupo': 'Sin cupo', bloqueado: 'Bloqueado' })[this.estado()]);
+    this.pocos() ? 'Pocos cupos' : ({ libre: 'Disponible', 'sin-cupo': 'Sin cupo', bloqueado: 'Bloqueado' })[this.estado()]);
 }

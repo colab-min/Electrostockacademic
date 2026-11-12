@@ -1,16 +1,21 @@
 <header class="barra">
-  <a class="logo" routerLink="/">Electrostock</a>
+  <a class="logo" routerLink="/" aria-label="Electrostock, inicio"><img src="assets/figma/logo.svg" width="173" height="29" alt="" /></a>
   @if (sesion.usuario(); as usuario) {
-    <nav aria-label="Principal">
+    <button type="button" class="hamburguesa" (click)="abierto.set(!abierto())" [attr.aria-expanded]="abierto()"
+      aria-controls="menu-rol" aria-label="Menú">
+      <app-icono [nombre]="abierto() ? 'cerrar' : 'menu'" [tamano]="24" />
+    </button>
+    <nav id="menu-rol" aria-label="Principal" [class.abierto]="abierto()">
       @for (item of menu(); track item.ruta) {
-        <a [routerLink]="item.ruta" routerLinkActive="activo" ariaCurrentWhenActive="page">{{ item.texto }}</a>
+        <a [routerLink]="item.ruta" routerLinkActive="activo" ariaCurrentWhenActive="page" (click)="abierto.set(false)">{{ item.texto }}</a>
       }
     </nav>
     <div class="usuario">
+      <span class="avatar" aria-hidden="true">{{ iniciales() }}</span>
       <span class="nombre">{{ usuario.full_name }}</span>
-      <button type="button" (click)="salir()">Salir</button>
+      <button type="button" class="salir" (click)="salir()"><app-icono nombre="salir" /><span>Salir</span></button>
     </div>
   } @else {
-    <nav aria-label="Público"><a routerLink="/seguimiento">Seguimiento</a></nav>
+    <nav class="publico" aria-label="Público"><a routerLink="/seguimiento" routerLinkActive="activo">Seguimiento</a></nav>
   }
 </header>

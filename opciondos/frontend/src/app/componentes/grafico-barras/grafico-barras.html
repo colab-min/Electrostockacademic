@@ -1,0 +1,20 @@
+<figure class="grafico">
+  <figcaption>
+    <span class="titulo">{{ titulo() }}</span>
+    @if (leyenda()) { <span class="leyenda"><span class="muestra" aria-hidden="true"></span>{{ leyenda() }}</span> }
+  </figcaption>
+  <div class="barras" aria-hidden="true">
+    @for (d of datos(); track d.etiqueta; let i = $index) {
+      <div class="fila" tabindex="0" (mouseenter)="activo.set(i)" (mouseleave)="activo.set(null)" (focus)="activo.set(i)" (blur)="activo.set(null)">
+        <span class="etiqueta">{{ d.etiqueta }}</span>
+        <span class="pista"><span class="barra" [style.width.%]="ancho(d.valor)"></span></span>
+        <span class="valor tabular">{{ texto(d.valor) }}</span>
+        @if (activo() === i) { <span class="tooltip" role="tooltip">{{ d.etiqueta }}: {{ texto(d.valor) }}</span> }
+      </div>
+    }
+  </div>
+  <table class="solo-lector">
+    <caption>{{ titulo() }}</caption>
+    <tbody>@for (d of datos(); track d.etiqueta) { <tr><th scope="row">{{ d.etiqueta }}</th><td>{{ texto(d.valor) }}</td></tr> }</tbody>
+  </table>
+</figure>

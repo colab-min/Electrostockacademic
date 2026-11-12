@@ -1,3 +1,7 @@
-dialog { background: var(--color-superficie); color: var(--color-texto); border: 1px solid var(--color-etiqueta); border-radius: var(--radio); padding: var(--espacio-6); max-width: min(480px, 92vw); }
-dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
-.acciones { display: grid; grid-template-columns: 1fr 1fr; gap: var(--espacio-3); margin-top: var(--espacio-4); }
+dialog { background: var(--gradiente-tarjeta); color: var(--color-texto); border: var(--borde-tarjeta);
+  border-radius: var(--radio-tarjeta); padding: var(--espacio-8) var(--espacio-6) var(--espacio-6); width: min(480px, calc(100vw - 32px));
+  box-shadow: var(--elev-3); }
+dialog[open] { animation: entrar var(--dur-panel) var(--curva-entrada); }
+dialog::backdrop { background: var(--color-velo); backdrop-filter: blur(2px); }
+.acciones { display: grid; grid-template-columns: 1fr 1fr; gap: var(--espacio-3); margin-top: var(--espacio-6); }
+@media (max-width: 400px) { .acciones { grid-template-columns: 1fr; } }

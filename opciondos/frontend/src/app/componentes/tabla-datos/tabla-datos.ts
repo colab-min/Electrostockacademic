@@ -1,5 +1,5 @@
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, TemplateRef, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, TemplateRef, computed, effect, input, signal } from '@angular/core';
 
 export interface Columna {
   clave: string;
@@ -23,4 +23,17 @@ export class TablaDatos {
   readonly titulo = input.required<string>();
   readonly celda = input<TemplateRef<{ $implicit: Record<string, unknown>; columna: Columna }> | null>(null);
   readonly acciones = input<TemplateRef<{ $implicit: Record<string, unknown> }> | null>(null);
+  readonly porPagina = input(10);
+  protected readonly pagina = signal(0);
+  protected readonly paginas = computed(() => Math.max(1, Math.ceil(this.filas().length / this.porPagina())));
+  protected readonly visibles = computed(() => {
+    const inicio = this.pagina() * this.porPagina();
+    return this.filas().slice(inicio, inicio + this.porPagina());
+  });
+
+  constructor() {
+    effect(() => {
+      if (this.pagina() >= this.paginas()) this.pagina.set(0); // nuevas filas: vuelve a la primera página
+    });
+  }
 }

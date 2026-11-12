@@ -1,35 +1,42 @@
-<div class="portal">
-  <section class="bienvenida">
-    <h1>Tu vehículo eléctrico, en buenas manos</h1>
-    <p>Agenda tu cita con el cupo y el repuesto asegurados, y sigue el estado del servicio en tiempo real.</p>
-    <a routerLink="/seguimiento">Consultar el estado de un servicio con su código</a>
-  </section>
+<section class="pagina">
+  <app-cabecera-vista titulo="Iniciar sesión" hu="HU-21, HU-15; acceso a HU-07" />
+  <div class="portal">
+    <div class="bienvenida">
+      <app-ilustracion-vehiculo tipo="SCOOTER" tamano="grande" class="ilustracion" />
+      <h2 class="lema">Tu cita llega con el repuesto ya apartado</h2>
+      <p class="fila-dato">Cupo y repuesto garantizados al agendar</p>
+      <p class="fila-dato">Estado del vehículo en tiempo real</p>
+      <a class="boton-secundario" routerLink="/seguimiento">Consultar seguimiento con código</a>
+    </div>
 
-  <app-tarjeta [titulo]="paso() === 'login' ? 'Iniciar sesión' : 'Cambia tu contraseña temporal'" [destacada]="true">
-    @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
-
-    @if (paso() === 'login') {
-      <form class="formulario" (ngSubmit)="ingresar()">
-        <app-campo etiqueta="Correo" para="correo">
-          <input id="correo" name="email" type="email" autocomplete="username" required [(ngModel)]="email" />
-        </app-campo>
-        <app-campo etiqueta="Contraseña" para="contrasena">
-          <input id="contrasena" name="password" type="password" autocomplete="current-password" required [(ngModel)]="password" />
-        </app-campo>
-        <app-boton tipo="submit" [procesando]="procesando()" [deshabilitado]="!email || !password">Ingresar</app-boton>
-      </form>
-      <p class="secundario">¿No tienes cuenta? <a routerLink="/registro">Crear cuenta</a></p>
-    } @else {
-      <p class="texto-suave">Por seguridad, define una contraseña nueva antes de continuar.</p>
-      <form class="formulario" (ngSubmit)="cambiar()">
-        <app-campo etiqueta="Nueva contraseña" para="nueva" ayuda="Mínimo 10 caracteres, con mayúscula, minúscula, número y símbolo.">
-          <input id="nueva" name="nueva" type="password" autocomplete="new-password" required [(ngModel)]="nueva" />
-        </app-campo>
-        <app-campo etiqueta="Confirmar contraseña" para="confirmacion">
-          <input id="confirmacion" name="confirmacion" type="password" autocomplete="new-password" required [(ngModel)]="confirmacion" />
-        </app-campo>
-        <app-boton tipo="submit" [procesando]="procesando()" [deshabilitado]="!nueva || !confirmacion">Cambiar contraseña</app-boton>
-      </form>
-    }
-  </app-tarjeta>
-</div>
+    <div class="acceso">
+      <h3>{{ paso() === 'login' ? 'Iniciar sesión' : 'Cambia tu contraseña temporal' }}</h3>
+      <app-tarjeta>
+        @if (error()) { <app-aviso tipo="error">{{ error() }}</app-aviso> }
+        @if (paso() === 'login') {
+          <form class="formulario" (ngSubmit)="ingresar()">
+            <app-campo etiqueta="Correo" para="correo">
+              <input id="correo" name="email" type="email" autocomplete="username" placeholder="correo@ejemplo.com" required [(ngModel)]="email" />
+            </app-campo>
+            <app-campo etiqueta="Contraseña" para="contrasena">
+              <input id="contrasena" name="password" type="password" autocomplete="current-password" required [(ngModel)]="password" />
+            </app-campo>
+            <app-boton tipo="submit" [procesando]="procesando()" [deshabilitado]="!email || !password">Ingresar</app-boton>
+          </form>
+          <p class="nota">¿No tienes cuenta? <a routerLink="/registro">Crear cuenta</a></p>
+        } @else {
+          <form class="formulario" (ngSubmit)="cambiar()">
+            <app-campo etiqueta="Nueva contraseña" para="nueva" ayuda="Mínimo 10 caracteres, con mayúscula, minúscula, número y símbolo.">
+              <input id="nueva" name="nueva" type="password" autocomplete="new-password" required [(ngModel)]="nueva" />
+            </app-campo>
+            <app-campo etiqueta="Confirmar contraseña" para="confirmacion">
+              <input id="confirmacion" name="confirmacion" type="password" autocomplete="new-password" required [(ngModel)]="confirmacion" />
+            </app-campo>
+            <app-boton tipo="submit" [procesando]="procesando()" [deshabilitado]="!nueva || !confirmacion">Guardar y continuar</app-boton>
+          </form>
+          <p class="nota">Paso obligatorio tras ingresar con una contraseña temporal: sin él no se accede a otras funciones.</p>
+        }
+      </app-tarjeta>
+    </div>
+  </div>
+</section>

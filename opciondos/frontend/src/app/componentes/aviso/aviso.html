@@ -1,1 +1,4 @@
-<div [class]="tipo()" [attr.role]="rol()"><ng-content /></div>
+<div [class]="tipo()" [attr.role]="rol()">
+  <app-icono [nombre]="icono()" />
+  <div class="contenido"><ng-content /></div>
+</div>

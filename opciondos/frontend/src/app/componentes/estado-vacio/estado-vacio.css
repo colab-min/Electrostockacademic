@@ -1,3 +1,6 @@
-.vacio { display: grid; gap: var(--espacio-2); justify-items: center; text-align: center; padding: var(--espacio-6); border: 1px dashed var(--color-etiqueta); border-radius: var(--radio); }
-.titulo { margin: 0; font-family: var(--fuente-titulo); font-weight: 700; color: var(--color-accion); }
-.mensaje { margin: 0; color: var(--color-etiqueta); font-size: 14px; }
+.vacio { display: grid; gap: var(--espacio-2); justify-items: center; text-align: center; padding: var(--espacio-8) var(--espacio-6);
+  border: 1px dashed var(--color-etiqueta-tenue); border-radius: var(--radio-tarjeta); background: var(--color-etiqueta-suave); }
+.sello { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--color-campo);
+  color: var(--color-etiqueta); box-shadow: var(--elev-2-accion); margin-bottom: var(--espacio-2); }
+.titulo { margin: 0; font-family: var(--fuente-titulo); font-weight: 700; font-size: var(--texto-20); color: var(--color-accion); }
+.mensaje { margin: 0; color: var(--color-etiqueta); font-size: var(--texto-14); max-width: 44ch; }

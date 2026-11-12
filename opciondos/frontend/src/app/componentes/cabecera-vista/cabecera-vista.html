@@ -1,0 +1,9 @@
+<header class="cabecera">
+  <div class="texto">
+    <h1>{{ titulo() }}</h1>
+    @if (hu()) { <span class="hu">{{ hu() }}</span> }
+    @if (contexto()) { <p class="contexto">{{ contexto() }}</p> }
+    <ng-content />
+  </div>
+  @if (vehiculo(); as v) { <app-ilustracion-vehiculo [tipo]="v" tamano="grande" class="ilustracion" /> }
+</header>

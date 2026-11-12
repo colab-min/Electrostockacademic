@@ -2,6 +2,9 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { CabeceraVista } from '../../../componentes/cabecera-vista/cabecera-vista';
+import { Esqueleto } from '../../../componentes/esqueleto/esqueleto';
+import { Icono } from '../../../componentes/icono/icono';
 import { Aviso } from '../../../componentes/aviso/aviso';
 import { Boton } from '../../../componentes/boton/boton';
 import { CalendarioMes, EstadoDia } from '../../../componentes/calendario-mes/calendario-mes';
@@ -38,7 +41,7 @@ function mesDe(d: Date): string {
 /** CL-02 a CL-05: asistente de 4 pasos para agendar (HU-01, HU-19). */
 @Component({
   selector: 'app-vista-agendar',
-  imports: [FormsModule, RouterLink, Aviso, Boton, CalendarioMes, Campo, EstadoVacio, FranjaHoraria, Tarjeta],
+  imports: [FormsModule, RouterLink, Aviso, Boton, CabeceraVista, CalendarioMes, Campo, Esqueleto, EstadoVacio, FranjaHoraria, Icono, Tarjeta],
   templateUrl: './agendar.html',
   styleUrl: './agendar.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,7 +49,11 @@ function mesDe(d: Date): string {
 export class VistaAgendar {
   private readonly http = inject(HttpClient);
   protected readonly pasos = ['Vehículo y servicio', 'Día', 'Hora', 'Confirmar'];
+  protected readonly pasosCortos = ['Vehículo', 'Día', 'Hora', 'Confirmar'];
+  /** Títulos de los marcos CL-02 a CL-05 de makups3. */
+  protected readonly titulos = ['vehículo y servicio', 'elegir el día', 'elegir la hora', 'confirmar'];
   protected readonly paso = signal(1);
+  protected readonly retencion = RETENCION_S;
   protected readonly vehiculos = signal<Vehiculo[] | null>(null);
   protected readonly servicios = signal<Servicio[]>([]);
   protected readonly vehiculoId = signal<number | null>(null);

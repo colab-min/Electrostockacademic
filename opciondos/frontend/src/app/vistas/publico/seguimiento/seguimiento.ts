@@ -1,5 +1,5 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, input, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription, switchMap, timer } from 'rxjs';
@@ -7,6 +7,9 @@ import { Aviso } from '../../../componentes/aviso/aviso';
 import { Boton } from '../../../componentes/boton/boton';
 import { Campo } from '../../../componentes/campo/campo';
 import { InsigniaEstado } from '../../../componentes/insignia-estado/insignia-estado';
+import { CabeceraVista } from '../../../componentes/cabecera-vista/cabecera-vista';
+import { Esqueleto } from '../../../componentes/esqueleto/esqueleto';
+import { IlustracionVehiculo } from '../../../componentes/ilustracion-vehiculo/ilustracion-vehiculo';
 import { EventoLinea, LineaTiempo } from '../../../componentes/linea-tiempo/linea-tiempo';
 import { Tarjeta } from '../../../componentes/tarjeta/tarjeta';
 import { mensajeError } from '../../../core/errores';
@@ -27,7 +30,7 @@ const NO_ENCONTRADO = 'No encontramos información con ese código. Verifica e i
 /** PU-03 Seguimiento público (HU-07): se refresca cada 3 s para ver en vivo el cambio del mecánico. */
 @Component({
   selector: 'app-vista-seguimiento',
-  imports: [FormsModule, Aviso, Boton, Campo, InsigniaEstado, LineaTiempo, Tarjeta],
+  imports: [FormsModule, Aviso, Boton, Campo, InsigniaEstado, LineaTiempo, Tarjeta, CabeceraVista, Esqueleto, IlustracionVehiculo],
   templateUrl: './seguimiento.html',
   styleUrl: './seguimiento.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,6 +45,16 @@ export class VistaSeguimiento {
   protected readonly datos = signal<Seguimiento | null>(null);
   protected readonly error = signal<string | null>(null);
   protected readonly cargando = signal(false);
+  /** Línea de tiempo con los hitos públicos que faltan, dibujados como pendientes (makups3 PU-03). */
+  protected readonly eventosVisibles = computed<EventoLinea[]>(() => {
+    const d = this.datos();
+    if (!d) return [];
+    const vistos = d.linea_tiempo.map((e) => e.titulo);
+    const faltan = ['Listo para entrega', 'Entregado']
+      .filter((t) => d.estado !== 'CANCELLED' && !vistos.includes(t) && !(t === 'Listo para entrega' && vistos.includes('Entregado')))
+      .map((titulo): EventoLinea => ({ titulo, fecha: '', estado: 'pendiente' }));
+    return [...d.linea_tiempo, ...faltan];
+  });
   protected readonly fecha = formatoFechaHora;
 
   constructor() {
