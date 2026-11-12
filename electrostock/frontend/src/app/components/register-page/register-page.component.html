@@ -1,0 +1,54 @@
+<section class="register-card" aria-labelledby="register-title">
+  <h1 id="register-title">{{ t('register') }}</h1>
+  <form (ngSubmit)="submit(registerForm)" #registerForm="ngForm">
+    <label for="full-name">{{ t('customer') }}
+      <input id="full-name" name="fullName" #fullNameControl="ngModel" autocomplete="name" required [(ngModel)]="fullName"
+        [attr.aria-invalid]="registerForm.submitted && fullNameControl.invalid ? 'true' : null"
+        [attr.aria-describedby]="registerForm.submitted && fullNameControl.invalid ? 'full-name-error' : null">
+      @if (registerForm.submitted && fullNameControl.invalid) { <span id="full-name-error" class="field-error">{{ t('fieldRequired') }}</span> }
+    </label>
+    <label for="register-email">{{ t('email') }}
+      <input id="register-email" name="email" type="email" #emailControl="ngModel" autocomplete="email" required [(ngModel)]="email"
+        [attr.aria-invalid]="registerForm.submitted && emailControl.invalid ? 'true' : null"
+        [attr.aria-describedby]="registerForm.submitted && emailControl.invalid ? 'email-error' : null">
+      @if (registerForm.submitted && emailControl.invalid) { <span id="email-error" class="field-error">{{ emailControl.errors?.['email'] ? t('invalidEmail') : t('fieldRequired') }}</span> }
+    </label>
+    <label for="register-password">{{ t('password') }}
+      <input id="register-password" name="password" type="password" #passwordControl="ngModel" autocomplete="new-password" minlength="10" required [(ngModel)]="password"
+        [attr.aria-invalid]="registerForm.submitted && passwordControl.invalid ? 'true' : null"
+        [attr.aria-describedby]="registerForm.submitted && passwordControl.invalid ? 'password-error' : 'password-help'">
+      <span id="password-help" class="muted">{{ t('passwordMinimum') }}</span>
+      @if (registerForm.submitted && passwordControl.invalid) { <span id="password-error" class="field-error">{{ passwordControl.errors?.['minlength'] ? t('passwordMinimum') : t('fieldRequired') }}</span> }
+    </label>
+    <label for="document-type">{{ t('documentType') }}
+      <select id="document-type" name="documentType" required [(ngModel)]="documentType">
+        <option value="CC">CC</option>
+        <option value="CE">CE</option>
+        <option value="PA">PA</option>
+      </select>
+    </label>
+    <label for="document-number">{{ t('documentNumber') }}
+      <input id="document-number" name="documentNumber" #documentNumberControl="ngModel" autocomplete="off" minlength="6" maxlength="20" required [(ngModel)]="documentNumber"
+        [attr.aria-invalid]="registerForm.submitted && documentNumberControl.invalid ? 'true' : null"
+        [attr.aria-describedby]="registerForm.submitted && documentNumberControl.invalid ? 'document-number-error' : null">
+      @if (registerForm.submitted && documentNumberControl.invalid) { <span id="document-number-error" class="field-error">{{ t('fieldRequired') }}</span> }
+    </label>
+    <label for="phone">{{ t('phone') }}
+      <input id="phone" name="phone" type="tel" #phoneControl="ngModel" autocomplete="tel" minlength="7" maxlength="20" required [(ngModel)]="phone"
+        [attr.aria-invalid]="registerForm.submitted && phoneControl.invalid ? 'true' : null"
+        [attr.aria-describedby]="registerForm.submitted && phoneControl.invalid ? 'phone-error' : null">
+      @if (registerForm.submitted && phoneControl.invalid) { <span id="phone-error" class="field-error">{{ t('fieldRequired') }}</span> }
+    </label>
+    <label class="consent" for="consent">
+      <input id="consent" name="consent" type="checkbox" #consentControl="ngModel" required [(ngModel)]="dataConsent"
+        [attr.aria-invalid]="registerForm.submitted && consentControl.invalid ? 'true' : null"
+        [attr.aria-describedby]="registerForm.submitted && consentControl.invalid ? 'consent-error' : null">
+      <span>{{ t('consent') }}</span>
+    </label>
+    @if (registerForm.submitted && consentControl.invalid) { <span id="consent-error" class="field-error">{{ t('fieldRequired') }}</span> }
+    <p class="error-message" role="alert" aria-live="assertive">{{ error() }}</p>
+    <p class="muted" role="status">{{ loading() ? t('loading') : '' }}</p>
+    <button class="button" type="submit" [disabled]="loading()">{{ loading() ? t('loading') : t('register') }}</button>
+  </form>
+  <a routerLink="/ingresar">{{ t('signIn') }}</a>
+</section>

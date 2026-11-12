@@ -1,0 +1,255 @@
+.workspace {
+  max-width: 82rem;
+  margin: 0 auto;
+}
+
+.page-heading,
+.section-heading,
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.page-heading {
+  margin-bottom: 1.5rem;
+}
+
+.page-heading h1 {
+  margin: 0;
+  color: #f2e9ca;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  letter-spacing: -0.035em;
+}
+
+h2,
+h3 {
+  color: #f2e9ca;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+
+h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: var(--color-primary);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hint {
+  color: var(--color-muted);
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.panel {
+  min-width: 0;
+  margin: 1rem 0;
+  border: 1px solid #7280a04a;
+  border-radius: 0.9rem;
+  background: linear-gradient(145deg, #202e50f5, #1d2a49f5);
+  padding: clamp(1rem, 2.2vw, 1.6rem);
+  box-shadow: 0 1rem 2.5rem #080e201c;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.actions {
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.actions label {
+  min-width: min(100%, 13rem);
+}
+
+.feedback {
+  min-height: 1.5rem;
+  color: var(--color-success);
+  font-weight: 650;
+}
+
+.hold-clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  border: 1px solid #efc65b65;
+  border-radius: 0.6rem;
+  background: #f3c65d12;
+  color: #f3cf75;
+  padding: 0.65rem 0.85rem;
+}
+
+.hold-clock strong {
+  font-variant-numeric: tabular-nums;
+  font-size: 1.2rem;
+}
+
+.error-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border: 1px solid #ec8c7970;
+  border-left: 0.25rem solid var(--color-danger);
+  border-radius: 0.5rem;
+  background: #522d3b;
+  padding: 0.875rem 1rem;
+  color: #ffe4d8;
+}
+
+.section-heading {
+  margin-bottom: 0.75rem;
+}
+
+.section-heading h2 {
+  margin: 0;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid #7280a033;
+  border-radius: 0.65rem;
+}
+
+.table-wrap:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+caption {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  font-weight: 700;
+}
+
+th,
+td {
+  border-bottom: 1px solid #7280a033;
+  padding: 0.8rem 1rem;
+  vertical-align: top;
+}
+
+th {
+  background: #f2e9ca0a;
+  color: #bdc9df;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  margin: 0.75rem 0 1rem;
+}
+
+.consent input {
+  width: 1.1rem;
+  min-width: 1.1rem;
+  min-height: 1.1rem;
+  margin-top: 0.1rem;
+  accent-color: var(--color-primary);
+}
+
+.record-lists {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+.record-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-bottom: 1px solid #7280a033;
+  padding: 0.65rem 0;
+}
+
+.tracking-card {
+  margin-top: 1.5rem;
+  border: 1px solid #efc65b3b;
+  border-radius: 0.75rem;
+  background: #f3c65d0b;
+  padding: 1.1rem;
+}
+
+.tracking-card h3 {
+  margin: 0;
+}
+
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+  gap: 0.5rem;
+  list-style: none;
+  margin: 1.25rem 0 0;
+  padding: 0;
+}
+
+.timeline li {
+  border-top: 2px solid #65789e;
+  padding-top: 0.6rem;
+  color: #d3dded;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 640px) {
+  .page-heading,
+  .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  .error-box {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

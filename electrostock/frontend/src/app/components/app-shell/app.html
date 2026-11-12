@@ -1,0 +1,34 @@
+<a class="skip-link" href="#main-content">{{ t('skipToMain') }}</a>
+@if (!isPublicPage()) {
+  <header class="topbar">
+    <a class="brand" [routerLink]="homePath()">{{ t('app') }}</a>
+    @if (session.user(); as user) {
+      <nav class="primary-navigation" [attr.aria-label]="t(user.role === 'ADMIN' ? 'management' : user.role === 'CUSTOMER' ? 'customerArea' : 'operations')">
+        @for (item of navigation(); track item.path) {
+          <a [routerLink]="item.path" routerLinkActive="active" ariaCurrentWhenActive="page">
+            {{ t(item.label) }}
+          </a>
+        }
+      </nav>
+    }
+    <div class="topbar-actions">
+      @if (session.user(); as user) {
+        <span class="user-summary">{{ user.full_name }} <span class="role-pill">{{ roleLabel() }}</span></span>
+        <button class="button button-quiet" type="button" (click)="logout()">{{ t('signOut') }}</button>
+      }
+      <label class="locale-picker">
+        <span>{{ t('language') }}</span>
+        <select [value]="i18n.locale()" (change)="changeLocale($event)">
+          <option value="es-CO">{{ t('languageSpanish') }}</option>
+          <option value="en">{{ t('languageEnglish') }}</option>
+        </select>
+      </label>
+    </div>
+  </header>
+}
+
+<div class="app-layout" [class.public-layout]="isPublicPage()">
+  <main #mainContent id="main-content" tabindex="-1" [class.public-main]="isPublicPage()">
+    <router-outlet />
+  </main>
+</div>

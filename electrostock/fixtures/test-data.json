@@ -1,0 +1,51 @@
+{
+  "users": [
+    {"key": "admin", "full_name": "Administración Electrostock", "email": "admin@electrostock.test", "password": "Admin2026!", "role": "ADMIN"},
+    {"key": "reception", "full_name": "Recepción Electrostock", "email": "recepcion@electrostock.test", "password": "Recep2026!", "role": "RECEPTIONIST"},
+    {"key": "reception2", "full_name": "Recepción temporal", "email": "recepcion2@electrostock.test", "password": "Temporal2026!", "role": "RECEPTIONIST", "must_change_password": true},
+    {"key": "mechanic1", "full_name": "Mecánico Uno", "email": "mecanico1@electrostock.test", "password": "Meca2026!a", "role": "MECHANIC"},
+    {"key": "mechanic2", "full_name": "Mecánico Dos", "email": "mecanico2@electrostock.test", "password": "Meca2026!b", "role": "MECHANIC"},
+    {"key": "mechanic3", "full_name": "Mecánico Inactivo", "email": "mecanico3@electrostock.test", "password": "Meca2026!c", "role": "MECHANIC", "active": false},
+    {"key": "client1", "full_name": "Cliente Uno", "email": "cliente1@electrostock.test", "password": "Cliente2026!", "role": "CUSTOMER"},
+    {"key": "client2", "full_name": "Cliente Dos", "email": "cliente2@electrostock.test", "password": "Cliente2026!", "role": "CUSTOMER"}
+  ],
+  "customers": [
+    {"key": "customer1", "user_key": "client1", "full_name": "Cliente Uno", "document_type": "CC", "document_number": "1000000001", "phone": "3005550001", "email": "cliente1@electrostock.test"},
+    {"key": "customer2", "user_key": "client2", "full_name": "Cliente Dos", "document_type": "CC", "document_number": "1000000002", "phone": "3005550002", "email": "cliente2@electrostock.test"},
+    {"key": "customer3", "full_name": "Paula Rincón", "document_type": "CC", "document_number": "1045678901", "phone": "3005550003"},
+    {"key": "customer4", "full_name": "Andrés Mora", "document_type": "CC", "document_number": "1056789012", "phone": "3005550004"}
+  ],
+  "vehicles": [
+    {"key": "vehicle1", "customer_key": "customer1", "serial_number": "SC-48-0001", "plate": "ABC123", "brand": "Electro", "model": "City 48V", "year": 2024, "battery_capacity_ah": 15, "cell_type": "Litio"},
+    {"key": "vehicle2", "customer_key": "customer1", "serial_number": "PT-36-0002", "plate": "DEF456", "brand": "Volt", "model": "Urban 36V", "year": 2023, "battery_capacity_ah": 12, "cell_type": "Litio"},
+    {"key": "vehicle3", "customer_key": "customer2", "serial_number": "MC-48-0006", "plate": "GHI789", "brand": "Electro", "model": "Cargo 48V", "year": 2022, "battery_capacity_ah": 20, "cell_type": "Litio"},
+    {"key": "vehicle4", "customer_key": "customer2", "serial_number": "SC-60-0004", "brand": "Volt", "model": "Tour 60V", "year": 2024, "battery_capacity_ah": 20, "cell_type": "Litio"}
+  ],
+  "parts": [
+    {"key": "battery48", "sku": "BAT-48-15", "name": "Batería litio 48V 15Ah", "category": "Baterías", "voltage": "48V", "unit_price": 520000, "physical_stock": 3, "min_threshold": 1},
+    {"key": "battery60", "sku": "BAT-60-20", "name": "Batería litio 60V 20Ah", "category": "Baterías", "voltage": "60V", "unit_price": 740000, "physical_stock": 0, "min_threshold": 1},
+    {"key": "controller48", "sku": "CTL-48", "name": "Controlador 48V", "category": "Controladores", "voltage": "48V", "unit_price": 180000, "physical_stock": 4, "min_threshold": 1},
+    {"key": "brake", "sku": "BRK-01", "name": "Juego de frenos", "category": "Frenos", "unit_price": 75000, "physical_stock": 5, "min_threshold": 2}
+  ],
+  "services": [
+    {"key": "battery_service", "code": "CAMB-BAT-48", "name": "Cambio de batería 48V", "description": "Reemplazo de batería y verificación eléctrica.", "price": 45000, "duration_minutes": 60},
+    {"key": "diagnostic", "code": "DIAG-GEN", "name": "Diagnóstico general", "description": "Revisión general del vehículo.", "price": 30000, "duration_minutes": 60},
+    {"key": "maintenance", "code": "MANT-PREV", "name": "Mantenimiento preventivo", "description": "Inspección y mantenimiento preventivo.", "price": 45000, "duration_minutes": 90}
+  ],
+  "service_parts": [
+    {"service_key": "battery_service", "part_key": "battery48", "quantity": 1}
+  ],
+  "appointments": [
+    {"key": "appointment1", "code": "CITA-DEMO-0009", "customer_key": "customer1", "vehicle_key": "vehicle2", "service_key": "diagnostic", "day_offset": 2, "start_time": "10:00", "status": "CONFIRMED"},
+    {"key": "appointment2", "code": "CITA-DEMO-0008", "customer_key": "customer2", "vehicle_key": "vehicle3", "service_key": "diagnostic", "day_offset": 2, "start_time": "11:00", "status": "HELD", "expires_in_minutes": -10}
+  ],
+  "work_orders": [
+    {"number": "OT-000001", "tracking_code": "K7M2QX9P4T", "customer_key": "customer2", "vehicle_key": "vehicle4", "mechanic_key": "mechanic1", "status": "REPAIRING", "fault_description": "Pérdida intermitente de potencia", "diagnosis": "Controlador con conexión inestable", "service_key": "maintenance", "parts": [{"part_key": "controller48", "quantity": 1, "status": "RESERVED"}]},
+    {"number": "OT-000002", "tracking_code": "M4Q2N7P8R1", "customer_key": "customer2", "vehicle_key": "vehicle3", "status": "RECEIVED", "fault_description": "Frenos sin respuesta", "service_key": "maintenance", "queue_position": 1},
+    {"number": "OT-000003", "tracking_code": "D3L1V3R3D1", "customer_key": "customer1", "vehicle_key": "vehicle1", "status": "DELIVERED", "fault_description": "Mantenimiento general", "diagnosis": "Sistema verificado y entregado", "service_key": "diagnostic"}
+  ],
+  "technical_notes": [
+    {"vehicle_key": "vehicle1", "author_key": "mechanic1", "content": "Historial de diagnóstico eléctrico y revisión general."},
+    {"vehicle_key": "vehicle4", "author_key": "mechanic1", "content": "Revisar el conector del controlador en cada visita."}
+  ]
+}

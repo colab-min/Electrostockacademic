@@ -1,0 +1,719 @@
+:root {
+  color-scheme: dark;
+  --color-primary: #f3c65d;
+  --color-primary-strong: #f08f5c;
+  --color-ink: #f2e9ca;
+  --color-muted: #bac6dc;
+  --color-border: #40547b;
+  --color-surface: #202e50;
+  --color-background: #141d38;
+  --color-soft: #2e416b;
+  --color-success: #9dc9b3;
+  --color-danger: #f2a08e;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--color-ink);
+  background: var(--color-background);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+body {
+  min-width: 20rem;
+  min-height: 100vh;
+  margin: 0;
+  background-color: var(--color-background);
+  background-image:
+    radial-gradient(ellipse at 90% 5%, #35487540, transparent 38rem),
+    linear-gradient(135deg, #f3c65d05 25%, transparent 25%, transparent 50%, #f3c65d05 50%, #f3c65d05 75%, transparent 75%);
+  background-size: auto, 1.25rem 1.25rem;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  min-height: 2.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  background: #182441;
+  color: var(--color-ink);
+  padding: 0.625rem 0.75rem;
+}
+
+[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+
+.field-error {
+  color: var(--color-danger);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #8998b7;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+label {
+  display: grid;
+  gap: 0.375rem;
+  color: var(--color-ink);
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.button {
+  min-height: 2.75rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  background: var(--color-primary);
+  color: #1c2541;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+  padding: 0.625rem 1rem;
+  transition: background-color 140ms ease, transform 140ms ease;
+}
+
+.button:hover {
+  background: var(--color-primary-strong);
+  transform: translateY(-1px);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.button-quiet {
+  border-color: var(--color-border);
+  background: transparent;
+  color: var(--color-ink);
+}
+
+.button-quiet:hover {
+  background: var(--color-soft);
+}
+
+.muted {
+  color: var(--color-muted);
+}
+
+.workspace[data-page="inventory"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 1fr);
+  align-items: start;
+  gap: 0 1.25rem;
+}
+
+.workspace[data-page="inventory"] > .page-heading,
+.workspace[data-page="inventory"] > .metrics-grid {
+  grid-column: 1 / -1;
+}
+
+.workspace[data-page="inventory"] > .page-heading {
+  grid-row: 1;
+}
+
+.workspace[data-page="inventory"] > .metrics-grid {
+  grid-row: 2;
+}
+
+.workspace[data-page="inventory"][data-role="ADMIN"] > section[aria-labelledby="records-title"] {
+  grid-column: 1;
+  grid-row: 3 / span 2;
+}
+
+.workspace[data-page="inventory"][data-role="ADMIN"] > section[aria-labelledby="new-part-title"] {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.workspace[data-page="inventory"][data-role="ADMIN"] > section[aria-labelledby="inventory-form-title"] {
+  grid-column: 2;
+  grid-row: 4;
+}
+
+.workspace[data-page="inventory"]:not([data-role="ADMIN"]) > section[aria-labelledby="records-title"] {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.workspace[data-page="inventory"]:not([data-role="ADMIN"]) > section[aria-labelledby="inventory-form-title"] {
+  grid-column: 2;
+  grid-row: 3;
+}
+
+.workspace[data-page="inventory"] > .feedback,
+.workspace[data-page="inventory"] > .error-box {
+  grid-column: 1 / -1;
+}
+
+.workspace[data-page="inventory"] .panel {
+  margin-block: 0 1.25rem;
+}
+
+.report-status-panel {
+  margin-top: 0;
+}
+
+.report-status-row {
+  display: grid;
+  grid-template-columns: minmax(7rem, 0.8fr) minmax(6rem, 2fr) 2rem;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid #7280a033;
+  padding: 0.85rem 0;
+}
+
+.report-status-row:last-child {
+  border-bottom: 0;
+}
+
+.report-status-track {
+  height: 0.65rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #101a33;
+}
+
+.report-status-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #e8ad4c, #f3c65d);
+  transition: width 180ms ease;
+}
+
+.report-status-row strong {
+  color: var(--color-ink);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.workspace[data-view="admin-assignment"],
+.workspace[data-view="mechanic-bay"],
+.workspace[data-view="mechanic-order-detail"],
+.workspace[data-view="reception-intake"],
+.workspace[data-view="reception-payment"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(20rem, 1fr);
+  align-items: start;
+  gap: 0 1.25rem;
+}
+
+.workspace[data-view="admin-assignment"] > .page-heading,
+.workspace[data-view="admin-assignment"] > .metrics-grid,
+.workspace[data-view="mechanic-bay"] > .page-heading,
+.workspace[data-view="mechanic-bay"] > .metrics-grid,
+.workspace[data-view="mechanic-order-detail"] > .page-heading,
+.workspace[data-view="mechanic-order-detail"] > .metrics-grid,
+.workspace[data-view="reception-intake"] > .page-heading,
+.workspace[data-view="reception-intake"] > .metrics-grid,
+.workspace[data-view="reception-payment"] > .page-heading,
+.workspace[data-view="reception-payment"] > .metrics-grid {
+  grid-column: 1 / -1;
+}
+
+.workspace[data-view="admin-assignment"] > .page-heading,
+.workspace[data-view="mechanic-bay"] > .page-heading,
+.workspace[data-view="mechanic-order-detail"] > .page-heading,
+.workspace[data-view="reception-intake"] > .page-heading,
+.workspace[data-view="reception-payment"] > .page-heading {
+  grid-row: 1;
+}
+
+.workspace[data-view="admin-assignment"] > .metrics-grid,
+.workspace[data-view="mechanic-bay"] > .metrics-grid,
+.workspace[data-view="mechanic-order-detail"] > .metrics-grid,
+.workspace[data-view="reception-intake"] > .metrics-grid,
+.workspace[data-view="reception-payment"] > .metrics-grid {
+  grid-row: 2;
+}
+
+.workspace[data-view="admin-assignment"] > section[aria-labelledby="work-order-form-title"],
+.workspace[data-view="mechanic-bay"] > section[aria-labelledby="work-order-form-title"],
+.workspace[data-view="mechanic-order-detail"] > section[aria-labelledby="work-order-form-title"],
+.workspace[data-view="reception-intake"] > section[aria-labelledby="work-order-form-title"],
+.workspace[data-view="reception-payment"] > section[aria-labelledby="work-order-form-title"] {
+  grid-column: 2;
+  grid-row: 3;
+  margin-block: 0 1.25rem;
+}
+
+.workspace[data-view="admin-assignment"] > section[aria-labelledby="records-title"],
+.workspace[data-view="mechanic-bay"] > section[aria-labelledby="records-title"],
+.workspace[data-view="mechanic-order-detail"] > section[aria-labelledby="records-title"],
+.workspace[data-view="reception-intake"] > section[aria-labelledby="records-title"],
+.workspace[data-view="reception-payment"] > section[aria-labelledby="records-title"] {
+  grid-column: 1;
+  grid-row: 3;
+  margin-block: 0 1.25rem;
+}
+
+.workspace[data-view="admin-assignment"] > .feedback,
+.workspace[data-view="admin-assignment"] > .error-box,
+.workspace[data-view="mechanic-bay"] > .feedback,
+.workspace[data-view="mechanic-bay"] > .error-box,
+.workspace[data-view="mechanic-order-detail"] > .feedback,
+.workspace[data-view="mechanic-order-detail"] > .error-box,
+.workspace[data-view="reception-intake"] > .feedback,
+.workspace[data-view="reception-intake"] > .error-box,
+.workspace[data-view="reception-payment"] > .feedback,
+.workspace[data-view="reception-payment"] > .error-box {
+  grid-column: 1 / -1;
+}
+
+.workspace[data-view="customer-appointments"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 0.8fr);
+  align-items: start;
+  gap: 0 1.25rem;
+}
+
+.workspace[data-view="customer-appointments"] > .page-heading,
+.workspace[data-view="customer-appointments"] > .metrics-grid,
+.workspace[data-view="customer-appointments"] > .customer-vehicles-panel,
+.workspace[data-view="customer-appointments"] > .feedback,
+.workspace[data-view="customer-appointments"] > .error-box {
+  grid-column: 1 / -1;
+}
+
+.workspace[data-view="customer-appointments"] > .page-heading {
+  grid-row: 1;
+}
+
+.workspace[data-view="customer-appointments"] > .metrics-grid {
+  grid-row: 2;
+}
+
+.workspace[data-view="customer-appointments"] > .customer-vehicles-panel {
+  grid-row: 3;
+}
+
+.workspace[data-view="customer-appointments"] > section[aria-labelledby="appointment-actions-title"] {
+  grid-column: 2;
+  grid-row: 4;
+  margin-block: 0 1.25rem;
+}
+
+.workspace[data-view="customer-appointments"] > section[aria-labelledby="records-title"] {
+  grid-column: 1;
+  grid-row: 4;
+  margin-block: 0 1.25rem;
+}
+
+.workspace[data-view="customer-booking"] {
+  max-width: 70rem;
+}
+
+.workspace[data-view="customer-booking"] > .metrics-grid,
+.workspace[data-view="customer-vehicles"] > .metrics-grid,
+.workspace[data-view="customer-history"] > .metrics-grid,
+.workspace[data-view="customer-registration"] > .metrics-grid,
+.workspace[data-view="technical-file"] > .metrics-grid,
+.workspace[data-view="customer-survey"] > .metrics-grid {
+  display: none;
+}
+
+.workspace[data-view="customer-booking"] > section[aria-labelledby="appointment-form-title"] {
+  margin-top: 0;
+}
+
+.customer-vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  gap: 0.85rem;
+}
+
+.booking-stepper {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+  padding: 0;
+  list-style: none;
+}
+
+.booking-stepper li {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.55rem;
+  color: #8998b7;
+}
+
+.booking-stepper li > span {
+  display: grid;
+  width: 2rem;
+  min-width: 2rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid #7280a04a;
+  border-radius: 50%;
+  background: #182441;
+  font-weight: 750;
+}
+
+.booking-stepper li.current,
+.booking-stepper li.done {
+  color: var(--color-ink);
+}
+
+.booking-stepper li.current > span,
+.booking-stepper li.done > span {
+  border-color: var(--color-primary);
+  background: #f3c65d1c;
+  color: var(--color-primary);
+}
+
+.booking-stepper small {
+  overflow: hidden;
+  font-size: 0.8rem;
+  text-overflow: ellipsis;
+}
+
+.booking-summary {
+  width: 100%;
+  border: 1px solid #7280a04a;
+  border-radius: 0.75rem;
+  background: #182441a8;
+  padding: 1rem 1.25rem;
+}
+
+.booking-summary p {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0;
+  border-bottom: 1px solid #7280a033;
+  padding: 0.75rem 0;
+}
+
+.booking-summary p:last-child {
+  border-bottom: 0;
+}
+
+.booking-summary strong {
+  text-align: right;
+}
+
+.customer-vehicle-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border: 1px solid #7280a04a;
+  border-radius: 0.75rem;
+  background: #182441a8;
+  padding: 1rem;
+}
+
+.customer-vehicle-card h3,
+.customer-vehicle-card p {
+  margin: 0;
+}
+
+.customer-vehicle-card p,
+.customer-vehicle-card small {
+  color: var(--color-muted);
+}
+
+.vehicle-icon {
+  display: grid;
+  width: 2.75rem;
+  min-width: 2.75rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid #f3c65d75;
+  border-radius: 50%;
+  background: #f3c65d12;
+  color: var(--color-primary);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.workspace[data-view="service-catalog"],
+.workspace[data-view="user-management"],
+.workspace[data-view="technical-file"],
+.workspace[data-view="customer-registration"],
+.workspace[data-view="customer-history"] {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(19rem, 0.9fr);
+  align-items: start;
+  gap: 0 1.25rem;
+}
+
+.workspace[data-view="service-catalog"] > .page-heading,
+.workspace[data-view="service-catalog"] > .metrics-grid,
+.workspace[data-view="user-management"] > .page-heading,
+.workspace[data-view="user-management"] > .metrics-grid,
+.workspace[data-view="technical-file"] > .page-heading,
+.workspace[data-view="technical-file"] > .metrics-grid,
+.workspace[data-view="customer-registration"] > .page-heading,
+.workspace[data-view="customer-registration"] > .metrics-grid,
+.workspace[data-view="customer-history"] > .page-heading,
+.workspace[data-view="customer-history"] > .metrics-grid {
+  grid-column: 1 / -1;
+}
+
+.workspace[data-view="service-catalog"] > section[aria-labelledby="records-title"],
+.workspace[data-view="user-management"] > section[aria-labelledby="records-title"],
+.workspace[data-view="technical-file"] > section[aria-labelledby="records-title"],
+.workspace[data-view="customer-registration"] > section[aria-labelledby="records-title"],
+.workspace[data-view="customer-history"] > section[aria-labelledby="records-title"] {
+  grid-column: 1 / -1;
+}
+
+.workspace[data-view="service-catalog"] > section[aria-labelledby="catalog-form-title"],
+.workspace[data-view="user-management"] > section[aria-labelledby="internal-user-title"],
+.workspace[data-view="technical-file"] > section[aria-labelledby="vehicle-form-title"],
+.workspace[data-view="customer-registration"] > section[aria-labelledby="customer-form-title"],
+.workspace[data-view="customer-history"] > section[aria-labelledby="vehicle-record-title"] {
+  grid-column: 2;
+  grid-row: 3;
+  margin-block: 0 1.25rem;
+}
+
+.workspace[data-view="service-catalog"] > section[aria-labelledby="service-parts-title"] {
+  grid-column: 2;
+  grid-row: 4;
+  margin-block: 0 1.25rem;
+}
+
+.workspace[data-view="technical-file"] > section[aria-labelledby="vehicle-record-title"],
+.workspace[data-view="customer-registration"] > section[aria-labelledby="vehicle-form-title"] {
+  grid-column: 1;
+  grid-row: 3;
+  margin-block: 0 1.25rem;
+}
+
+.payment-panel,
+.survey-panel {
+  max-width: 62rem;
+  margin: 0 auto 1.25rem;
+}
+
+.payment-summary {
+  margin: 1.25rem 0;
+  border: 1px solid #7280a04a;
+  border-radius: 0.75rem;
+  background: #182441a8;
+  padding: clamp(1rem, 3vw, 1.5rem);
+}
+
+.payment-summary h3 {
+  margin: 0;
+}
+
+.payment-total,
+.receipt-number,
+.survey-link {
+  border-top: 1px solid #7280a04a;
+  padding-top: 0.85rem;
+}
+
+.payment-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--color-primary);
+  font-size: 1.1rem;
+}
+
+.payment-controls {
+  display: flex;
+  align-items: end;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.payment-controls label {
+  width: min(100%, 20rem);
+}
+
+.receipt-number strong {
+  color: var(--color-primary);
+}
+
+.survey-panel {
+  max-width: 48rem;
+}
+
+.survey-panel h1 {
+  margin: 0;
+  color: #f2e9ca;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.9rem, 4vw, 2.75rem);
+  letter-spacing: -0.035em;
+}
+
+.rating-fieldset {
+  margin: 1.5rem 0;
+  border: 0;
+  padding: 0;
+}
+
+.rating-fieldset legend {
+  margin-bottom: 0.75rem;
+  font-weight: 700;
+}
+
+.rating-options {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.rating-option {
+  display: grid;
+  width: 3.25rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: #182441;
+  color: var(--color-ink);
+  cursor: pointer;
+  font-size: 1.1rem;
+}
+
+.rating-option input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.rating-option.selected {
+  border-color: var(--color-primary);
+  background: #f3c65d24;
+  color: var(--color-primary);
+}
+
+.rating-option:focus-within {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+.survey-complete {
+  margin-top: 1.5rem;
+  border: 1px solid #efc65b65;
+  border-radius: 0.75rem;
+  background: #f3c65d12;
+  padding: 1.25rem;
+}
+
+.survey-score {
+  color: var(--color-primary);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.survey-complete blockquote {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .workspace[data-page="inventory"] {
+    display: block;
+  }
+
+  .workspace[data-page="inventory"] .panel {
+    margin-block: 1rem;
+  }
+
+  .workspace[data-view="admin-assignment"],
+  .workspace[data-view="mechanic-bay"],
+  .workspace[data-view="mechanic-order-detail"],
+  .workspace[data-view="reception-intake"],
+  .workspace[data-view="reception-payment"],
+  .workspace[data-view="customer-appointments"],
+  .workspace[data-view="service-catalog"],
+  .workspace[data-view="user-management"],
+  .workspace[data-view="technical-file"],
+  .workspace[data-view="customer-registration"],
+  .workspace[data-view="customer-history"] {
+    display: block;
+  }
+
+  .workspace[data-view="admin-assignment"] .panel,
+  .workspace[data-view="mechanic-bay"] .panel,
+  .workspace[data-view="mechanic-order-detail"] .panel,
+  .workspace[data-view="reception-intake"] .panel,
+  .workspace[data-view="reception-payment"] .panel,
+  .workspace[data-view="customer-appointments"] .panel,
+  .workspace[data-view="service-catalog"] .panel,
+  .workspace[data-view="user-management"] .panel,
+  .workspace[data-view="technical-file"] .panel,
+  .workspace[data-view="customer-registration"] .panel,
+  .workspace[data-view="customer-history"] .panel {
+    margin-block: 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .booking-stepper {
+    gap: 0.35rem;
+  }
+
+  .booking-stepper li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .booking-summary p {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .report-status-row {
+    grid-template-columns: minmax(6rem, 1fr) minmax(4rem, 1.4fr) 1.5rem;
+    gap: 0.65rem;
+  }
+}

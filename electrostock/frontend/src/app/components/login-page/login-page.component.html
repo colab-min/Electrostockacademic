@@ -1,0 +1,35 @@
+<section class="login-layout" aria-labelledby="login-title">
+  <div class="welcome-copy">
+    <p class="eyebrow">{{ t('app') }}</p>
+    <h1 id="login-title">{{ t('welcome') }}</h1>
+    <p>{{ t('welcomeDescription') }}</p>
+  </div>
+  <div class="login-card">
+    <h2>{{ t('signIn') }}</h2>
+    <form (ngSubmit)="submit()" #loginForm="ngForm">
+      <label for="email">{{ t('email') }}</label>
+      <input id="email" name="email" type="email" autocomplete="username" required [(ngModel)]="email">
+      <label for="password">{{ t('password') }}</label>
+      <input id="password" name="password" type="password" autocomplete="current-password" required [(ngModel)]="password">
+      @if (error()) {
+        <p class="error-message" role="alert" aria-live="assertive">{{ error() }}</p>
+      }
+      @if (loading()) {
+        <p class="muted" role="status">{{ t('loading') }}</p>
+      }
+      <button class="button" type="submit" [disabled]="loginForm.invalid || loading()">
+        {{ loading() ? t('loading') : t('signIn') }}
+      </button>
+    </form>
+    <div class="demo-info">
+      <h3>{{ t('demoAccounts') }}</h3>
+      <p><strong>ADMIN</strong> · admin&#64;electrostock.test / Admin2026!</p>
+      <p><strong>RECEPTIONIST</strong> · recepcion&#64;electrostock.test / Recep2026!</p>
+      <p><strong>MECHANIC</strong> · mecanico1&#64;electrostock.test / Meca2026!a</p>
+      <p><strong>CUSTOMER</strong> · cliente1&#64;electrostock.test / Cliente2026!</p>
+      <p class="privacy-note">{{ t('privacyNote') }}</p>
+    </div>
+    <a routerLink="/registro" class="public-link">{{ t('register') }}</a>
+    <a routerLink="/seguimiento/demo" class="public-link">{{ t('tracking') }}</a>
+  </div>
+</section>

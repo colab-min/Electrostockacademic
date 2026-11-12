@@ -1,0 +1,1053 @@
+    <section class="workspace" [attr.data-page]="page()" [attr.data-role]="session.user()?.role" [attr.data-view]="view()" aria-labelledby="page-title">
+      @if (page() !== 'survey') {
+      <div class="page-heading">
+        <div>
+          <p class="eyebrow">{{ headingEyebrow() }}</p>
+          <h1 id="page-title">{{ t(titleKey()) }}</h1>
+          <p class="muted">{{ t('dashboardDescription') }}</p>
+        </div>
+        <button class="button button-quiet" type="button" (click)="load()">{{ t('refresh') }}</button>
+      </div>
+      }
+
+      @if (page() === 'reports' && !isAuditPage()) {
+        <div class="metrics-grid report-metrics">
+          <app-metric-card [label]="t('totalOrders')" [value]="reportTotal()" [detail]="t('reportingPeriod') + ' · ' + reportDate('from') + ' — ' + reportDate('to')" />
+          <app-metric-card [label]="t('ordersInProgress')" [value]="reportActiveTotal()" [detail]="t('ordersByStatus')" />
+          <app-metric-card [label]="t('ordersCompleted')" [value]="reportCompletedTotal()" [detail]="t('ordersByStatus')" />
+          <app-metric-card [label]="t('orderStatuses')" [value]="reportStatuses().length" [detail]="t('reportingPeriod')" />
+        </div>
+        <section class="panel report-status-panel" aria-labelledby="report-status-title">
+          <div class="section-heading">
+            <h2 id="report-status-title">{{ t('ordersByStatus') }}</h2>
+            <span class="muted">{{ t('reportingPeriod') }} · {{ reportDate('from') }} — {{ reportDate('to') }}</span>
+          </div>
+          @for (item of reportStatuses(); track item.status) {
+            <div class="report-status-row">
+              <span>{{ displayStatus(item.status) }}</span>
+              <span class="report-status-track" aria-hidden="true">
+                <span [style.width.%]="reportStatusShare(item.count)"></span>
+              </span>
+              <strong>{{ item.count }}</strong>
+            </div>
+          } @empty {
+            <p class="muted">{{ t('noReportMetrics') }}</p>
+          }
+        </section>
+      } @else if (page() === 'inventory') {
+        <div class="metrics-grid">
+          <app-metric-card [label]="t('totalParts')" [value]="parts().length" [detail]="t('pageInventory')" />
+          <app-metric-card [label]="t('availableStock')" [value]="totalAvailableStock()" [detail]="t('partUnits')" />
+          <app-metric-card [label]="t('lowStock')" [value]="lowStockParts().length" [detail]="t('minThreshold')" />
+        </div>
+      } @else if (page() === 'appointments' && session.user()?.role === 'CUSTOMER' && !isCustomerBookingPage()) {
+        <div class="metrics-grid">
+          <app-metric-card [label]="t('customerAppointments')" [value]="rows().length" [detail]="t('pageAppointments')" />
+          <app-metric-card [label]="t('customerVehicles')" [value]="vehicles().length" [detail]="t('pageVehicles')" />
+          <app-metric-card [label]="t('awaitingConfirmation')" [value]="customerPendingConfirmations()" [detail]="t('statusHeld')" />
+        </div>
+      } @else if (page() === 'dashboard') {
+        <div class="metrics-grid">
+          <app-metric-card [label]="t('records')" [value]="rows().length" [detail]="t(titleKey())" />
+          <app-metric-card [label]="t('status')" [value]="loading() ? '…' : error() ? '!' : '●'" [detail]="loading() ? t('loading') : error() ? t('loadError') : t('liveNote')" />
+          <app-metric-card [label]="t('role')" [value]="roleLabel()" [detail]="t('operations')" />
+        </div>
+      }
+
+      @if (session.mustChangePassword()) {
+        <section class="panel" aria-labelledby="password-title">
+          <h2 id="password-title">{{ t('passwordChange') }}</h2>
+          <div class="form-grid">
+            <label for="current-password">{{ t('currentPassword') }} *
+              <input id="current-password" type="password" autocomplete="current-password" required [(ngModel)]="currentPassword">
+            </label>
+            <label for="new-password">{{ t('newPassword') }} *
+              <input id="new-password" type="password" autocomplete="new-password" minlength="10" required aria-describedby="new-password-help" [(ngModel)]="newPassword">
+              <span id="new-password-help" class="muted">{{ t('passwordMinimum') }}</span>
+            </label>
+          </div>
+          <button class="button" type="button" (click)="changePassword()">{{ t('savePassword') }}</button>
+        </section>
+      }
+
+      @if (page() === 'appointments' && session.user()?.role === 'CUSTOMER' && !isCustomerBookingPage()) {
+        <section class="panel customer-vehicles-panel" aria-labelledby="customer-vehicles-title">
+          <div class="section-heading">
+            <h2 id="customer-vehicles-title">{{ t('customerVehicles') }}</h2>
+            <button class="button button-quiet" type="button" (click)="openCustomerVehicleRegistration()">{{ t('registerVehicle') }}</button>
+          </div>
+          <div class="customer-vehicle-grid">
+            @for (vehicle of vehicles(); track vehicle.id) {
+              <article class="customer-vehicle-card">
+                <span class="vehicle-icon" aria-hidden="true">E</span>
+                <div>
+                  <h3>{{ vehicle.brand }} {{ vehicle.model }}</h3>
+                  <p>{{ vehicle.serial_number }}</p>
+                  @if (vehicle['plate']) {
+                    <small>{{ t('plate') }} · {{ vehicle['plate'] }}</small>
+                  }
+                </div>
+              </article>
+            } @empty {
+              <p class="muted">{{ t('empty') }}</p>
+            }
+          </div>
+        </section>
+      }
+
+      @if (page() === 'appointments' && session.user()?.role === 'CUSTOMER' && isCustomerBookingPage()) {
+        <section class="panel" aria-labelledby="appointment-form-title">
+          <h2 id="appointment-form-title">{{ t('createAppointment') }}</h2>
+          <ol class="booking-stepper" [attr.aria-label]="t('bookingSteps')">
+            @for (step of bookingSteps; track $index) {
+              <li [class.current]="bookingStep() === $index + 1" [class.done]="bookingStep() > $index + 1" [attr.aria-current]="bookingStep() === $index + 1 ? 'step' : null">
+                <span>{{ $index + 1 }}</span>
+                <small>{{ t(step) }}</small>
+              </li>
+            }
+          </ol>
+          <div class="form-grid">
+            @switch (bookingStep()) {
+              @case (1) {
+                <label for="appointment-vehicle">{{ t('vehicle') }} *
+                  <select id="appointment-vehicle" required [(ngModel)]="vehicleId">
+                    <option value="">{{ t('chooseVehicle') }}</option>
+                    @for (vehicle of vehicles(); track vehicle.id) {
+                      <option [value]="vehicle.id">{{ vehicle.serial_number }} — {{ vehicle.brand }} {{ vehicle.model }}</option>
+                    }
+                  </select>
+                </label>
+              }
+              @case (2) {
+                <label for="appointment-service">{{ t('service') }} *
+                  <select id="appointment-service" required [(ngModel)]="serviceId" (ngModelChange)="onServiceChange()">
+                    <option value="">{{ t('chooseService') }}</option>
+                    @for (service of services(); track service.id) {
+                      <option [value]="service.id">{{ service.name }} — {{ formatCurrency(service.price) }}</option>
+                    }
+                  </select>
+                </label>
+              }
+              @case (3) {
+                <label for="appointment-slot">{{ t('slot') }} *
+                  <select id="appointment-slot" required [(ngModel)]="slotId">
+                    <option value="">{{ t('chooseSlot') }}</option>
+                    @for (slot of slots(); track slot.id) {
+                      <option [value]="slot.id">{{ slot.date }} · {{ slot.start_time }} · {{ slot.available }}</option>
+                    }
+                  </select>
+                </label>
+              }
+              @case (4) {
+                <div class="booking-summary">
+                  <p><span>{{ t('vehicle') }}</span><strong>{{ selectedBookingVehicle() }}</strong></p>
+                  <p><span>{{ t('service') }}</span><strong>{{ selectedBookingService() }}</strong></p>
+                  <p><span>{{ t('slot') }}</span><strong>{{ selectedBookingSlot() }}</strong></p>
+                  <p class="muted">{{ t('reviewAppointment') }}</p>
+                </div>
+              }
+            }
+          </div>
+          <div class="actions">
+            @if (bookingStep() > 1) {
+              <button class="button button-quiet" type="button" (click)="previousBookingStep()">{{ t('back') }}</button>
+            }
+            @if (bookingStep() < bookingSteps.length) {
+              <button class="button" type="button" (click)="nextBookingStep()">{{ t('continue') }}</button>
+            } @else {
+              <button class="button" type="button" (click)="createAppointment()">{{ t('confirmAppointment') }}</button>
+            }
+          </div>
+          <p class="hint">{{ t('liveNote') }} {{ t('holdReminder') }}</p>
+          @if (holdRemainingSeconds() !== null) {
+            <p class="hold-clock" role="status" aria-live="polite">
+              {{ t('holdTimeRemaining') }} <strong>{{ formatHoldCountdown() }}</strong>
+            </p>
+          }
+        </section>
+      }
+
+      @if (page() === 'appointments' && session.user()?.role === 'CUSTOMER' && !isCustomerBookingPage()) {
+        <section class="panel" aria-labelledby="appointment-actions-title">
+          <h2 id="appointment-actions-title">{{ t('selectedRecord') }}</h2>
+          <label for="appointment-selected">{{ t('selectedRecord') }}
+            <select id="appointment-selected" required [(ngModel)]="selectedId">
+              <option value="">{{ t('choose') }}</option>
+              @for (row of rows(); track row.id) {
+                <option [value]="row.id">{{ row.primary }} — {{ row.status }}</option>
+              }
+            </select>
+          </label>
+          <div class="actions">
+            <button class="button" type="button" (click)="confirmAppointment()">{{ t('confirmAppointment') }}</button>
+            <label for="reschedule-slot">{{ t('appointmentReschedule') }}
+              <select id="reschedule-slot" [(ngModel)]="rescheduleSlotId">
+                <option value="">{{ t('chooseSlot') }}</option>
+                @for (slot of slots(); track slot.id) {
+                  <option [value]="slot.id">{{ slot.date }} · {{ slot.start_time }}</option>
+                }
+              </select>
+            </label>
+            <button class="button button-quiet" type="button" (click)="rescheduleAppointment()">{{ t('appointmentReschedule') }}</button>
+            <label for="appointment-cancel-reason">{{ t('cancellationReason') }}
+              <input id="appointment-cancel-reason" [(ngModel)]="appointmentCancelReason" maxlength="200">
+            </label>
+            <button class="button button-quiet" type="button" (click)="cancelAppointment()">{{ t('cancelAppointment') }}</button>
+          </div>
+        </section>
+      }
+
+      @if (page() === 'vehicles' && isCustomerRegistrationPage()) {
+        <section class="panel" aria-labelledby="customer-form-title">
+          <h2 id="customer-form-title">{{ t('registerCustomer') }}</h2>
+          <form (ngSubmit)="createCustomer()" ngNativeValidate>
+          <div class="form-grid">
+            <label for="customer-name">{{ t('customerName') }} *
+              <input id="customer-name" name="customerName" required minlength="2" maxlength="120" [(ngModel)]="customerName" autocomplete="name">
+            </label>
+            <label for="customer-document-type">{{ t('documentType') }}
+              <select id="customer-document-type" name="documentType" [(ngModel)]="documentType">
+                <option value="CC">CC</option>
+                <option value="CE">CE</option>
+                <option value="NIT">NIT</option>
+              </select>
+            </label>
+            <label for="customer-document-number">{{ t('documentNumber') }} *
+              <input id="customer-document-number" name="documentNumber" required minlength="6" maxlength="20" [(ngModel)]="documentNumber">
+            </label>
+            <label for="customer-phone">{{ t('phone') }} *
+              <input id="customer-phone" name="customerPhone" required minlength="7" maxlength="20" type="tel" autocomplete="tel" [(ngModel)]="customerPhone">
+            </label>
+            <label for="customer-email">{{ t('email') }}
+              <input id="customer-email" name="customerEmail" type="email" autocomplete="email" [(ngModel)]="customerEmail">
+            </label>
+          </div>
+          <label class="consent" for="customer-consent">
+            <input id="customer-consent" name="dataConsent" type="checkbox" required [(ngModel)]="dataConsent">
+            <span>{{ t('consent') }} *</span>
+          </label>
+          <button class="button" type="submit">{{ t('registerCustomer') }}</button>
+          </form>
+        </section>
+      }
+
+      @if (page() === 'customers') {
+        <section class="panel" aria-labelledby="admin-customer-title">
+          <h2 id="admin-customer-title">{{ t('registerCustomer') }}</h2>
+          <form (ngSubmit)="createCustomer()" ngNativeValidate>
+          <div class="form-grid">
+            <label for="admin-customer-name">{{ t('customerName') }} *
+              <input id="admin-customer-name" name="customerName" required minlength="2" maxlength="120" autocomplete="name" [(ngModel)]="customerName">
+            </label>
+            <label for="admin-customer-document-type">{{ t('documentType') }}
+              <select id="admin-customer-document-type" name="documentType" [(ngModel)]="documentType">
+                <option value="CC">CC</option>
+                <option value="CE">CE</option>
+                <option value="NIT">NIT</option>
+              </select>
+            </label>
+            <label for="admin-customer-document-number">{{ t('documentNumber') }} *
+              <input id="admin-customer-document-number" name="documentNumber" required minlength="6" maxlength="20" [(ngModel)]="documentNumber">
+            </label>
+            <label for="admin-customer-phone">{{ t('phone') }} *
+              <input id="admin-customer-phone" name="customerPhone" required minlength="7" maxlength="20" type="tel" autocomplete="tel" [(ngModel)]="customerPhone">
+            </label>
+            <label for="admin-customer-email">{{ t('email') }}
+              <input id="admin-customer-email" name="customerEmail" type="email" autocomplete="email" [(ngModel)]="customerEmail">
+            </label>
+          </div>
+          <label class="consent" for="admin-customer-consent">
+            <input id="admin-customer-consent" name="dataConsent" type="checkbox" required [(ngModel)]="dataConsent">
+            <span>{{ t('consent') }} *</span>
+          </label>
+          <button class="button" type="submit">{{ t('registerCustomer') }}</button>
+          </form>
+        </section>
+      }
+
+      @if (page() === 'vehicles') {
+        @if (!isCustomerHistoryPage()) {
+        <section class="panel" aria-labelledby="vehicle-form-title">
+          <h2 id="vehicle-form-title">{{ t('registerVehicle') }}</h2>
+          <form (ngSubmit)="createVehicle()" ngNativeValidate>
+          <div class="form-grid">
+            <label for="vehicle-serial">{{ t('serial') }} *
+              <input id="vehicle-serial" name="serialNumber" required minlength="5" maxlength="30" [(ngModel)]="serialNumber">
+            </label>
+            <label for="vehicle-brand">{{ t('brand') }} *
+              <input id="vehicle-brand" name="brand" required maxlength="60" [(ngModel)]="brand">
+            </label>
+            <label for="vehicle-model">{{ t('model') }} *
+              <input id="vehicle-model" name="model" required maxlength="80" [(ngModel)]="model">
+            </label>
+            <label for="vehicle-plate">{{ t('plate') }}
+              <input id="vehicle-plate" name="plate" maxlength="7" [(ngModel)]="plate">
+            </label>
+            <label for="vehicle-year">{{ t('year') }}
+              <input id="vehicle-year" name="year" type="number" min="1900" max="2100" [(ngModel)]="vehicleYear">
+            </label>
+            <label for="battery-capacity">{{ t('batteryCapacity') }}
+              <input id="battery-capacity" name="batteryCapacityAh" type="number" min="0.01" step="0.01" [(ngModel)]="batteryCapacityAh">
+            </label>
+            <label for="cell-type">{{ t('cellType') }}
+              <input id="cell-type" name="cellType" [(ngModel)]="cellType">
+            </label>
+            <label for="motor-power">{{ t('motorPower') }}
+              <input id="motor-power" name="motorPowerW" type="number" min="1" [(ngModel)]="motorPowerW">
+            </label>
+            <label for="vehicle-controller">{{ t('controller') }}
+              <input id="vehicle-controller" name="controller" [(ngModel)]="controller">
+            </label>
+            @if (session.user()?.role !== 'CUSTOMER') {
+              <label for="vehicle-customer">{{ t('customer') }} *
+                <select id="vehicle-customer" name="customerId" required [(ngModel)]="customerId">
+                  <option value="">{{ t('chooseCustomer') }}</option>
+                  @for (customer of customers(); track customer.id) {
+                    <option [value]="customer.id">{{ customer.full_name }} — {{ customer.document_number }}</option>
+                  }
+                </select>
+              </label>
+            }
+          </div>
+          <button class="button" type="submit">{{ t('submit') }}</button>
+          </form>
+        </section>
+        }
+
+        @if (!isCustomerRegistrationPage() && !isAdminVehicleManagementPage()) {
+          <section class="panel" aria-labelledby="vehicle-record-title">
+            <div class="section-heading">
+              <h2 id="vehicle-record-title">{{ t('vehicleRecord') }}</h2>
+              <button class="button button-quiet" type="button" (click)="loadVehicleRecord()">{{ t('refresh') }}</button>
+            </div>
+            <label for="record-vehicle">{{ t('vehicle') }}
+              <select id="record-vehicle" [(ngModel)]="vehicleId" (ngModelChange)="loadVehicleRecord()">
+                <option value="">{{ t('chooseVehicle') }}</option>
+                @for (vehicle of vehicles(); track vehicle.id) {
+                  <option [value]="vehicle.id">{{ vehicle.serial_number }} — {{ vehicle.brand }} {{ vehicle.model }}</option>
+                }
+              </select>
+            </label>
+            <label for="technical-note">{{ t('note') }}
+              <textarea id="technical-note" rows="3" maxlength="5000" [(ngModel)]="noteText"></textarea>
+            </label>
+            <button class="button" type="button" (click)="saveTechnicalNote()">{{ t('saveNote') }}</button>
+            <div class="record-lists">
+              <div>
+                <h3>{{ t('activity') }}</h3>
+                @for (note of technicalNotes(); track note.id) {
+                  <p class="record-line">{{ note['content'] }} <small>{{ note['created_at'] }}</small></p>
+                } @empty {
+                  <p class="muted">{{ t('empty') }}</p>
+                }
+              </div>
+              <div>
+                <h3>{{ t('workOrders') }}</h3>
+                @for (order of vehicleWorkOrders(); track order.id) {
+                  <p class="record-line">{{ order['number'] }} · {{ order['status'] }}</p>
+                } @empty {
+                  <p class="muted">{{ t('empty') }}</p>
+                }
+              </div>
+            </div>
+          </section>
+        }
+      }
+
+      @if (page() === 'inventory') {
+        @if (session.user()?.role === 'ADMIN') {
+          <section class="panel" aria-labelledby="new-part-title">
+            <h2 id="new-part-title">{{ t('newPart') }}</h2>
+            <form (ngSubmit)="createPart()" ngNativeValidate>
+            <div class="form-grid">
+              <label for="part-sku">{{ t('sku') }} *
+                <input id="part-sku" name="sku" required minlength="2" maxlength="60" [(ngModel)]="partSku">
+              </label>
+              <label for="part-name">{{ t('partName') }} *
+                <input id="part-name" name="name" required minlength="2" maxlength="120" [(ngModel)]="partName">
+              </label>
+              <label for="part-category">{{ t('category') }}
+                <input id="part-category" name="category" [(ngModel)]="partCategory">
+              </label>
+              <label for="part-voltage">{{ t('voltage') }}
+                <input id="part-voltage" name="voltage" [(ngModel)]="partVoltage">
+              </label>
+              <label for="part-price">{{ t('unitPrice') }}
+                <input id="part-price" name="unitPrice" type="number" min="0" step="0.01" [(ngModel)]="partUnitPrice">
+              </label>
+              <label for="part-initial-stock">{{ t('initialStock') }}
+                <input id="part-initial-stock" name="initialStock" type="number" min="0" step="1" [(ngModel)]="initialStock">
+              </label>
+              <label for="part-threshold">{{ t('minThreshold') }}
+                <input id="part-threshold" name="minThreshold" type="number" min="0" step="1" [(ngModel)]="minThreshold">
+              </label>
+            </div>
+            <button class="button" type="submit">{{ t('submit') }}</button>
+            </form>
+          </section>
+        }
+        <section class="panel" aria-labelledby="inventory-form-title">
+          <h2 id="inventory-form-title">{{ t('recordMovement') }}</h2>
+          <form (ngSubmit)="recordMovement()" ngNativeValidate>
+          <div class="form-grid">
+            <label for="part-id">{{ t('part') }} ID *
+              <select id="part-id" name="partId" required [(ngModel)]="partId">
+                <option value="">{{ t('choosePart') }}</option>
+                @for (part of parts(); track part.id) {
+                  <option [value]="part.id">{{ part.name }} — {{ part.available_stock }}</option>
+                }
+              </select>
+            </label>
+            <label for="movement-type">{{ t('movementType') }}
+              <select id="movement-type" name="movementType" [(ngModel)]="movementType">
+                <option value="IN">IN</option>
+                <option value="WRITE_OFF">WRITE_OFF</option>
+                <option value="ADJUSTMENT">ADJUSTMENT</option>
+              </select>
+            </label>
+            <label for="movement-quantity">{{ t('quantity') }} <span aria-hidden="true">*</span>
+              <input id="movement-quantity" name="quantity" type="number" required min="1" step="1" [(ngModel)]="quantity">
+            </label>
+            <label for="movement-reason">{{ t('reason') }} *
+              <input id="movement-reason" name="reason" required minlength="2" maxlength="255" [(ngModel)]="reason">
+            </label>
+          </div>
+          <button class="button" type="submit">{{ t('submit') }}</button>
+          </form>
+        </section>
+      }
+
+      @if (page() === 'workOrders' && !isPaymentPage()) {
+        <section class="panel" aria-labelledby="work-order-form-title">
+          <h2 id="work-order-form-title">{{ isWalkInPage() ? t('createWalkIn') : t('createOrder') }}</h2>
+          <div class="form-grid">
+            <label for="order-vehicle">{{ t('vehicle') }} ID
+              <select id="order-vehicle" [(ngModel)]="vehicleId">
+                <option value="">{{ t('chooseVehicle') }}</option>
+                @for (vehicle of vehicles(); track vehicle.id) {
+                  <option [value]="vehicle.id">{{ vehicle.serial_number }} — {{ vehicle.model }}</option>
+                }
+              </select>
+            </label>
+            @if (!isWalkInPage()) {
+              <label for="order-appointment">{{ t('appointmentCode') }}
+                <input id="order-appointment" [(ngModel)]="appointmentCode">
+              </label>
+            }
+            <label for="order-fault">{{ t('fault') }}
+              <textarea id="order-fault" rows="2" maxlength="2000" [(ngModel)]="faultDescription"></textarea>
+            </label>
+            @if (isWalkInPage()) {
+              <label for="walk-in-fault-type">{{ t('faultType') }} *
+                <select
+                  id="walk-in-fault-type"
+                  required
+                  [(ngModel)]="workOrderFaultType"
+                  (ngModelChange)="clearWorkOrderFaultTypeError()"
+                  [attr.aria-invalid]="workOrderFaultTypeError() ? 'true' : null"
+                  [attr.aria-describedby]="workOrderFaultTypeError() ? 'walk-in-fault-type-error' : null">
+                  <option value="">{{ t('chooseFaultType') }}</option>
+                  <option value="F01">{{ t('faultBattery') }}</option>
+                  <option value="F02">{{ t('faultBrakes') }}</option>
+                  <option value="F03">{{ t('faultElectrical') }}</option>
+                  <option value="F04">{{ t('faultPreventive') }}</option>
+                </select>
+                @if (workOrderFaultTypeError()) {
+                  <span id="walk-in-fault-type-error" class="field-error">{{ t('faultTypeRequired') }}</span>
+                }
+              </label>
+            }
+            @if (session.user()?.role !== 'MECHANIC' && !appointmentCode) {
+              <label for="walk-in-service">{{ t('service') }} *
+                <select id="walk-in-service" required [(ngModel)]="workOrderServiceId">
+                  <option value="">{{ t('chooseService') }}</option>
+                  @for (service of services(); track service.id) {
+                    <option [value]="service.id">{{ service.name }}</option>
+                  }
+                </select>
+              </label>
+            }
+            @if (!isWalkInPage()) {
+              <label for="order-selected">{{ t('selectedRecord') }}
+              <select id="order-selected" required [(ngModel)]="selectedId" (ngModelChange)="onSelectedRecordChange()">
+                <option value="">{{ t('choose') }}</option>
+                @for (row of rows(); track row.id) {
+                  <option [value]="row.id">{{ row.primary }} — {{ row.status }}</option>
+                }
+              </select>
+              </label>
+            }
+            @if (session.user()?.role === 'ADMIN') {
+              <label for="mechanic-selected">{{ t('mechanic') }}
+                <select id="mechanic-selected" required [(ngModel)]="mechanicId">
+                  <option value="">{{ t('choose') }}</option>
+                  @for (mechanic of mechanics(); track mechanic.id) {
+                    <option [value]="mechanic.id">{{ mechanic.full_name }}</option>
+                  }
+                </select>
+              </label>
+            }
+          </div>
+          <div class="actions">
+            @if (session.user()?.role === 'RECEPTIONIST' || session.user()?.role === 'ADMIN') {
+              <button class="button" type="button" (click)="createWorkOrder()">{{ t('submit') }}</button>
+            }
+            @if (!isWalkInPage()) {
+              @if (session.user()?.role === 'ADMIN') {
+                <button class="button" type="button" (click)="assignMechanic()">{{ t('assignMechanic') }}</button>
+              }
+              <label for="status-change">{{ t('changeStatus') }}
+                <select id="status-change" [(ngModel)]="nextStatus">
+                  <option value="ASSIGNED">ASSIGNED</option>
+                  <option value="DIAGNOSING">DIAGNOSING</option>
+                  <option value="REPAIRING">REPAIRING</option>
+                  <option value="WAITING_PARTS">WAITING_PARTS</option>
+                  <option value="PENDING_INSTALLATION">PENDING_INSTALLATION</option>
+                  <option value="FINISHED">FINISHED</option>
+                  <option value="CANCELLED">CANCELLED</option>
+                </select>
+              </label>
+              <button class="button button-quiet" type="button" (click)="changeStatus()">{{ t('submit') }}</button>
+            }
+          </div>
+          @if (nextStatus === 'PENDING_INSTALLATION') {
+            <div class="form-grid">
+              <label for="expected-part">{{ t('expectedPart') }}
+                <select id="expected-part" [(ngModel)]="expectedPartId">
+                  <option value="">{{ t('choosePart') }}</option>
+                  @for (part of parts(); track part.id) {
+                    <option [value]="part.id">{{ part.name }}</option>
+                  }
+                </select>
+              </label>
+              <label for="expected-part-date">{{ t('expectedPartDate') }}
+                <input id="expected-part-date" type="date" [(ngModel)]="expectedPartDate">
+              </label>
+            </div>
+          }
+          @if (nextStatus === 'PENDING_INSTALLATION' || nextStatus === 'CANCELLED') {
+            <label for="status-reason">{{ t('reason') }}
+              <textarea id="status-reason" rows="2" maxlength="500" [(ngModel)]="statusReason"></textarea>
+            </label>
+          }
+          @if (session.user()?.role === 'MECHANIC') {
+            <label for="work-order-diagnosis">{{ t('diagnosis') }}
+              <textarea id="work-order-diagnosis" rows="4" required [(ngModel)]="diagnosis"></textarea>
+            </label>
+            <button class="button" type="button" (click)="saveDiagnosis()">{{ t('saveDiagnosis') }}</button>
+            <div class="form-grid repair-tools">
+              <label for="order-part">{{ t('part') }}
+                <select id="order-part" [(ngModel)]="workOrderPartId">
+                  <option value="">{{ t('choosePart') }}</option>
+                  @for (part of parts(); track part.id) {
+                    <option [value]="part.id">{{ part.name }} · {{ part.available_stock }}</option>
+                  }
+                </select>
+              </label>
+              <label for="order-part-quantity">{{ t('partQuantity') }}
+                <input id="order-part-quantity" type="number" min="1" [(ngModel)]="workOrderPartQuantity">
+              </label>
+              <button class="button" type="button" (click)="addPartToOrder()">{{ t('addPart') }}</button>
+              <label for="order-service">{{ t('service') }}
+                <select id="order-service" [(ngModel)]="workOrderServiceId">
+                  <option value="">{{ t('chooseService') }}</option>
+                  @for (service of services(); track service.id) {
+                    <option [value]="service.id">{{ service.name }}</option>
+                  }
+                </select>
+              </label>
+              <button class="button button-quiet" type="button" (click)="addServiceToOrder()">{{ t('addService') }}</button>
+            </div>
+            @if (workOrderDetail()) {
+              <div class="record-lists">
+                <div>
+                  <h3>{{ t('orderParts') }}</h3>
+                  @for (line of workOrderParts(); track line.id) {
+                    <p class="record-line">
+                      {{ line['part_name'] }} · {{ line['quantity'] }} · {{ line['status'] }}
+                      @if (line['status'] === 'RESERVED') {
+                        <button class="button button-quiet" type="button" (click)="installPart(recordId(line['id']))">{{ t('installPart') }}</button>
+                        <button class="button button-quiet" type="button" (click)="removePart(recordId(line['id']))">{{ t('removePart') }}</button>
+                      }
+                    </p>
+                  } @empty {
+                    <p class="muted">{{ t('empty') }}</p>
+                  }
+                </div>
+                <div>
+                  <h3>{{ t('orderServices') }}</h3>
+                  @for (service of workOrderServices(); track service.id) {
+                    <p class="record-line">{{ service['service_name'] }} · {{ service['applied_price'] }}</p>
+                  } @empty {
+                    <p class="muted">{{ t('empty') }}</p>
+                  }
+                </div>
+              </div>
+            }
+          }
+          @if (!isWalkInPage() && (session.user()?.role === 'RECEPTIONIST' || session.user()?.role === 'ADMIN') && selectedWorkOrderStatus() === 'FINISHED') {
+            <button class="button" type="button" (click)="settleOrder()">{{ t('preparePayment') }}</button>
+          }
+          @if (!isWalkInPage() && (session.user()?.role === 'RECEPTIONIST' || session.user()?.role === 'ADMIN') && selectedWorkOrderStatus() === 'PENDING_INSTALLATION') {
+            <button class="button button-quiet" type="button" (click)="readmitOrder()">{{ t('readmitOrder') }}</button>
+          }
+        </section>
+      }
+
+      @if (page() === 'workOrders' && isPaymentPage()) {
+        <section class="panel payment-panel" aria-labelledby="payment-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">{{ t('paymentAndDelivery') }}</p>
+              <h2 id="payment-title">{{ t('paymentAndDelivery') }}</h2>
+            </div>
+            <app-status-badge [label]="displayStatus(paymentOrderStatus())" />
+          </div>
+          <label for="payment-order">{{ t('selectedRecord') }} *
+            <select id="payment-order" required [(ngModel)]="selectedId" (ngModelChange)="onPaymentOrderChange()">
+              <option value="">{{ t('choose') }}</option>
+              @for (row of rows(); track row.id) {
+                <option [value]="row.id">{{ row.primary }} — {{ displayStatus(row.status) }}</option>
+              }
+            </select>
+          </label>
+          @if (workOrderDetail()) {
+            <div class="payment-summary">
+              <div class="section-heading">
+                <h3>{{ paymentOrderNumber() }}</h3>
+                <span>{{ t('paymentSummary') }}</span>
+              </div>
+              @for (service of workOrderServices(); track service.id) {
+                <p class="record-line"><span>{{ service['service_name'] }}</span><strong>{{ formatCurrency(service['applied_price']) }}</strong></p>
+              }
+              @for (part of workOrderParts(); track part.id) {
+                @if (part['status'] === 'INSTALLED') {
+                  <p class="record-line"><span>{{ part['part_name'] }} · {{ part['quantity'] }}</span><strong>{{ formatCurrency(numericForDisplay(part['unit_price']) * numericForDisplay(part['quantity'])) }}</strong></p>
+                }
+              }
+              <p class="record-line"><span>{{ t('amountSubtotal') }}</span><strong>{{ formatCurrency(paymentSubtotal()) }}</strong></p>
+              <p class="record-line"><span>{{ t('taxIva') }}</span><strong>{{ formatCurrency(paymentTax()) }}</strong></p>
+              <p class="payment-total"><span>{{ t('amountDue') }}</span><strong>{{ formatCurrency(paymentTotal()) }}</strong></p>
+            </div>
+            @if (paymentOrderStatus() === 'PENDING_PAYMENT') {
+              <div class="payment-controls">
+                <label for="payment-method">{{ t('paymentMethod') }}
+                  <select id="payment-method" [(ngModel)]="paymentMethod">
+                    <option value="CASH">{{ t('cash') }}</option>
+                    <option value="CARD">{{ t('card') }}</option>
+                    <option value="TRANSFER">{{ t('transfer') }}</option>
+                  </select>
+                </label>
+                <button class="button" type="button" (click)="registerPayment()">{{ t('payOrder') }}</button>
+              </div>
+            }
+            @if (paymentOrderStatus() === 'PAID') {
+              <button class="button" type="button" (click)="deliverWorkOrder()">{{ t('deliverOrder') }}</button>
+            }
+            @if (paymentReceipt(); as receipt) {
+              <p class="receipt-number">{{ t('receipt') }} · <strong>{{ receipt['receipt_number'] }}</strong></p>
+            }
+          } @else if (selectedId) {
+            <p class="muted">{{ t('loading') }}</p>
+          }
+          @if (surveyToken()) {
+            <p class="survey-link">
+              {{ t('surveyLink') }}
+              <a [href]="'/encuesta/' + surveyToken()">{{ t('openSurvey') }}</a>
+            </p>
+          }
+        </section>
+      }
+
+      @if (page() === 'catalog') {
+        <section class="panel" aria-labelledby="catalog-form-title">
+          <h2 id="catalog-form-title">{{ t('new') }}</h2>
+          <form (ngSubmit)="createService()" ngNativeValidate>
+          <div class="form-grid">
+            <label for="service-code">{{ t('serviceCode') }} *
+              <input id="service-code" name="code" required minlength="2" maxlength="30" [(ngModel)]="serviceCode">
+            </label>
+            <label for="service-name">{{ t('service') }} *
+              <input id="service-name" name="name" required minlength="2" maxlength="120" [(ngModel)]="serviceName">
+            </label>
+            <label for="service-description">{{ t('detail') }}
+              <textarea id="service-description" name="description" rows="2" maxlength="1000" [(ngModel)]="serviceDescription"></textarea>
+            </label>
+            <label for="service-price">{{ t('price') }} *
+              <input id="service-price" name="price" required type="number" min="0.01" step="0.01" [(ngModel)]="servicePrice">
+            </label>
+            <label for="service-duration">{{ t('duration') }} *
+              <input id="service-duration" name="duration" required type="number" min="1" max="1440" step="1" [(ngModel)]="serviceDuration">
+            </label>
+          </div>
+          <button class="button" type="submit">{{ t('submit') }}</button>
+          </form>
+        </section>
+        <section class="panel" aria-labelledby="service-parts-title">
+          <h2 id="service-parts-title">{{ t('serviceParts') }}</h2>
+          <label for="catalog-service">{{ t('service') }}
+            <select id="catalog-service" [(ngModel)]="selectedId" (ngModelChange)="loadServiceParts()">
+              <option value="">{{ t('chooseService') }}</option>
+              @for (service of rows(); track service.id) {
+                <option [value]="service.id">{{ service.primary }}</option>
+              }
+            </select>
+          </label>
+          <div class="form-grid">
+            <label for="catalog-part">{{ t('part') }}
+              <select id="catalog-part" [(ngModel)]="servicePartId">
+                <option value="">{{ t('choosePart') }}</option>
+                @for (part of parts(); track part.id) {
+                  <option [value]="part.id">{{ part.name }}</option>
+                }
+              </select>
+            </label>
+            <label for="catalog-part-quantity">{{ t('partQuantity') }}
+              <input id="catalog-part-quantity" type="number" min="1" [(ngModel)]="servicePartQuantity">
+            </label>
+          </div>
+          <div class="actions">
+            <button class="button button-quiet" type="button" (click)="addServicePart()">{{ t('addPart') }}</button>
+            <button class="button" type="button" (click)="saveServiceParts()">{{ t('saveServiceParts') }}</button>
+          </div>
+          @for (part of servicePartDraft(); track part.part_id) {
+            <p class="record-line">
+              {{ partDisplayName(part.part_id) }} · {{ part.quantity }}
+              <button class="button button-quiet" type="button" (click)="removeServicePart(part.part_id)">{{ t('removePart') }}</button>
+            </p>
+          } @empty {
+            <p class="muted">{{ t('empty') }}</p>
+          }
+        </section>
+      }
+
+      @if (page() === 'tracking') {
+        <section class="panel" aria-labelledby="tracking-title">
+          <h2 id="tracking-title">{{ t('tracking') }}</h2>
+          <label for="tracking-code">{{ t('trackingCode') }}
+            <input id="tracking-code" required [(ngModel)]="trackingCode" autocomplete="off">
+          </label>
+          <button class="button" type="button" (click)="trackOrder()">{{ t('track') }}</button>
+          @if (trackingState(); as tracking) {
+            <div class="tracking-card">
+              <div class="section-heading">
+                <h3>{{ tracking['order_number'] }}</h3>
+                <app-status-badge [label]="displayStatus(tracking['status'])" />
+              </div>
+              <p>{{ displayValue(tracking['vehicle']) }}</p>
+              <p class="muted">{{ trackingLive() ? t('trackingLive') : t('trackingOffline') }}</p>
+              @if (tracking['expected_part_date']) {
+                <p>{{ t('expectedPartDate') }} · {{ tracking['expected_part_date'] }}</p>
+              }
+              <ol class="timeline">
+                @for (event of trackingTimeline(tracking['status']); track event) {
+                  <li>{{ event }}</li>
+                }
+              </ol>
+            </div>
+          }
+        </section>
+      }
+
+      @if (page() === 'survey') {
+        <section class="panel survey-panel" aria-labelledby="page-title">
+          <p class="eyebrow">{{ t('customerExperience') }}</p>
+          <h1 id="page-title">{{ t('pageSurvey') }}</h1>
+          @if (surveyData(); as survey) {
+            <p class="muted">{{ t('surveyIntro') }} · {{ survey['order_number'] }}</p>
+            @if (survey['score'] !== null && survey['score'] !== undefined) {
+              <div class="survey-complete" role="status">
+                <span class="survey-score">{{ survey['score'] }} / 5</span>
+                <p>{{ t('surveyAlreadySubmitted') }}</p>
+                @if (survey['comment']) {
+                  <blockquote>{{ survey['comment'] }}</blockquote>
+                }
+              </div>
+            } @else {
+              <fieldset class="rating-fieldset">
+                <legend>{{ t('rating') }}</legend>
+                <div class="rating-options">
+                  @for (score of surveyScores; track score) {
+                    <label class="rating-option" [class.selected]="surveyScore === score">
+                      <input type="radio" name="survey-score" [value]="score" [(ngModel)]="surveyScore">
+                      <span>{{ score }}</span>
+                    </label>
+                  }
+                </div>
+              </fieldset>
+              <label for="survey-comment">{{ t('comment') }}
+                <textarea id="survey-comment" rows="4" maxlength="500" [(ngModel)]="surveyComment"></textarea>
+              </label>
+              <button class="button" type="button" (click)="submitSurvey()">{{ t('submitSurvey') }}</button>
+            }
+          } @else if (loading()) {
+            <p class="muted">{{ t('loading') }}</p>
+          }
+        </section>
+      }
+
+      @if (page() === 'users') {
+        <section class="panel" aria-labelledby="internal-user-title">
+          <h2 id="internal-user-title">{{ t('createInternalUser') }}</h2>
+          <form (ngSubmit)="createInternalUser()" ngNativeValidate>
+          <div class="form-grid">
+            <label for="internal-user-name">{{ t('customerName') }} *
+              <input id="internal-user-name" name="fullName" required minlength="2" maxlength="120" autocomplete="name" [(ngModel)]="internalUserName">
+            </label>
+            <label for="internal-user-email">{{ t('email') }} *
+              <input id="internal-user-email" name="email" required type="email" autocomplete="email" [(ngModel)]="internalUserEmail">
+            </label>
+            <label for="internal-user-role">{{ t('role') }}
+              <select id="internal-user-role" name="role" [(ngModel)]="internalUserRole">
+                <option value="MECHANIC">{{ t('mechanic') }}</option>
+                <option value="RECEPTIONIST">{{ t('receptionist') }}</option>
+                <option value="ADMIN">{{ t('admin') }}</option>
+              </select>
+            </label>
+            <label for="internal-user-password">{{ t('temporaryPassword') }} *
+              <input id="internal-user-password" name="temporaryPassword" type="password" required minlength="10" autocomplete="new-password" [(ngModel)]="internalUserPassword">
+            </label>
+          </div>
+          <button class="button" type="submit">{{ t('createInternalUser') }}</button>
+          </form>
+        </section>
+      }
+
+      @if (isCrudPage() && (page() === 'inventory' || page() === 'catalog' || page() === 'users')) {
+        <label class="consent" for="show-inactive-records">
+          <input
+            id="show-inactive-records"
+            type="checkbox"
+            [checked]="includeInactiveRecords()"
+            (change)="toggleInactiveRecords($event)">
+          <span>{{ t('showInactive') }}</span>
+        </label>
+      }
+
+      @if (editingRecord(); as record) {
+        <section class="panel" aria-labelledby="edit-record-title">
+          <h2 id="edit-record-title" #editRecordHeading tabindex="-1">{{ t('edit') }} · {{ record['name'] || record['full_name'] || record['sku'] || record['serial_number'] }}</h2>
+          <form (ngSubmit)="saveRecord()" ngNativeValidate>
+          <div class="form-grid">
+            @if (page() === 'customers') {
+              <label for="edit-customer-name">{{ t('customerName') }} *
+                <input id="edit-customer-name" name="full_name" required minlength="2" maxlength="120" autocomplete="name" [(ngModel)]="editForm.full_name" [attr.aria-invalid]="editFieldErrors()['full_name'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['full_name'] ? 'edit-customer-name-error' : null" (ngModelChange)="clearEditFieldError('full_name')">
+                @if (editFieldErrors()['full_name']; as fieldError) { <span id="edit-customer-name-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-customer-document-type">{{ t('documentType') }} *
+                <input id="edit-customer-document-type" name="document_type" required minlength="2" maxlength="10" [(ngModel)]="editForm.document_type" [attr.aria-invalid]="editFieldErrors()['document_type'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['document_type'] ? 'edit-customer-document-type-error' : null" (ngModelChange)="clearEditFieldError('document_type')">
+                @if (editFieldErrors()['document_type']; as fieldError) { <span id="edit-customer-document-type-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-customer-document-number">{{ t('documentNumber') }} *
+                <input id="edit-customer-document-number" name="document_number" required minlength="6" maxlength="20" [(ngModel)]="editForm.document_number" [attr.aria-invalid]="editFieldErrors()['document_number'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['document_number'] ? 'edit-customer-document-number-error' : null" (ngModelChange)="clearEditFieldError('document_number')">
+                @if (editFieldErrors()['document_number']; as fieldError) { <span id="edit-customer-document-number-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-customer-phone">{{ t('phone') }} *
+                <input id="edit-customer-phone" name="phone" required minlength="7" maxlength="20" type="tel" autocomplete="tel" [(ngModel)]="editForm.phone" [attr.aria-invalid]="editFieldErrors()['phone'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['phone'] ? 'edit-customer-phone-error' : null" (ngModelChange)="clearEditFieldError('phone')">
+                @if (editFieldErrors()['phone']; as fieldError) { <span id="edit-customer-phone-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-customer-email">{{ t('email') }} @if (record['user_id']) { <span aria-hidden="true">*</span> }
+                <input id="edit-customer-email" name="email" type="email" autocomplete="email" [required]="!!record['user_id']" [(ngModel)]="editForm.email" [attr.aria-invalid]="editFieldErrors()['email'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['email'] ? 'edit-customer-email-error' : null" (ngModelChange)="clearEditFieldError('email')">
+                @if (editFieldErrors()['email']; as fieldError) { <span id="edit-customer-email-error">{{ fieldError }}</span> }
+              </label>
+            } @else if (page() === 'vehicles') {
+              <label for="edit-vehicle-owner">{{ t('customer') }} *
+                <select id="edit-vehicle-owner" name="customer_id" required [(ngModel)]="editForm.customer_id" [attr.aria-invalid]="editFieldErrors()['customer_id'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['customer_id'] ? 'edit-vehicle-owner-error' : null" (ngModelChange)="clearEditFieldError('customer_id')">
+                  <option value="">{{ t('chooseCustomer') }}</option>
+                  @for (customer of customers(); track customer.id) {
+                    <option [value]="customer.id">{{ customer.full_name }} — {{ customer.document_number }}</option>
+                  }
+                </select>
+                @if (editFieldErrors()['customer_id']; as fieldError) { <span id="edit-vehicle-owner-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-vehicle-serial">{{ t('serial') }} *
+                <input id="edit-vehicle-serial" name="serial_number" required minlength="5" maxlength="30" [(ngModel)]="editForm.serial_number" [attr.aria-invalid]="editFieldErrors()['serial_number'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['serial_number'] ? 'edit-vehicle-serial-error' : null" (ngModelChange)="clearEditFieldError('serial_number')">
+                @if (editFieldErrors()['serial_number']; as fieldError) { <span id="edit-vehicle-serial-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-vehicle-brand">{{ t('brand') }} *
+                <input id="edit-vehicle-brand" name="brand" required maxlength="60" [(ngModel)]="editForm.brand" [attr.aria-invalid]="editFieldErrors()['brand'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['brand'] ? 'edit-vehicle-brand-error' : null" (ngModelChange)="clearEditFieldError('brand')">
+                @if (editFieldErrors()['brand']; as fieldError) { <span id="edit-vehicle-brand-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-vehicle-model">{{ t('model') }} *
+                <input id="edit-vehicle-model" name="model" required maxlength="80" [(ngModel)]="editForm.model" [attr.aria-invalid]="editFieldErrors()['model'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['model'] ? 'edit-vehicle-model-error' : null" (ngModelChange)="clearEditFieldError('model')">
+                @if (editFieldErrors()['model']; as fieldError) { <span id="edit-vehicle-model-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-vehicle-plate">{{ t('plate') }}
+                <input id="edit-vehicle-plate" name="plate" maxlength="7" [(ngModel)]="editForm.plate" [attr.aria-invalid]="editFieldErrors()['plate'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['plate'] ? 'edit-vehicle-plate-error' : null" (ngModelChange)="clearEditFieldError('plate')">
+                @if (editFieldErrors()['plate']; as fieldError) { <span id="edit-vehicle-plate-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-vehicle-year">{{ t('year') }}
+                <input id="edit-vehicle-year" name="year" type="number" min="1900" max="2100" [(ngModel)]="editForm.year" [attr.aria-invalid]="editFieldErrors()['year'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['year'] ? 'edit-vehicle-year-error' : null" (ngModelChange)="clearEditFieldError('year')">
+                @if (editFieldErrors()['year']; as fieldError) { <span id="edit-vehicle-year-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-vehicle-battery">{{ t('batteryCapacity') }}
+                <input id="edit-vehicle-battery" name="battery_capacity_ah" type="number" min="0.01" step="0.01" [(ngModel)]="editForm.battery_capacity_ah" [attr.aria-invalid]="editFieldErrors()['battery_capacity_ah'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['battery_capacity_ah'] ? 'edit-vehicle-battery-error' : null" (ngModelChange)="clearEditFieldError('battery_capacity_ah')">
+                @if (editFieldErrors()['battery_capacity_ah']; as fieldError) { <span id="edit-vehicle-battery-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-vehicle-cell">{{ t('cellType') }}
+                <input id="edit-vehicle-cell" name="cell_type" maxlength="40" [(ngModel)]="editForm.cell_type" [attr.aria-invalid]="editFieldErrors()['cell_type'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['cell_type'] ? 'edit-vehicle-cell-error' : null" (ngModelChange)="clearEditFieldError('cell_type')">
+                @if (editFieldErrors()['cell_type']; as fieldError) { <span id="edit-vehicle-cell-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-vehicle-power">{{ t('motorPower') }}
+                <input id="edit-vehicle-power" name="motor_power_w" type="number" min="1" [(ngModel)]="editForm.motor_power_w" [attr.aria-invalid]="editFieldErrors()['motor_power_w'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['motor_power_w'] ? 'edit-vehicle-power-error' : null" (ngModelChange)="clearEditFieldError('motor_power_w')">
+                @if (editFieldErrors()['motor_power_w']; as fieldError) { <span id="edit-vehicle-power-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-vehicle-controller">{{ t('controller') }}
+                <input id="edit-vehicle-controller" name="controller" maxlength="60" [(ngModel)]="editForm.controller" [attr.aria-invalid]="editFieldErrors()['controller'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['controller'] ? 'edit-vehicle-controller-error' : null" (ngModelChange)="clearEditFieldError('controller')">
+                @if (editFieldErrors()['controller']; as fieldError) { <span id="edit-vehicle-controller-error">{{ fieldError }}</span> }
+              </label>
+            } @else if (page() === 'catalog') {
+              <label for="edit-service-code">{{ t('serviceCode') }} *
+                <input id="edit-service-code" name="code" required minlength="2" maxlength="30" [(ngModel)]="editForm.code" [attr.aria-invalid]="editFieldErrors()['code'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['code'] ? 'edit-service-code-error' : null" (ngModelChange)="clearEditFieldError('code')">
+                @if (editFieldErrors()['code']; as fieldError) { <span id="edit-service-code-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-service-name">{{ t('service') }} *
+                <input id="edit-service-name" name="name" required minlength="2" maxlength="120" [(ngModel)]="editForm.name" [attr.aria-invalid]="editFieldErrors()['name'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['name'] ? 'edit-service-name-error' : null" (ngModelChange)="clearEditFieldError('name')">
+                @if (editFieldErrors()['name']; as fieldError) { <span id="edit-service-name-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-service-description">{{ t('detail') }}
+                <textarea id="edit-service-description" name="description" rows="2" [(ngModel)]="editForm.description" [attr.aria-invalid]="editFieldErrors()['description'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['description'] ? 'edit-service-description-error' : null" (ngModelChange)="clearEditFieldError('description')"></textarea>
+                @if (editFieldErrors()['description']; as fieldError) { <span id="edit-service-description-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-service-price">{{ t('price') }} *
+                <input id="edit-service-price" name="price" required type="number" min="0.01" step="0.01" max="9999999999.99" [(ngModel)]="editForm.price" [attr.aria-invalid]="editFieldErrors()['price'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['price'] ? 'edit-service-price-error' : null" (ngModelChange)="clearEditFieldError('price')">
+                @if (editFieldErrors()['price']; as fieldError) { <span id="edit-service-price-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-service-duration">{{ t('duration') }} *
+                <input id="edit-service-duration" name="duration_minutes" required type="number" min="1" max="1440" [(ngModel)]="editForm.duration_minutes" [attr.aria-invalid]="editFieldErrors()['duration_minutes'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['duration_minutes'] ? 'edit-service-duration-error' : null" (ngModelChange)="clearEditFieldError('duration_minutes')">
+                @if (editFieldErrors()['duration_minutes']; as fieldError) { <span id="edit-service-duration-error">{{ fieldError }}</span> }
+              </label>
+              <label class="consent" for="edit-service-active">
+                <input id="edit-service-active" name="active" type="checkbox" [(ngModel)]="editForm.active" [attr.aria-invalid]="editFieldErrors()['active'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['active'] ? 'edit-service-active-error' : null" (ngModelChange)="clearEditFieldError('active')">
+                <span>{{ t('active') }}</span>
+                @if (editFieldErrors()['active']; as fieldError) { <span id="edit-service-active-error">{{ fieldError }}</span> }
+              </label>
+            } @else if (page() === 'inventory') {
+              <label for="edit-part-sku">{{ t('sku') }} *
+                <input id="edit-part-sku" name="sku" required minlength="2" maxlength="40" [(ngModel)]="editForm.sku" [attr.aria-invalid]="editFieldErrors()['sku'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['sku'] ? 'edit-part-sku-error' : null" (ngModelChange)="clearEditFieldError('sku')">
+                @if (editFieldErrors()['sku']; as fieldError) { <span id="edit-part-sku-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-part-name">{{ t('partName') }} *
+                <input id="edit-part-name" name="name" required minlength="2" maxlength="120" [(ngModel)]="editForm.name" [attr.aria-invalid]="editFieldErrors()['name'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['name'] ? 'edit-part-name-error' : null" (ngModelChange)="clearEditFieldError('name')">
+                @if (editFieldErrors()['name']; as fieldError) { <span id="edit-part-name-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-part-category">{{ t('category') }}
+                <input id="edit-part-category" name="category" maxlength="60" [(ngModel)]="editForm.category" [attr.aria-invalid]="editFieldErrors()['category'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['category'] ? 'edit-part-category-error' : null" (ngModelChange)="clearEditFieldError('category')">
+                @if (editFieldErrors()['category']; as fieldError) { <span id="edit-part-category-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-part-voltage">{{ t('voltage') }}
+                <input id="edit-part-voltage" name="voltage" maxlength="20" [(ngModel)]="editForm.voltage" [attr.aria-invalid]="editFieldErrors()['voltage'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['voltage'] ? 'edit-part-voltage-error' : null" (ngModelChange)="clearEditFieldError('voltage')">
+                @if (editFieldErrors()['voltage']; as fieldError) { <span id="edit-part-voltage-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-part-price">{{ t('unitPrice') }}
+                <input id="edit-part-price" name="unit_price" type="number" min="0" step="0.01" max="9999999999.99" [(ngModel)]="editForm.unit_price" [attr.aria-invalid]="editFieldErrors()['unit_price'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['unit_price'] ? 'edit-part-price-error' : null" (ngModelChange)="clearEditFieldError('unit_price')">
+                @if (editFieldErrors()['unit_price']; as fieldError) { <span id="edit-part-price-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-part-threshold">{{ t('minThreshold') }}
+                <input id="edit-part-threshold" name="min_threshold" type="number" min="0" [(ngModel)]="editForm.min_threshold" [attr.aria-invalid]="editFieldErrors()['min_threshold'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['min_threshold'] ? 'edit-part-threshold-error' : null" (ngModelChange)="clearEditFieldError('min_threshold')">
+                @if (editFieldErrors()['min_threshold']; as fieldError) { <span id="edit-part-threshold-error">{{ fieldError }}</span> }
+              </label>
+              <label class="consent" for="edit-part-active">
+                <input id="edit-part-active" name="active" type="checkbox" [(ngModel)]="editForm.active" [attr.aria-invalid]="editFieldErrors()['active'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['active'] ? 'edit-part-active-error' : null" (ngModelChange)="clearEditFieldError('active')">
+                <span>{{ t('active') }}</span>
+                @if (editFieldErrors()['active']; as fieldError) { <span id="edit-part-active-error">{{ fieldError }}</span> }
+              </label>
+            } @else {
+              <label for="edit-user-name">{{ t('customerName') }} *
+                <input id="edit-user-name" name="full_name" required minlength="2" maxlength="120" autocomplete="name" [(ngModel)]="editForm.full_name" [attr.aria-invalid]="editFieldErrors()['full_name'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['full_name'] ? 'edit-user-name-error' : null" (ngModelChange)="clearEditFieldError('full_name')">
+                @if (editFieldErrors()['full_name']; as fieldError) { <span id="edit-user-name-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-user-email">{{ t('email') }} *
+                <input id="edit-user-email" name="email" required type="email" autocomplete="email" [(ngModel)]="editForm.email" [attr.aria-invalid]="editFieldErrors()['email'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['email'] ? 'edit-user-email-error' : null" (ngModelChange)="clearEditFieldError('email')">
+                @if (editFieldErrors()['email']; as fieldError) { <span id="edit-user-email-error">{{ fieldError }}</span> }
+              </label>
+              <label for="edit-user-role">{{ t('role') }}
+                <select id="edit-user-role" name="role" [(ngModel)]="editForm.role" [attr.aria-invalid]="editFieldErrors()['role'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['role'] ? 'edit-user-role-error' : null" (ngModelChange)="clearEditFieldError('role')">
+                  <option value="MECHANIC">{{ t('mechanic') }}</option>
+                  <option value="RECEPTIONIST">{{ t('receptionist') }}</option>
+                  <option value="ADMIN">{{ t('admin') }}</option>
+                </select>
+                @if (editFieldErrors()['role']; as fieldError) { <span id="edit-user-role-error">{{ fieldError }}</span> }
+              </label>
+              <label class="consent" for="edit-user-active">
+                <input id="edit-user-active" name="active" type="checkbox" [(ngModel)]="editForm.active" [attr.aria-invalid]="editFieldErrors()['active'] ? 'true' : null" [attr.aria-describedby]="editFieldErrors()['active'] ? 'edit-user-active-error' : null" (ngModelChange)="clearEditFieldError('active')">
+                <span>{{ t('active') }}</span>
+                @if (editFieldErrors()['active']; as fieldError) { <span id="edit-user-active-error">{{ fieldError }}</span> }
+              </label>
+            }
+          </div>
+          <div class="actions">
+            <button class="button" type="submit">{{ t('saveChanges') }}</button>
+            <button class="button button-quiet" type="button" (click)="cancelEdit()">{{ t('cancelEdit') }}</button>
+          </div>
+          </form>
+        </section>
+      }
+
+      <p class="feedback" aria-live="polite" role="status">{{ saving() ? t('saving') : message() || (loading() ? t('loading') : '') }}</p>
+      <div class="error-box" role="alert" [style.border]="error() ? null : '0'" [style.padding]="error() ? null : '0'">
+        @if (error()) {
+          {{ error() }} <button class="button button-quiet" type="button" (click)="load()">{{ t('retry') }}</button>
+        }
+      </div>
+
+      @if ((page() !== 'reports' || isAuditPage()) && !isCustomerBookingPage() && page() !== 'survey' && !isPaymentPage()) {
+      <section class="panel records-panel" aria-labelledby="records-title">
+        <div class="section-heading">
+          <h2 id="records-title" #recordsHeading tabindex="-1">{{ t('records') }}</h2>
+        </div>
+        @if (rows().length === 0 && !loading() && !error()) {
+          <p class="muted">{{ t('empty') }}</p>
+        } @else if (rows().length > 0) {
+          <div class="table-wrap" tabindex="0" role="group" aria-labelledby="records-caption">
+            <table>
+              <caption id="records-caption">{{ t(titleKey()) }}</caption>
+              <thead>
+                <tr>
+                  <th scope="col">{{ t('record') }}</th>
+                  <th scope="col">{{ t('status') }}</th>
+                  <th scope="col">{{ t('detail') }}</th>
+                  @if (page() === 'workOrders' && session.user()?.role !== 'MECHANIC') {
+                    <th scope="col">{{ t('actions') }}</th>
+                  }
+                  @if (isCrudPage()) {
+                    <th scope="col">{{ t('actions') }}</th>
+                  }
+                </tr>
+              </thead>
+              <tbody>
+                @for (row of rows(); track row.id) {
+                  <tr>
+                    <th scope="row">{{ row.primary }}</th>
+                    <td><app-status-badge [label]="displayStatus(row.status)" /></td>
+                    <td>{{ row.secondary }}</td>
+                    @if (page() === 'workOrders' && session.user()?.role !== 'MECHANIC') {
+                      <td>
+                        @if (row.status === 'PENDING_PAYMENT') {
+                          <button class="button button-quiet" type="button" (click)="openPayment(row.id)">{{ t('chargeOrder') }}</button>
+                        }
+                      </td>
+                    }
+                    @if (isCrudPage()) {
+                      <td>
+                        <div class="actions">
+                          <button class="button button-quiet" type="button" (click)="editRecord(row.id)" [attr.aria-label]="t('edit') + ' ' + row.primary">{{ t('edit') }}</button>
+                          @if (page() === 'customers' || isAdminVehicleManagementPage()) {
+                            <button class="button button-quiet" type="button" (click)="deleteRecord(row.id)" [attr.aria-label]="t('delete') + ' ' + row.primary">{{ t('delete') }}</button>
+                          } @else {
+                            <button class="button button-quiet" type="button" (click)="toggleRecordActive(row.id)" [attr.aria-label]="(recordActive(row.id) ? t('deactivate') : t('reactivate')) + ' ' + row.primary">
+                              {{ recordActive(row.id) ? t('deactivate') : t('reactivate') }}
+                            </button>
+                          }
+                        </div>
+                      </td>
+                    }
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </section>
+      }
+    </section>
